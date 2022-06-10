@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "679376491997",
+    "project_id": "primemetrics-2022",
+    "storage_bucket": "primemetrics-2022.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:679376491997:android:897b2cbbf9fbb5a72c5234",
+        "android_client_info": {
+          "package_name": "com.primemetrics.primemetrics"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "679376491997-j6qgrn6iqqvsdcbc91t9a0g6s3fnn23l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.primemetrics.primemetrics",
+            "certificate_hash": "5d46e206f96c389fceb12fc8b3eefd32bbdf005c"
+          }
+        },
+        {
+          "client_id": "679376491997-eiumdi8e6ap71rs034pk9pvb7p69ommb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBpkW-6JRHp2JPQUG27pbXcTI_NTHraM2Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "679376491997-eiumdi8e6ap71rs034pk9pvb7p69ommb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
