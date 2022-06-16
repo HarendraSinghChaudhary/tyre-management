@@ -10,6 +10,7 @@ class ShadowTextField extends StatelessWidget {
   final double? width;
   final int? maxLine;
   final bool? enabled;
+  final TextInputType? keyboardType;
 
   const ShadowTextField({
     Key? key,
@@ -19,7 +20,8 @@ class ShadowTextField extends StatelessWidget {
     this.onChanged,
     this.width,
     this.maxLine,
-    this.enabled=true
+    this.enabled=true,
+    this.keyboardType
   }) : super(key: key);
 
   @override

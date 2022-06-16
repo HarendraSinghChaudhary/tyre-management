@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:convert';
+
 import 'package:PrimeMetrics/models/SocialLogin.dart';
 import 'package:PrimeMetrics/models/user_info.dart';
 import 'package:PrimeMetrics/screens/auth/sign_up.dart';
@@ -8,6 +10,7 @@ import 'package:PrimeMetrics/screens/tyre_management/tyre_home_screen.dart';
 import 'package:PrimeMetrics/screens/widgets/facebook.dart';
 import 'package:PrimeMetrics/screens/widgets/google.dart';
 import 'package:PrimeMetrics/utils/app_extensions.dart';
+import 'package:PrimeMetrics/utils/store.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +23,8 @@ import '../../utils/screen_size.dart';
 import '../../utils/style.dart';
 import '../../utils/toast.dart';
 import 'otp.dart';
+import 'package:http/http.dart' as http;
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -29,6 +34,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  bool isloading = false;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -118,6 +124,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     // TODO: implement initState
+
 
     super.initState();
   }
@@ -307,6 +314,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           onTap: () async {
                             //Get.offAll(FuelMasterLandingScreen());
 
+                            // loginApi(emailController.text.trim(), passwordController.text.trim());
+
 
                             if (controller.sendingEmail.isTrue) {
                               return;
@@ -315,7 +324,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             if (allFieldFilled() &&
                                 passwordMatching() &&
                                 vaildEmail()) {
-                              await controller.loginUser(emailController.text,
+                              await controller.loginApi(emailController.text,
                                   passwordController.text);
                               // UserInfo? userInfo = await controller.sendEmail(
                               //     emailController.text,
@@ -400,6 +409,11 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+
+ 
+
+
+    
   bool allFieldFilled() {
     if (emailController.value.text.isNotEmpty &&
         passwordController.text.isNotEmpty) {
@@ -447,4 +461,8 @@ class _LoginScreenState extends State<LoginScreen> {
     ));
     return false;
   }
+
+
+
+
 }

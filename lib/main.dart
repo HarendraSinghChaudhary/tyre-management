@@ -31,12 +31,14 @@ void main() async {
 
   print(getUserInfo().runtimeType);
   runApp(GetMaterialApp(
-    home: SplashScreen.timer(
+    home:
+    //  WelcomeScreen()
+     SplashScreen.timer(
       seconds: 3,
       //  navigateAfterSeconds: ScreenSize(
       //     child:
       //          MainDashboard()),
-      navigateAfterSeconds: ScreenSize(child: userHasCompany()),
+      navigateAfterSeconds: ScreenSize(child: WelcomeScreen()),
       backgroundColor: green,
       loaderColor: white,
     ),

@@ -1,9 +1,9 @@
 class Role {
-  int? creatorId;
-  int? companyId;
-  int? userId;
+  String? creatorId;
+  String? companyId;
+  String? userId;
   String? userRole;
-  int? active;
+  String? active;
   int? id;
   String? createdAt;
   String? updatedAt;
@@ -19,11 +19,11 @@ class Role {
       this.updatedAt});
 
   Role.fromJson(Map<String, dynamic> json) {
-    creatorId = json['creator_id'];
-    companyId = json['company_id'];
-    userId = json['user_id'];
+    creatorId = json['creator_id'].toString();
+    companyId = json['company_id'].toString();
+    userId = json['user_id'].toString();
     userRole = json['user_role'];
-    active = json['active'];
+    active = json['active'].toString();
     id = json['id'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];

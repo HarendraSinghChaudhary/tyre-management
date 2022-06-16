@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'dart:io';
 
 import 'package:PrimeMetrics/controllers/tyre/tyre_controller.dart';
@@ -25,6 +27,7 @@ class _OnboardingHomeScreenState extends State<OnboardingHomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   TextEditingController tyreWeightController = TextEditingController();
+  TextEditingController serialNumnerController = TextEditingController();
   TextEditingController tyreWidthController = TextEditingController();
   TextEditingController threadDepthController = TextEditingController();
   TextEditingController dayController = TextEditingController();
@@ -99,7 +102,7 @@ class _OnboardingHomeScreenState extends State<OnboardingHomeScreen> {
                 children: [
                   InkWell(
                     onTap: () {
-                      Get.back();
+                      // Get.back();
                     },
                     child: CircleAvatar(
                       backgroundColor: green,
@@ -130,6 +133,7 @@ class _OnboardingHomeScreenState extends State<OnboardingHomeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // selected size
                     ObxValue((RxList list) {
                       return SearchableDropdown(
                         withIcon: false,
@@ -159,6 +163,8 @@ class _OnboardingHomeScreenState extends State<OnboardingHomeScreen> {
                     SizedBox(
                       height: 10,
                     ),
+
+                    // Tyre Model
                     ObxValue((RxList list) {
                       return SearchableDropdown(
                         withIcon: false,
@@ -188,7 +194,28 @@ class _OnboardingHomeScreenState extends State<OnboardingHomeScreen> {
                     SizedBox(
                       height: 10,
                     ),
+
+                      ShadowTextField(
+                      maxLine: 1,
+                      keyboardType: TextInputType.number,
+                      
+                      hintText: "Enter Serial Number",
+                      controller: serialNumnerController,
+                      onChanged: (value) {
+                        data.remove("serial_number");
+                        data.putIfAbsent('serial_number', () => serialNumnerController.text);
+                      },
+                    ),
+
+                    SizedBox(
+                      height: 10,
+                    ),
+
+
                     ShadowTextField(
+                      maxLine: 1,
+                      keyboardType: TextInputType.number,
+                      
                       hintText: "Enter Weight (Kgs)",
                       controller: tyreWeightController,
                       onChanged: (value) {
@@ -200,6 +227,8 @@ class _OnboardingHomeScreenState extends State<OnboardingHomeScreen> {
                       height: 10,
                     ),
                     ShadowTextField(
+                      maxLine: 1,
+                      keyboardType: TextInputType.number,
                       hintText: "Enter Width (mms)",
                       controller: tyreWidthController,
                       onChanged: (value) {
@@ -269,6 +298,8 @@ class _OnboardingHomeScreenState extends State<OnboardingHomeScreen> {
                       height: 10,
                     ),
                     ShadowTextField(
+                      maxLine: 1,
+                      keyboardType: TextInputType.number,
                       hintText: "Enter Thread Depth (mm)",
                       controller: threadDepthController,
                       onChanged: (value) {
@@ -373,9 +404,9 @@ class _OnboardingHomeScreenState extends State<OnboardingHomeScreen> {
                                     Get.back();
                                   },
                                   initialDate: date,
-                                  firstDate: DateTime.now(),
+                                  firstDate:  DateTime.now().subtract(const Duration(days: 5000)),
                                   lastDate:
-                                      DateTime.now().add(Duration(days: 30)));
+                                      DateTime.now());
                             });
                       },
                       child: Row(
@@ -459,6 +490,8 @@ class _OnboardingHomeScreenState extends State<OnboardingHomeScreen> {
                       height: 10,
                     ),
                     ShadowTextField(
+                      maxLine: 1,
+                      keyboardType: TextInputType.number,
                       hintText: "Warranty Kilometers",
                       controller: warrantyController,
                       onChanged: (value) {
@@ -533,6 +566,7 @@ class _OnboardingHomeScreenState extends State<OnboardingHomeScreen> {
                     ),
                     InkWell(
                       onTap: () {
+                        print("press here..!");
                         if(allFieldFilled()){
                           showGeneralDialog(
                             context: context,

@@ -1,12 +1,21 @@
 
+// ignore_for_file: prefer_const_declarations, non_constant_identifier_names
+
 bool isDev = true;
 var current_env = env.aws;
 
-final String baseUrl = current_env == env.dev
-    ? "http://192.168.0.2:8000/api"
-    : current_env == env.aws
-        ? "http://primemetricsbackendapis-env.eba-ueznnzk8.eu-west-1.elasticbeanstalk.com/api"
-        : "https://primemetrics.branfoot.com/api";
+// final String baseUrl = current_env == env.dev
+//     ? "https://builtenance.com/development/primemetics/api"
+//     : current_env == env.aws
+//         ? "https://builtenance.com/development/primemetics/api"
+//         : "https://builtenance.com/development/primemetics/api";
+
+// final String baseUrl = current_env == env.dev
+//     ? "http://192.168.0.2:8000/api"
+//     : current_env == env.aws
+//         ? "http://primemetricsbackendapis-env.eba-ueznnzk8.eu-west-1.elasticbeanstalk.com/api"
+//         : "https://primemetrics.branfoot.com/api";
+   final String baseUrl = "https://builtenance.com/development/primemetics/api";
 final String signUp = baseUrl + "/user/signup";
 final String login = baseUrl + "/user/signIn";
 final String SEND_EMAIL = baseUrl + "/user/sendOtp";
@@ -52,6 +61,7 @@ final String VEHICLE_STRUCTURE = baseUrl + "/vehiclestructure";
 final String TYRE_ONBOARDING = baseUrl + "/tyre-onboarding";
 final String TYRE_MOUNT = baseUrl + "/tyre-mount";
 final String TYRE_UNMOUNT = baseUrl + "/tyre-unmount";
+final String TYRE_SERIAL_NUMBER = baseUrl + "/get_tyre";
 
 
 

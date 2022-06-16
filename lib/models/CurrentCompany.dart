@@ -6,7 +6,7 @@ class CurrentCompany {
   String? phone;
   String? email;
   String? companyRegNumber;
-  int? creatorId;
+  String? creatorId;
   String? createdAt;
   String? updatedAt;
 
@@ -28,7 +28,7 @@ class CurrentCompany {
     phone = json['phone'];
     email = json['email'];
     companyRegNumber = json['company_reg_number'];
-    creatorId = json['creator_id'];
+    creatorId = json['creator_id'].toString();
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
   }

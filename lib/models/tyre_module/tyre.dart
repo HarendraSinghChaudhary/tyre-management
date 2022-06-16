@@ -31,16 +31,16 @@ class Tyre {
   });
 
   int? id;
-  int? tyreStoreId;
-  int? tyreSizeId;
-  int? tyreModelId;
+  String? tyreStoreId;
+  String? tyreSizeId;
+  String? tyreModelId;
   String? tyreWeight;
   String? tyreWidth;
-  int? tyreBrandId;
-  int? tyreTreadPatternId;
+  String? tyreBrandId;
+  String? tyreTreadPatternId;
   String? treadDepth;
-  int? tyreSpecificationId;
-  int? tyreVendorId;
+  String? tyreSpecificationId;
+  String? tyreVendorId;
   DateTime? tyrePurchaseDate;
   String? tyreWarrantyPeriod;
   DateTime? tyreWarrantyExpireDate;
@@ -53,13 +53,13 @@ class Tyre {
   dynamic tyreAxelId;
   dynamic tyrePosition;
   String? tyreDismountReasion;
-  int? tyreStatus;
+  String? tyreStatus;
   DateTime? createdAt;
   DateTime? updatedAt;
 
   factory Tyre.fromJson(Map<String, dynamic> json) => Tyre(
     id: json["id"],
-    tyreStoreId: json["tyre_store_id"] == null ? null : json["tyre_store_id"],
+    tyreStoreId: json["tyre_store_id"] == null ? null : json["tyre_store_id"].toString(),
     tyreSizeId: json["tyre_size_id"],
     tyreModelId: json["tyre_model_id"],
     tyreWeight: json["tyre_weight"],

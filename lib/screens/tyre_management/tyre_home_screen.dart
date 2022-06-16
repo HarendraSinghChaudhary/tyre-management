@@ -31,7 +31,7 @@ class _TyreHomeScreenState extends State<TyreHomeScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    tyreController.getStoreList();
+    tyreController.getStoreList;
     tyreController.getTyreBrandList();
     tyreController.getTyreModelList();
     tyreController.getTyreSizeList();

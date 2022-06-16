@@ -138,7 +138,7 @@ class BaseController extends GetxController {
             if (info != null) {
               info.data?.token = r.data["accessToken"];
               print("new token :${r.data["accessToken"]}");
-
+  
               await setUser(info);
               AuthController.userInfo = info;
               var secondresponse = await dio.request(

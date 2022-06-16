@@ -11,6 +11,8 @@ import 'package:PrimeMetrics/utils/screen_size.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart' as D;
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../models/user_info.dart' as U;
 
@@ -30,6 +32,109 @@ class AuthController extends BaseController {
   RxBool isLoadingSocialService = false.obs;
   static SocialLogin? social;
   static U.UserInfo userInfo = U.UserInfo();
+    RxBool isLoading = false.obs;
+  RxList jobList = [].obs;
+
+  @override
+  void onInit() {
+
+    super.onInit();
+  }
+
+
+
+    Future<dynamic> loginApi(String email, String password, ) async {
+    // FirebaseMessaging.instance.getToken().then((value) {
+    //   fcm_token = value.toString();
+    //   print("FCM "+fcm_token.toString()+"^^");
+    // });
+    // setState(() {
+    //   isloading = true;
+    // });
+    print(email);
+    print(password);
+    String msg = "";
+    var jsonRes;
+    http.Response? res;
+    var request = http.post(
+        Uri.parse(
+
+          // RestDatasource.LOGIN_URL,
+          "https://builtenance.com/development/primemetics/api/user/signIn",
+
+         
+         
+        ),
+        body: {
+          "email": email.toString().trim(),
+          "password": password.toString().trim(),
+         
+
+        },
+
+       
+        
+        );
+var responsedynamic;
+    await request.then((http.Response response) {
+      res = response;
+      responsedynamic = response.body;
+      final JsonDecoder _decoder = new JsonDecoder();
+      jsonRes = _decoder.convert(response.body.toString());
+      print("Response: " + response.body.toString() + "_");
+      print("ResponseJSON: " + jsonRes.toString() + "_");
+      // print("status: " + jsonRes["status"].toString() + "_");
+      // print("message: " + jsonRes["message"].toString() + "_");
+      // msg = jsonRes["message"].toString();
+    });
+    if (res!.statusCode == 200) {
+      if (res!.statusCode == 200) {
+
+        print("press here 1");
+        
+           await setUser(U.UserInfo.fromJson(jsonRes));
+
+      show("Success", "Login Succeful");
+       print("press here2");
+
+      var user =getUserInfo();
+      var role = user?.data?.role?.userRole.toString();
+      print("press here 3" +role.toString()+"");
+      // user?.data?.role?.userRole=="fuel_master" ? Get.offAll(FuelMasterLandingScreen()) : Get.offAll(MainDashboard());
+      user?.data?.role?.userRole=="fuel_master" ? Get.offAll(TyreHomeScreen()) : Get.offAll(MainDashboard());
+  // Get.offAll(TyreHomeScreen());
+   print("press here 4");
+        // SharedPreferences prefs = await SharedPreferences.getInstance();
+        // prefs.setString('id', jsonRes["data"]["id"].toString());
+        // prefs.setString('token', jsonRes["data"]["token"].toString());
+        //  print("press here 5");
+        var tokeenen = user?.data?.token.toString();
+        print("token: "+tokeenen.toString()+"");
+       
+        // prefs.commit();
+         print("press here 6");
+      
+       
+      }else{
+        // setState(() {
+        //   isloading = false;
+        // });
+        // ScaffoldMessenger.of(context)
+        //     .showSnackBar(SnackBar(content: Text(msg,style: TextStyle(),)));
+
+      }
+    } else {
+      // ScaffoldMessenger.of(context)
+      //     .showSnackBar(SnackBar(content: Text('Error while fetching data')));
+
+      // setState(() {
+      //   //isloading = false;
+      // });
+    }
+  }
+
+
+
 
   Future<U.UserInfo?> getProfile() async {
     if (getUserInfo() == null) {
@@ -38,9 +143,10 @@ class AuthController extends BaseController {
     var userInfo = getUserInfo();
     try {
       print(getHost());
-      var response = await dio.get(USER,
+      print("Url is "+USER);
+      var response = await dio.get("https://builtenance.com/development/primemetics/api/users?id=4",
           options: D.Options(headers:
-           {
+           {"Authorization":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2J1aWx0ZW5hbmNlLmNvbS9kZXZlbG9wbWVudC9wcmltZW1ldGljcy9hcGkvdXNlciIsImlhdCI6MTY1NTIwNjg4MCwiZXhwIjoxNjU1MjA3MDAwLCJuYmYiOjE2NTUyMDY4ODAsImp0aSI6IjBqYkw2MWNnTFc5NmZWTGQiLCJzdWIiOiI0IiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyIsImlkIjo0fQ.uAiELmJb6nMTVRH2wxHZ6VNunKOEwm4m4A5cwLkx3Ls"
           //   'accept': "application/json",
           //   "Content-Type": "application/json",
           //   "Accept": "application/json",
@@ -57,7 +163,7 @@ class AuthController extends BaseController {
           
           );
 
-      print(response);
+      print("Responseee "+response.toString()+"^^");
       if (response.isOk) {
         var user = U.UserInfo.fromJson(response.data);
         await setUser(user);
@@ -264,8 +370,10 @@ class AuthController extends BaseController {
 
     } else {
       show("Error login", "Username or Password is wrong");
+      printError();
+      
     }
-    print(response.requestOptions.headers);
+    print("is it out? "+response.requestOptions.headers.toString());
   }
 
   verifyOtp(String otp) async {

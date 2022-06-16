@@ -20,6 +20,13 @@ class SelectStoreCodeScreen extends StatefulWidget {
 class _SelectStoreCodeScreenState extends State<SelectStoreCodeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   TyreController tyreController = Get.find();
+  @override
+  void initState() {
+    tyreController.getStoreList();
+    tyreController.storeList;
+    // TODO: implement initState
+    super.initState();
+  }
 
   int storeCode = 0;
 

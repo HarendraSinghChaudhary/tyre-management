@@ -204,6 +204,39 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+
+                    //      ObxValue((RxList list) {
+                    //   return SearchableDropdown(
+                    //     withIcon: false,
+                    //     enabled: true,
+                    //     hintText: "Select Size",
+                    //     listItems: tyreController.tyreSizeList
+                    //         .map((e) => "${e.sizeName}")
+                    //         .toList(),
+                    //     onChanged: (value) {
+                    //       tyreSize = tyreController.tyreSizeList.firstWhere((element) => value == element.sizeName).id??0;
+                    //       print("tyreSize onChanged $tyreSize");
+                    //       data.remove("size");
+                    //       data.putIfAbsent('size', () => tyreSize);
+                    //     },
+                    //     searchFieldProps: TextFieldProps(
+                    //       decoration: InputDecoration(
+                    //         suffixIcon: Icon(
+                    //           Icons.keyboard_arrow_down,
+                    //           color: Colors.black,
+                    //         ),
+                    //         hintText: "Search",
+                    //         border: InputBorder.none,
+                    //       ),
+                    //     ),
+                    //   );
+                    // }, tyreController.tyreSizeList),
+                    // SizedBox(
+                    //   height: 10,
+                    // ),
+
+
+
                       SearchableDropdown(
                         enabled: true,
                         hintText: "Select Rim (Optional)",
@@ -484,8 +517,11 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
         child: InkWell(
           splashColor: Colors.transparent,
           onTap: () async {
+            print("press here!");
             if(odometerController.text.isNotEmpty && vehicleId!=0){
+               print("press here1!");
               await tyreController.getVehicleStructure(vehicleId: vehicleId).then((value) {
+                 print("press here2");
                 if(value){
                   _toggleSecond();
                 }

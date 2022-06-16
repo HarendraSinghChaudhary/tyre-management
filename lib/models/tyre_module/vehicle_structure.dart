@@ -147,7 +147,7 @@ class VehecleStructure {
   });
 
   int? id;
-  int? vehicleId;
+  String? vehicleId;
   int? axcelOrder;
   int? noOfTyres;
   DateTime? createdAt;

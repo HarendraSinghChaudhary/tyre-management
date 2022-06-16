@@ -25,7 +25,7 @@ class Vehicle {
   int? id;
   int? companyId;
   String? regNumber;
-  int? creatorId;
+  String? creatorId;
   Null? model;
   String? createdAt;
   String? updatedAt;
@@ -41,9 +41,9 @@ class Vehicle {
 
   Vehicle.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    companyId = json['company_id'];
+    companyId = int.parse(json['company_id'].toString());
     regNumber = json['reg_number'];
-    creatorId = json['creator_id'];
+    creatorId = json['creator_id'].toString();
     model = json['model'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];

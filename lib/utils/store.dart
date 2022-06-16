@@ -3,6 +3,7 @@ import 'package:PrimeMetrics/utils/constants.dart';
 import 'package:get_storage/get_storage.dart';
 
 setUser(UserInfo? userInfo) async {
+  print(userInfo?.data.toString());
   final store = GetStorage();
   await store.write(userinfo, userInfo);
 }
