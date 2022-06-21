@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:PrimeMetrics/models/tyre_module/tyre_serial_number.dart';
+import 'package:PrimeMetrics/screens/tyre_management/tyre_mount/mount_home_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:PrimeMetrics/models/CompanyVehicle.dart';
@@ -41,7 +42,7 @@ class TyreController extends BaseController {
 
   RxList<Tyre> tyreList = RxList();
   RxList<Vehicle> companyVehicles = RxList();
-  RxList<TyreSerialNumer> tyreSerialNumberList = RxList();
+  RxList<SerialNumberModel> tyreSerialNumberList = RxList();
 
   Rx<VehicleStructure?>? vehicleStructure;
   final dioo = Dio(BaseOptions(
@@ -192,15 +193,25 @@ class TyreController extends BaseController {
       });
 
       if (response.statusCode == 200) {
-        if (response.data['data'] != null) {
+           print("object is here...1");
+        var data = jsonDecode(response.data);
+        print("yesss: "+data.toString());
+
+
+        if (data['status'] == true) {
+
+          
+
+
+          print("object is here...");
           tyreSerialNumberList.clear();
-          List list = response.data['data'];
-         tyreSerialNumberList.addAll(list.map((e) => TyreSerialNumer.fromJson(e)).toList());
+          List list = data['data'];
+         tyreSerialNumberList.addAll(list.map((e) => SerialNumberModel.fromJson(e)).toList());
         }
       }
       print("tyreSizeList : ${tyreSizeList.length}");
       tyreSerialNumberList.forEach((element) {
-        // print("${element.tyreSerialNumber}");
+        print("${element.tyre_serial_number}");
       });
     } on res.DioError catch (e, trace) {
       print(trace);
@@ -338,6 +349,7 @@ class TyreController extends BaseController {
   }
 
   Future<bool> getVehicleStructure({required int vehicleId}) async {
+    print("vehcle id: "+vehicleId.toString());
     var token = "";
     if (getUserInfo() != null) {
       token = getUserInfo()!.data!.token.toString();
@@ -349,6 +361,7 @@ class TyreController extends BaseController {
     try {
       res.Response response = await dioo
           .get("/vehiclestructure", queryParameters: {"vehicle_id": vehicleId});
+          print("response..: "+response.toString());
       if (response.statusCode == 200) {
         if (response.data['success']) {
           //VehicleStructure vehicleStructure = VehicleStructure.fromJson(response.data['data']);
@@ -368,8 +381,10 @@ class TyreController extends BaseController {
   }
 
   onBoardingTyre(
-      {required Map<String, dynamic> data, required XFile file}) async {
+      {required Map<String, dynamic> data, required XFile file, required bool isNavigate,String? serialNumber}) async {
     print("Data " + data.toString());
+    print("file image:  " + file.toString());
+     print("serial numner onBoarding:" +serialNumber.toString());
     var token = "";
     if (getUserInfo() != null) {
       token = getUserInfo()!.data!.token.toString();
@@ -393,7 +408,9 @@ class TyreController extends BaseController {
       if (response.statusCode == 200) {
         if (response.data['data'] != null) {
           isSubmitting(false);
-          Get.offAll(TyreHomeScreen(), transition: Transition.leftToRight);
+          isNavigate != true ?
+          Get.offAll(TyreHomeScreen(), transition: Transition.leftToRight) :
+          Get.offAll(MountHomeScreen(serialNumber: serialNumber.toString(),), transition: Transition.leftToRight);
           Get.defaultDialog(
               contentPadding: EdgeInsets.all(10),
               title: "",

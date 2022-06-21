@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'dart:io';
 
@@ -102,7 +102,7 @@ class _OnboardingHomeScreenState extends State<OnboardingHomeScreen> {
                 children: [
                   InkWell(
                     onTap: () {
-                      // Get.back();
+                      Get.back();
                     },
                     child: CircleAvatar(
                       backgroundColor: green,
@@ -505,7 +505,7 @@ class _OnboardingHomeScreenState extends State<OnboardingHomeScreen> {
                     InkWell(
                       onTap: () async{
                         file = (await ImagePicker().pickImage(
-                            source: ImageSource.gallery,
+                            source: ImageSource.camera,
                             imageQuality: 50, // <- Reduce Image quality
                             maxHeight: 500, // <- reduce the image size
                             maxWidth: 500))
@@ -634,7 +634,7 @@ class _OnboardingHomeScreenState extends State<OnboardingHomeScreen> {
                                       data.remove("is_deploy");
                                       data.putIfAbsent('is_deploy', () => 1);
 
-                                      tyreController.onBoardingTyre(data: data,file: file?.value??XFile(""));
+                                      tyreController.onBoardingTyre(data: data,file: file?.value??XFile(""), isNavigate: true, serialNumber: serialNumnerController.text.trim().toString() );
                                     },
                                     child: Container(
                                       alignment: Alignment.center,

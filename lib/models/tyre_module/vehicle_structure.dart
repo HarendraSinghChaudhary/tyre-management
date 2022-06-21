@@ -51,16 +51,16 @@ class MountedTyre {
   });
 
   int? id;
-  dynamic tyreStoreId;
-  int? tyreSizeId;
-  int? tyreModelId;
+  String? tyreStoreId;
+  String? tyreSizeId;
+  String? tyreModelId;
   String? tyreWeight;
   String? tyreWidth;
-  int? tyreBrandId;
-  int? tyreTreadPatternId;
+  String? tyreBrandId;
+  String? tyreTreadPatternId;
   String? treadDepth;
-  int? tyreSpecificationId;
-  int? tyreVendorId;
+  String? tyreSpecificationId;
+  String? tyreVendorId;
   DateTime? tyrePurchaseDate;
   String? tyreWarrantyPeriod;
   DateTime? tyreWarrantyExpireDate;
@@ -68,12 +68,12 @@ class MountedTyre {
   String? tyreImage;
   String? tyrePsi;
   String? tyreDeployOn;
-  int? tyreVehicleId;
+  String? tyreVehicleId;
   String? tyreVehicleOdometer;
-  int? tyreAxelId;
+  String? tyreAxelId;
   String? tyrePosition;
   String? tyreDismountReasion;
-  int? tyreStatus;
+  String? tyreStatus;
   DateTime? createdAt;
   DateTime? updatedAt;
 
@@ -148,8 +148,8 @@ class VehecleStructure {
 
   int? id;
   String? vehicleId;
-  int? axcelOrder;
-  int? noOfTyres;
+  String? axcelOrder;
+  String? noOfTyres;
   DateTime? createdAt;
   DateTime? updatedAt;
 

@@ -1,7 +1,10 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:PrimeMetrics/controllers/tyre/tyre_controller.dart';
 import 'package:PrimeMetrics/models/tyre_module/vehicle_structure.dart';
 import 'package:PrimeMetrics/screens/fuel_master/fuel_master_widgets/shadow_textfield.dart';
 import 'package:PrimeMetrics/screens/tyre_management/tyre_home_screen.dart';
+import 'package:PrimeMetrics/screens/tyre_management/tyre_onboarding/onboarding_home_screen.dart';
 import 'package:PrimeMetrics/utils/images.dart';
 import 'package:PrimeMetrics/utils/toast.dart';
 import 'package:animations/animations.dart';
@@ -15,8 +18,10 @@ import '../../../utils/screen_size.dart';
 import '../../fuel_master/fuel_master_widgets/searchable_dropdown.dart';
 
 class MountHomeScreen extends StatefulWidget {
-  final int tyreId;
-  const MountHomeScreen({Key? key, required this.tyreId}) : super(key: key);
+  final int? tyreId;
+  final String? serialNumber;
+  const MountHomeScreen({Key? key, this.tyreId, this.serialNumber})
+      : super(key: key);
 
   @override
   _MountHomeScreenState createState() => _MountHomeScreenState();
@@ -31,7 +36,8 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
   List deployOn = ["Truck", "Trailer"];
   List images = [truck, trailer];
 
-  final SharedAxisTransitionType _transitionType = SharedAxisTransitionType.horizontal;
+  final SharedAxisTransitionType _transitionType =
+      SharedAxisTransitionType.horizontal;
 
   late bool _isFirstCompleted;
   late bool _isSecondCompleted;
@@ -53,58 +59,76 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
     setState(() {
       _isFirstCompleted = !_isFirstCompleted;
     });
+
+    print("press here step 1" + _isFirstCompleted.toString());
   }
 
   void _toggleSecond() {
     setState(() {
       _isSecondCompleted = !_isSecondCompleted;
     });
+    print("press here step 2" + _isSecondCompleted.toString());
   }
 
   void _toggleThird() {
     setState(() {
       _isThirdCompleted = !_isThirdCompleted;
     });
+    print("press here step 3" + _isThirdCompleted.toString());
   }
 
   void _toggleFourth() {
     setState(() {
       _isFourthCompleted = !_isFourthCompleted;
     });
-  }
-  int selectedCard=0;
 
-  late Map<String,dynamic> data;
-  int vehicleId=0;
+    print("press here step 4" + _isFourthCompleted.toString());
+  }
+
+  int selectedCard = 0;
+
+  late Map<String, dynamic> data;
+  int vehicleId = 0;
+  int storeCodeSerialNumber = 0;
 
   //FuelController fuelController=Get.find();
-  TyreController tyreController=Get.find();
+  TyreController tyreController = Get.find();
 
-  List<MountedTyre> mountedTyre=[];
+  List<MountedTyre> mountedTyre = [];
 
   @override
   void initState() {
+    tyreController.getTyreSerialNumberApi();
+    tyreController.tyreSerialNumberList;
     // TODO: implement initState
     super.initState();
-    _isFirstCompleted=false;
-    _isSecondCompleted=false;
-    _isThirdCompleted=false;
-    _isFourthCompleted=false;
-    data={};
+    // TODO: implement initState
+
+    serialNumberController.text =
+        widget.serialNumber.toString();
+
+    super.initState();
+    _isFirstCompleted = false;
+    _isSecondCompleted = false;
+    _isThirdCompleted = false;
+    _isFourthCompleted = false;
+    data = {};
     data.remove('tyre_id');
     data.putIfAbsent('tyre_id', () => widget.tyreId);
   }
 
   @override
   Widget build(BuildContext context) {
+    print("serial numner mount:" + widget.serialNumber.toString());
+    print("list length:" +tyreController.tyreSerialNumberList.length.toString());
     return PageTransitionSwitcher(
       duration: const Duration(milliseconds: 300),
       reverse: !_isFirstCompleted,
       transitionBuilder: (
-          Widget child,
-          Animation<double> animation,
-          Animation<double> secondaryAnimation,
-          ) {
+        Widget child,
+        Animation<double> animation,
+        Animation<double> secondaryAnimation,
+      ) {
         return SharedAxisTransition(
           child: child,
           animation: animation,
@@ -112,7 +136,13 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
           transitionType: _transitionType,
         );
       },
-      child: _isThirdCompleted ? fourthStep() : _isSecondCompleted ? thirdStep() : _isFirstCompleted ? secondStep() : firstStep(),
+      child: _isThirdCompleted
+          ? fourthStep()
+          : _isSecondCompleted
+              ? thirdStep()
+              : _isFirstCompleted
+                  ? secondStep()
+                  : firstStep(),
     );
   }
 
@@ -135,7 +165,7 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                   children: [
                     InkWell(
                       onTap: () {
-                        Get.back();
+                        Get.offAll(const TyreHomeScreen());
                       },
                       child: CircleAvatar(
                         backgroundColor: green,
@@ -168,9 +198,12 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                       width: 35,
                       height: 8,
                       decoration: BoxDecoration(
-                          color: green, borderRadius: BorderRadius.circular(30)),
+                          color: green,
+                          borderRadius: BorderRadius.circular(30)),
                     ),
-                    SizedBox(width: 2,),
+                    SizedBox(
+                      width: 2,
+                    ),
                     Container(
                       width: 15,
                       height: 8,
@@ -178,7 +211,9 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                           color: Colors.grey,
                           borderRadius: BorderRadius.circular(30)),
                     ),
-                    SizedBox(width: 2,),
+                    SizedBox(
+                      width: 2,
+                    ),
                     Container(
                       width: 15,
                       height: 8,
@@ -186,7 +221,9 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                           color: Colors.grey,
                           borderRadius: BorderRadius.circular(30)),
                     ),
-                    SizedBox(width: 2,),
+                    SizedBox(
+                      width: 2,
+                    ),
                     Container(
                       width: 15,
                       height: 8,
@@ -204,43 +241,41 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-
-                    //      ObxValue((RxList list) {
-                    //   return SearchableDropdown(
-                    //     withIcon: false,
-                    //     enabled: true,
-                    //     hintText: "Select Size",
-                    //     listItems: tyreController.tyreSizeList
-                    //         .map((e) => "${e.sizeName}")
-                    //         .toList(),
-                    //     onChanged: (value) {
-                    //       tyreSize = tyreController.tyreSizeList.firstWhere((element) => value == element.sizeName).id??0;
-                    //       print("tyreSize onChanged $tyreSize");
-                    //       data.remove("size");
-                    //       data.putIfAbsent('size', () => tyreSize);
-                    //     },
-                    //     searchFieldProps: TextFieldProps(
-                    //       decoration: InputDecoration(
-                    //         suffixIcon: Icon(
-                    //           Icons.keyboard_arrow_down,
-                    //           color: Colors.black,
-                    //         ),
-                    //         hintText: "Search",
-                    //         border: InputBorder.none,
-                    //       ),
-                    //     ),
-                    //   );
-                    // }, tyreController.tyreSizeList),
-                    // SizedBox(
-                    //   height: 10,
-                    // ),
-
-
+                      //      ObxValue((RxList list) {
+                      //   return SearchableDropdown(
+                      //     withIcon: false,
+                      //     enabled: true,
+                      //     hintText: "Select Size",
+                      //     listItems: tyreController.tyreSizeList
+                      //         .map((e) => "${e.sizeName}")
+                      //         .toList(),
+                      //     onChanged: (value) {
+                      //       tyreSize = tyreController.tyreSizeList.firstWhere((element) => value == element.sizeName).id??0;
+                      //       print("tyreSize onChanged $tyreSize");
+                      //       data.remove("size");
+                      //       data.putIfAbsent('size', () => tyreSize);
+                      //     },
+                      //     searchFieldProps: TextFieldProps(
+                      //       decoration: InputDecoration(
+                      //         suffixIcon: Icon(
+                      //           Icons.keyboard_arrow_down,
+                      //           color: Colors.black,
+                      //         ),
+                      //         hintText: "Search",
+                      //         border: InputBorder.none,
+                      //       ),
+                      //     ),
+                      //   );
+                      // }, tyreController.tyreSizeList),
+                      // SizedBox(
+                      //   height: 10,
+                      // ),
 
                       SearchableDropdown(
                         enabled: true,
                         hintText: "Select Rim (Optional)",
-                        listItems: ['Rim 1', 'Rim 2'].map((e) => "${e}").toList(),
+                        listItems:
+                            ['Rim 1', 'Rim 2'].map((e) => "${e}").toList(),
                         onChanged: (value) {},
                         searchFieldProps: TextFieldProps(
                           decoration: InputDecoration(
@@ -262,20 +297,70 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                         hintText: "Pressure of inflation (PSI)",
                         onChanged: (value) {
                           data.remove('tyre_psi');
-                          data.putIfAbsent('tyre_psi', () => pressureController.text);
+                          data.putIfAbsent(
+                              'tyre_psi', () => pressureController.text);
                         },
                       ),
                       SizedBox(
                         height: 10,
                       ),
+
+                       tyreController.tyreSerialNumberList.length > 0 ? 
+                      Container(
+                        padding: EdgeInsets.all(0),
+                        child: SingleChildScrollView(
+                          physics: NeverScrollableScrollPhysics(),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ObxValue((RxList list) {
+                                return SearchableDropdown(
+                                  withIcon: false,
+                                  enabled: true,
+                                  hintText: "Select serial number",
+                                  listItems: tyreController.tyreSerialNumberList
+                                      .map((e) => "${e.tyre_serial_number}")
+                                      .toList(),
+                                  onChanged: (value) {
+                                    storeCodeSerialNumber = tyreController
+                                            .tyreSerialNumberList
+                                            .firstWhere((element) =>
+                                                value ==
+                                                element.tyre_serial_number)
+                                            .id ??
+                                        0;
+                                    // widget.data.remove('store');
+                                    // widget.data.putIfAbsent('store', () => storeCodeSerialNumber);
+                                  },
+                                  searchFieldProps: TextFieldProps(
+                                    decoration: InputDecoration(
+                                      suffixIcon: Icon(
+                                        Icons.keyboard_arrow_down,
+                                        color: Colors.black,
+                                      ),
+                                      hintText: "Search",
+                                      border: InputBorder.none,
+                                    ),
+                                  ),
+                                );
+                              }, tyreController.tyreSerialNumberList),
+                            ],
+                          ),
+                        ),
+                      ): Container() ,
+
+                      // ignore: unrelated_type_equality_checks
+                      widget.serialNumber.toString != "null" || widget.serialNumber.toString != ""?
+
                       ShadowTextField(
+                        enabled: false,
                         controller: serialNumberController,
                         hintText: "Tyre Serial Number",
                         onChanged: (value) {
                           // data.remove('tyre_psi');
                           // data.putIfAbsent('tyre_psi', () => pressureController.text);
                         },
-                      ),
+                      ): Container(),
                       SizedBox(
                         height: 30,
                       ),
@@ -294,10 +379,13 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                               borderRadius: BorderRadius.circular(10),
                               child: Row(
                                 children: [
-                                  Container(padding: EdgeInsets.only(left: 10),child: Image.asset(images[index])),
+                                  Container(
+                                      padding: EdgeInsets.only(left: 10),
+                                      child: Image.asset(images[index])),
                                   Expanded(
                                     child: RadioListTile(
-                                      controlAffinity: ListTileControlAffinity.trailing,
+                                      controlAffinity:
+                                          ListTileControlAffinity.trailing,
                                       activeColor: green,
                                       value: index,
                                       groupValue: value,
@@ -337,9 +425,10 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
           onTap: () async {
             data.remove('deploy_on');
             data.putIfAbsent('deploy_on', () => deployOn[value]);
-            if(pressureController.text.isNotEmpty && serialNumberController.text.isNotEmpty){
+            if (pressureController.text.isNotEmpty &&
+                serialNumberController.text.isNotEmpty) {
               _toggleFirst();
-            }else{
+            } else {
               show("Error", "All Fields are required");
             }
           },
@@ -430,14 +519,19 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                           color: Colors.grey,
                           borderRadius: BorderRadius.circular(30)),
                     ),
-                    SizedBox(width: 2,),
+                    SizedBox(
+                      width: 2,
+                    ),
                     Container(
                       width: 35,
                       height: 8,
                       decoration: BoxDecoration(
-                          color: green, borderRadius: BorderRadius.circular(30)),
+                          color: green,
+                          borderRadius: BorderRadius.circular(30)),
                     ),
-                    SizedBox(width: 2,),
+                    SizedBox(
+                      width: 2,
+                    ),
                     Container(
                       width: 15,
                       height: 8,
@@ -445,7 +539,9 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                           color: Colors.grey,
                           borderRadius: BorderRadius.circular(30)),
                     ),
-                    SizedBox(width: 2,),
+                    SizedBox(
+                      width: 2,
+                    ),
                     Container(
                       width: 15,
                       height: 8,
@@ -472,7 +568,11 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                               .map((e) => "${e.regNumber}")
                               .toList(),
                           onChanged: (value) {
-                            vehicleId = tyreController.companyVehicles.firstWhere((element) => value == element.regNumber).id??0;
+                            vehicleId = tyreController.companyVehicles
+                                    .firstWhere(
+                                        (element) => value == element.regNumber)
+                                    .id ??
+                                0;
                             print("regNumber onChanged $vehicleId");
                             data.remove('vehicle_id');
                             data.putIfAbsent('vehicle_id', () => vehicleId);
@@ -497,7 +597,8 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                         hintText: "Odometer Reading",
                         onChanged: (value) {
                           data.remove('odometer');
-                          data.putIfAbsent('odometer', () => odometerController.text);
+                          data.putIfAbsent(
+                              'odometer', () => odometerController.text);
                         },
                       ),
                       SizedBox(
@@ -518,16 +619,18 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
           splashColor: Colors.transparent,
           onTap: () async {
             print("press here!");
-            if(odometerController.text.isNotEmpty && vehicleId!=0){
-               print("press here1!");
-              await tyreController.getVehicleStructure(vehicleId: vehicleId).then((value) {
-                 print("press here2");
-                if(value){
+            //  _toggleSecond();
+            if (odometerController.text.isNotEmpty && vehicleId != 0) {
+              print("press here1!");
+              await tyreController
+                  .getVehicleStructure(vehicleId: vehicleId)
+                  .then((value) {
+                print("press here2");
+                if (value) {
                   _toggleSecond();
                 }
               });
-
-            }else{
+            } else {
               show("Error", "All Fields are required");
             }
           },
@@ -618,7 +721,9 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                           color: Colors.grey,
                           borderRadius: BorderRadius.circular(30)),
                     ),
-                    SizedBox(width: 2,),
+                    SizedBox(
+                      width: 2,
+                    ),
                     Container(
                       width: 15,
                       height: 8,
@@ -626,14 +731,19 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                           color: Colors.grey,
                           borderRadius: BorderRadius.circular(30)),
                     ),
-                    SizedBox(width: 2,),
+                    SizedBox(
+                      width: 2,
+                    ),
                     Container(
                       width: 35,
                       height: 8,
                       decoration: BoxDecoration(
-                          color: green, borderRadius: BorderRadius.circular(30)),
+                          color: green,
+                          borderRadius: BorderRadius.circular(30)),
                     ),
-                    SizedBox(width: 2,),
+                    SizedBox(
+                      width: 2,
+                    ),
                     Container(
                       width: 15,
                       height: 8,
@@ -710,15 +820,15 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
             ),
             decoration: BoxDecoration(
               color: (frontLeft ||
-                  frontRight ||
-                  middleLeftOut ||
-                  middleLeftIn ||
-                  middleRightIn ||
-                  middleRightOut ||
-                  backLeftOut ||
-                  backLeftIn ||
-                  backRightIn ||
-                  backRightOut)
+                      frontRight ||
+                      middleLeftOut ||
+                      middleLeftIn ||
+                      middleRightIn ||
+                      middleRightOut ||
+                      backLeftOut ||
+                      backLeftIn ||
+                      backRightIn ||
+                      backRightOut)
                   ? green
                   : Colors.grey,
               boxShadow: [
@@ -795,7 +905,9 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                           color: Colors.grey,
                           borderRadius: BorderRadius.circular(30)),
                     ),
-                    SizedBox(width: 2,),
+                    SizedBox(
+                      width: 2,
+                    ),
                     Container(
                       width: 15,
                       height: 8,
@@ -803,7 +915,9 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                           color: Colors.grey,
                           borderRadius: BorderRadius.circular(30)),
                     ),
-                    SizedBox(width: 2,),
+                    SizedBox(
+                      width: 2,
+                    ),
                     Container(
                       width: 15,
                       height: 8,
@@ -811,12 +925,15 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                           color: Colors.grey,
                           borderRadius: BorderRadius.circular(30)),
                     ),
-                    SizedBox(width: 2,),
+                    SizedBox(
+                      width: 2,
+                    ),
                     Container(
                       width: 35,
                       height: 8,
                       decoration: BoxDecoration(
-                          color: green, borderRadius: BorderRadius.circular(30)),
+                          color: green,
+                          borderRadius: BorderRadius.circular(30)),
                     ),
                   ],
                 ),
@@ -841,12 +958,12 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 10,),
+                      SizedBox(
+                        height: 10,
+                      ),
                       Text(
                         "you want to deploy Tyre # 1234567 to Vehicle ABC DE 1234",
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 18),
+                        style: TextStyle(color: Colors.black, fontSize: 18),
                         textAlign: TextAlign.center,
                       ),
                     ],
@@ -868,7 +985,9 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                 splashColor: Colors.transparent,
                 onTap: () async {
                   // _toggleFourth();
-                  if(_isFirstCompleted && _isSecondCompleted && _isThirdCompleted){
+                  if (_isFirstCompleted &&
+                      _isSecondCompleted &&
+                      _isThirdCompleted) {
                     Get.offAll(TyreHomeScreen(),
                         transition: Transition.leftToRight);
                   }
@@ -901,11 +1020,13 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 20,),
+            SizedBox(
+              height: 20,
+            ),
             Container(
               alignment: Alignment.center,
               child: InkWell(
-                onTap: (){
+                onTap: () {
                   _toggleThird();
                 },
                 child: Container(
@@ -931,7 +1052,7 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                             color: Colors.black.withOpacity(0.3))
                       ],
                       borderRadius:
-                      BorderRadius.circular(ScreenSize.width * 0.1)),
+                          BorderRadius.circular(ScreenSize.width * 0.1)),
                 ),
               ),
             )

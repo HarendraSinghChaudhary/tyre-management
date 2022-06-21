@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:PrimeMetrics/controllers/tyre/tyre_controller.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
@@ -116,7 +118,7 @@ class _SelectStoreCodeScreenState extends State<SelectStoreCodeScreen> {
           splashColor: Colors.transparent,
           onTap: () async {
             if(storeCode!=0){
-              tyreController.onBoardingTyre(data: widget.data,file: widget.file);
+              tyreController.onBoardingTyre(data: widget.data,file: widget.file, isNavigate: false,  );
             }else{
               Get.showSnackbar(GetSnackBar(
                 backgroundColor: greenText,

@@ -54,6 +54,7 @@ class ShadowTextField extends StatelessWidget {
           Expanded(
             child: TextFormField(
               controller: controller,
+              keyboardType: keyboardType,
               decoration: InputDecoration(
                   hintText: hintText,
                   hintStyle: TextStyle(

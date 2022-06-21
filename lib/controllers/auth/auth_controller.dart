@@ -305,6 +305,8 @@ var responsedynamic;
   }
 
   Future<U.UserInfo?> sendEmail(String email, String password) async {
+    print("email: "+email.toString());
+    print("password: "+password.toString());
     sendingEmail(true);
     print(SEND_EMAIL);
     var response = await dio.post(

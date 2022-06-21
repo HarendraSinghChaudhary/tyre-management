@@ -38,6 +38,7 @@ final String CLOSE_TRIP = baseUrl + "/user/trip/close";
 final String USER = baseUrl + "/user";
 
 
+
 final String RECENT_TRIPS = baseUrl + "/user/recenttrip";
 final String DRIVER_LIST = baseUrl + "/user/driverlist";
 final String MANUFACTURER = baseUrl + "/company";
@@ -62,6 +63,7 @@ final String TYRE_ONBOARDING = baseUrl + "/tyre-onboarding";
 final String TYRE_MOUNT = baseUrl + "/tyre-mount";
 final String TYRE_UNMOUNT = baseUrl + "/tyre-unmount";
 final String TYRE_SERIAL_NUMBER = baseUrl + "/get_tyre";
+final String SERIALNUMBER_URL = baseUrl + "/serial_number";
 
 
 
