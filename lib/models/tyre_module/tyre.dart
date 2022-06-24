@@ -69,7 +69,7 @@ class Tyre {
     treadDepth: json["tread_depth"],
     tyreSpecificationId: json["tyre_specification_id"],
     tyreVendorId: json["tyre_vendor_id"],
-    tyrePurchaseDate: DateTime.parse(json["tyre_purchase_date"]),
+    tyrePurchaseDate: DateTime.parse(json["tyre_purchase_date"].toString()),
     tyreWarrantyPeriod: json["tyre_warranty_period"],
     tyreWarrantyExpireDate: DateTime.parse(json["tyre_warranty_expire_date"]),
     tyreWarrantyKms: json["tyre_warranty_kms"],

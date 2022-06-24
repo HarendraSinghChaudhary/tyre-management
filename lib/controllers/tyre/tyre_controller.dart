@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 import 'package:PrimeMetrics/models/tyre_module/tyre_serial_number.dart';
@@ -41,6 +42,9 @@ class TyreController extends BaseController {
   RxList<Vendor> vendorList = RxList();
 
   RxList<Tyre> tyreList = RxList();
+  String tyreId = "";
+  String? thread_depth;
+  String? maximum_psi;
   RxList<Vehicle> companyVehicles = RxList();
   RxList<SerialNumberModel> tyreSerialNumberList = RxList();
 
@@ -211,7 +215,9 @@ class TyreController extends BaseController {
       }
       print("tyreSizeList : ${tyreSizeList.length}");
       tyreSerialNumberList.forEach((element) {
-        print("${element.tyre_serial_number}");
+        print("serial number: ${element.tyre_serial_number}");
+        print("tyrePsi: ${element.tyre_psi}");
+        print("tyreId: ${element.id}");
       });
     } on res.DioError catch (e, trace) {
       print(trace);
@@ -380,9 +386,77 @@ class TyreController extends BaseController {
     }
   }
 
+    tyreMount(
+      {required String id, required String deploy_on, 
+      required String vehicle_id, required String odometer, required String vehicle_axcel,
+      required String tyre_position, required String tyre_status
+      }) async {
+        Map<String, String> map = HashMap();
+        map["tyre_id"] = id.toString();
+        map["deploy_on"] = deploy_on.toString();
+        map["vehicle_id"] = vehicle_id.toString();
+        map["odometer"] = odometer.toString();
+        map["vehicle_axcel"] = vehicle_axcel.toString();
+        map["tyre_position"] = tyre_position.toString();
+        map["tyre_status"] = "2";
+
+
+    print("Data " + id.toString());
+    print("deploy_on " + deploy_on.toString());
+    print("vehicle_id " + vehicle_id.toString());
+    print("odometer " + odometer.toString());
+    print("vehicle_axcel " + vehicle_axcel.toString());
+    print("tyre_position " + tyre_position.toString());
+    print("tyre_status " + "2");
+    
+     print("serial numner onBoarding:" +vehicle_id.toString());
+    var token = "";
+    if (getUserInfo() != null) {
+      token = getUserInfo()!.data!.token.toString();
+    }
+
+    dioo.options.headers['content-Type'] = 'application/json';
+    dioo.options.headers["Authorization"] = "Bearer ${token}";
+
+    try {
+      isSubmitting(true);
+      res.FormData formData = res.FormData.fromMap(map);
+
+      // formData.files.add(MapEntry(
+      //     "tyre_image",
+      //     await res.MultipartFile.fromFile(
+      //       file.path,
+      //       filename: file.name,
+      //     )));
+
+      print("Data: "+formData.toString());
+      res.Response response =
+          await dioo.post("/tyre-mount", data: formData );
+          print("Res "+response.data.toString()+"^^");
+      if (response.statusCode == 200) {
+        print("press here...!");
+        if (response.data['success'] == true) {
+          print("press here...2");
+          isSubmitting(false);
+     
+          Get.offAll(TyreHomeScreen(), transition: Transition.leftToRight);
+     
+  
+        }
+      } else {
+        show("Error", response.data['message']);
+      }
+    } on res.DioError catch (e, trace) {
+      isSubmitting(false);
+      print(trace);
+    }
+  }
+
   onBoardingTyre(
       {required Map<String, dynamic> data, required XFile file, required bool isNavigate,String? serialNumber}) async {
     print("Data " + data.toString());
+
+   
     print("file image:  " + file.toString());
      print("serial numner onBoarding:" +serialNumber.toString());
     var token = "";
@@ -407,6 +481,16 @@ class TyreController extends BaseController {
           await dioo.post("/tyre-onboarding", data: formData);
       if (response.statusCode == 200) {
         if (response.data['data'] != null) {
+
+          print("response: " + response.data['data'].toString());
+
+          tyreId = response.data['data']['id'].toString();
+          thread_depth = response.data['data']['tread_depth'].toString();
+          maximum_psi = response.data['data']['tyre_psi'].toString();
+
+          print("id: "+ tyreId.toString());
+          print("thread_depth: "+ thread_depth.toString());
+          print("maxPsi: "+ maximum_psi.toString());
           isSubmitting(false);
           isNavigate != true ?
           Get.offAll(TyreHomeScreen(), transition: Transition.leftToRight) :

@@ -174,22 +174,28 @@ class SerialNumberModel {
   SerialNumberModel({
     this.id,
     this.tyre_serial_number,
+    this.tyre_psi,
+    this.tread_depth
  
   });
 
   int? id;
-  String? tyre_serial_number;
+  String? tyre_serial_number, tyre_psi, tread_depth;
 
 
   factory SerialNumberModel.fromJson(Map<String, dynamic> json) => SerialNumberModel(
     id: json["id"],
     tyre_serial_number: json["tyre_serial_number"],
+    tyre_psi: json["tyre_psi"],
+    tread_depth: json["tread_depth"]
   
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "tyre_serial_number": tyre_serial_number,
+    "tyre_psi": tyre_psi,
+    "tread_depth": tread_depth
    
   };
 }

@@ -20,6 +20,7 @@ import '../../fuel_master/fuel_master_widgets/searchable_dropdown.dart';
 class MountHomeScreen extends StatefulWidget {
   final int? tyreId;
   final String? serialNumber;
+ 
   const MountHomeScreen({Key? key, this.tyreId, this.serialNumber})
       : super(key: key);
 
@@ -38,6 +39,14 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
 
   final SharedAxisTransitionType _transitionType =
       SharedAxisTransitionType.horizontal;
+   String? tyre_psi;
+   String? tread_depth;
+   String? regNumber;
+   String? axle;
+   String? positionaxle;
+   String? totalUnit;
+
+   String? id ;
 
   late bool _isFirstCompleted;
   late bool _isSecondCompleted;
@@ -89,8 +98,10 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
 
   late Map<String, dynamic> data;
   int vehicleId = 0;
-  int storeCodeSerialNumber = 0;
+  String storeCodeSerialNumber = "";
+  String recordedPsi = "";
 
+  
   //FuelController fuelController=Get.find();
   TyreController tyreController = Get.find();
 
@@ -115,12 +126,27 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
     data = {};
     data.remove('tyre_id');
     data.putIfAbsent('tyre_id', () => widget.tyreId);
+
+    // if(widget.serialNumber.toString().trim() != "null") {
+
+
+
+
+
+    // }
+
+
+
+
   }
+
+
+
 
   @override
   Widget build(BuildContext context) {
     print("serial numner mount:" + widget.serialNumber.toString());
-    print("list length:" +tyreController.tyreSerialNumberList.length.toString());
+    print("tyre id:" +tyreController.tyreId.toString());
     return PageTransitionSwitcher(
       duration: const Duration(milliseconds: 300),
       reverse: !_isFirstCompleted,
@@ -147,6 +173,7 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
   }
 
   firstStep() {
+     print("serial number mount:" + widget.serialNumber.toString());
     return Scaffold(
       backgroundColor: primaryColors,
       key: _scaffoldKey,
@@ -294,6 +321,8 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                       ),
                       ShadowTextField(
                         controller: pressureController,
+                        maxLine: 1,
+                        keyboardType: TextInputType.number,
                         hintText: "Pressure of inflation (PSI)",
                         onChanged: (value) {
                           data.remove('tyre_psi');
@@ -305,7 +334,7 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                         height: 10,
                       ),
 
-                       tyreController.tyreSerialNumberList.length > 0 ? 
+                     widget.serialNumber.toString().trim() == "null" ? 
                       Container(
                         padding: EdgeInsets.all(0),
                         child: SingleChildScrollView(
@@ -322,13 +351,38 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                                       .map((e) => "${e.tyre_serial_number}")
                                       .toList(),
                                   onChanged: (value) {
+
+                                    id = tyreController
+                                            .tyreSerialNumberList
+                                            .firstWhere((element) =>
+                                                value ==
+                                                element.tyre_serial_number.toString()).id.toString();
+
+
                                     storeCodeSerialNumber = tyreController
                                             .tyreSerialNumberList
                                             .firstWhere((element) =>
                                                 value ==
-                                                element.tyre_serial_number)
-                                            .id ??
-                                        0;
+                                                element.tyre_serial_number.toString()).tyre_serial_number.toString();
+
+                                     tyre_psi =  tyreController
+                                            .tyreSerialNumberList
+                                            .firstWhere((element) =>
+                                                value ==
+                                                element.tyre_serial_number).tyre_psi.toString();  
+
+
+                                     tread_depth =  tyreController
+                                            .tyreSerialNumberList
+                                            .firstWhere((element) =>
+                                                value ==
+                                                element.tyre_serial_number).tread_depth.toString();             
+
+
+                                     print("tyrePsi: "+tyre_psi.toString());  
+                                     print("tread depth: "+tread_depth.toString());  
+                                     print("tyre id: "+id.toString());                 
+                                          
                                     // widget.data.remove('store');
                                     // widget.data.putIfAbsent('store', () => storeCodeSerialNumber);
                                   },
@@ -347,13 +401,16 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                             ],
                           ),
                         ),
-                      ): Container() ,
+                      ): Container(),
+                      // : Container() ,
 
                       // ignore: unrelated_type_equality_checks
-                      widget.serialNumber.toString != "null" || widget.serialNumber.toString != ""?
+                      widget.serialNumber.toString().trim() != "null"?
 
                       ShadowTextField(
                         enabled: false,
+                         maxLine: 1,
+                        keyboardType: TextInputType.number,
                         controller: serialNumberController,
                         hintText: "Tyre Serial Number",
                         onChanged: (value) {
@@ -361,6 +418,7 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                           // data.putIfAbsent('tyre_psi', () => pressureController.text);
                         },
                       ): Container(),
+                      // : Container(),
                       SizedBox(
                         height: 30,
                       ),
@@ -393,6 +451,7 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                                         setState(
                                           () {
                                             value = int.parse(index.toString());
+                                            print("value: "+value.toString());
                                           },
                                         );
                                       },
@@ -423,6 +482,8 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
         child: InkWell(
           splashColor: Colors.transparent,
           onTap: () async {
+
+            recordedPsi = pressureController.text.toString();
             data.remove('deploy_on');
             data.putIfAbsent('deploy_on', () => deployOn[value]);
             if (pressureController.text.isNotEmpty &&
@@ -573,7 +634,15 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                                         (element) => value == element.regNumber)
                                     .id ??
                                 0;
+
+
+
+                             regNumber =  tyreController.companyVehicles
+                                    .firstWhere(
+                                        (element) => value == element.regNumber).regNumber.toString();
+                                    
                             print("regNumber onChanged $vehicleId");
+                            print("regNumber  $regNumber");
                             data.remove('vehicle_id');
                             data.putIfAbsent('vehicle_id', () => vehicleId);
                           },
@@ -593,6 +662,8 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                         height: 10,
                       ),
                       ShadowTextField(
+                         maxLine: 1,
+                        keyboardType: TextInputType.number,
                         controller: odometerController,
                         hintText: "Odometer Reading",
                         onChanged: (value) {
@@ -961,10 +1032,37 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                       SizedBox(
                         height: 10,
                       ),
-                      Text(
-                        "you want to deploy Tyre # 1234567 to Vehicle ABC DE 1234",
-                        style: TextStyle(color: Colors.black, fontSize: 18),
-                        textAlign: TextAlign.center,
+                      Container(
+                        width: ScreenSize.width * 1,
+                        child: Column(
+                          children: [
+                            Text(
+                              "you want to deploy Tyre #" + storeCodeSerialNumber.toString() +" to Vehicle "+ regNumber.toString() + " to postion "
+
+                              ,
+                              style: TextStyle(color: Colors.black, fontSize: 18),
+                              textAlign: TextAlign.center,
+                            ),
+
+                                    Text(
+                              
+                              totalUnit.toString() == "1LO" ? "1 Left Outer" : 
+                              totalUnit.toString() == "1RO" ? "1 Right Outer" :
+                              totalUnit.toString() == "2LO" ? "2 Left Outer" :
+                              totalUnit.toString() == "2LI" ? "2 Left Inner" :
+                              totalUnit.toString() == "2RO" ? "2 Right Outer" :
+                              totalUnit.toString() == "2RI" ? "2 Right Inner" :
+                              totalUnit.toString() == "3LO" ? "3 Left Outer" :
+                              totalUnit.toString() == "3LI" ? "3 Left Inner" :
+                              totalUnit.toString() == "3RO" ? "3 Right Outer" :
+                              totalUnit.toString() == "3RI" ? "3 Right Inner" : ""
+
+                              ,
+                              style: TextStyle(color: Colors.black, fontSize: 18),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -985,12 +1083,21 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                 splashColor: Colors.transparent,
                 onTap: () async {
                   // _toggleFourth();
-                  if (_isFirstCompleted &&
-                      _isSecondCompleted &&
-                      _isThirdCompleted) {
-                    Get.offAll(TyreHomeScreen(),
-                        transition: Transition.leftToRight);
-                  }
+                    tyreController.tyreMount(
+                    id: widget.serialNumber.toString().trim() == "null" ? id.toString() : tyreController.tyreId.toString(), 
+                    deploy_on: value.toString(), 
+                    vehicle_id: regNumber.toString(), 
+                    odometer: odometerController.text.toString().trim(), 
+                    vehicle_axcel: axle.toString(), 
+                    tyre_position: positionaxle.toString(), 
+                    tyre_status: "2");
+                
+                  // if (_isFirstCompleted &&
+                  //     _isSecondCompleted &&
+                  //     _isThirdCompleted) {
+                  //   Get.offAll(TyreHomeScreen(),
+                  //       transition: Transition.leftToRight);
+                  // }
                 },
                 child: Container(
                   alignment: Alignment.center,
@@ -1108,12 +1215,24 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                   SizedBox(
                     height: 5,
                   ),
-                  Text(
-                    "Tyre # 1234567",
-                    style: TextStyle(
-                        fontWeight: FontWeight.normal,
-                        color: Colors.white,
-                        fontSize: 18),
+                  Row(
+                    children: [
+                      Text(
+                        "Tyre # ",
+                        style: TextStyle(
+                            fontWeight: FontWeight.normal,
+                            color: Colors.white,
+                            fontSize: 18),
+                      ),
+
+                         Text(
+                         widget.serialNumber.toString().trim() == "null" ?  storeCodeSerialNumber.toString() : widget.serialNumber.toString(),
+                        style: TextStyle(
+                            fontWeight: FontWeight.normal,
+                            color: Colors.white,
+                            fontSize: 18),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -1152,7 +1271,8 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                               ),
                             ),
                             Text(
-                              "123",
+                              //"123",
+                             widget.serialNumber.toString().trim() == "null" ?  tread_depth.toString() : tyreController.thread_depth.toString(),
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,
@@ -1168,6 +1288,7 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 30),
                         child: Row(
+                          // ignore: prefer_const_literals_to_create_immutables
                           children: [
                             Expanded(
                               child: Text(
@@ -1179,7 +1300,8 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                               ),
                             ),
                             Text(
-                              "123",
+                              // "123",
+                              recordedPsi.toString(),
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,
@@ -1206,7 +1328,9 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                               ),
                             ),
                             Text(
-                              "123",
+                              // "123",
+                              // tyre_psi.toString(),
+                               widget.serialNumber.toString().trim() == "null" ?  tyre_psi.toString() : tyreController.maximum_psi.toString(),
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,
@@ -1303,6 +1427,18 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                               backLeftIn = false;
                               backRightIn = false;
                               backRightOut = false;
+
+                              axle = "1";
+
+                               positionaxle = "LO";
+
+                               totalUnit = axle.toString() + positionaxle.toString();
+
+
+
+
+
+
                             });
                             showBottomSheet(context);
                           },
@@ -1343,6 +1479,12 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                               backLeftIn = false;
                               backRightIn = false;
                               backRightOut = false;
+
+                                axle = "1";
+
+                               positionaxle = "RO";
+
+                                totalUnit = axle.toString() + positionaxle.toString();
                             });
 
                             showBottomSheet(context);
@@ -1385,6 +1527,13 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                               backLeftIn = false;
                               backRightIn = false;
                               backRightOut = false;
+
+                                axle = "2";
+
+                               positionaxle = "LO";
+
+                                totalUnit = axle.toString() + positionaxle.toString();
+
                             });
                             showBottomSheet(context);
                           },
@@ -1412,6 +1561,12 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                               backLeftIn = false;
                               backRightIn = false;
                               backRightOut = false;
+
+                                axle = "2";
+
+                               positionaxle = "LI";
+
+                                totalUnit = axle.toString() + positionaxle.toString();
                             });
                             showBottomSheet(context);
                           },
@@ -1452,6 +1607,14 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                               backLeftIn = false;
                               backRightIn = false;
                               backRightOut = false;
+
+                                axle = "2";
+
+                               positionaxle = "RI";
+
+                                totalUnit = axle.toString() + positionaxle.toString();
+
+
                             });
                             showBottomSheet(context);
                           },
@@ -1479,6 +1642,12 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                               backLeftIn = false;
                               backRightIn = false;
                               backRightOut = false;
+
+                                axle = "2";
+
+                               positionaxle = "RO";
+
+                                totalUnit = axle.toString() + positionaxle.toString();
                             });
                             showBottomSheet(context);
                           },
@@ -1520,6 +1689,11 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                               backLeftIn = false;
                               backRightIn = false;
                               backRightOut = false;
+                                axle = "3";
+
+                              positionaxle = "LO";
+
+                               totalUnit = axle.toString() + positionaxle.toString();
                             });
                             showBottomSheet(context);
                           },
@@ -1547,6 +1721,12 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                               backLeftIn = true;
                               backRightIn = false;
                               backRightOut = false;
+
+                                axle = "3";
+
+                               positionaxle = "LI";
+
+                                totalUnit = axle.toString() + positionaxle.toString();
                             });
                             showBottomSheet(context);
                           },
@@ -1587,6 +1767,12 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                               backLeftIn = false;
                               backRightIn = true;
                               backRightOut = false;
+
+                                axle = "3";
+
+                               positionaxle = "RI";
+
+                                totalUnit = axle.toString() + positionaxle.toString();
                             });
                             showBottomSheet(context);
                           },
@@ -1614,6 +1800,12 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                               backLeftIn = false;
                               backRightIn = false;
                               backRightOut = true;
+
+                                axle = "3";
+
+                              positionaxle = "RO";
+
+                               totalUnit = axle.toString() + positionaxle.toString();
                             });
                             showBottomSheet(context);
                           },
