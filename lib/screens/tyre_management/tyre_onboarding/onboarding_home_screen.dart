@@ -197,7 +197,7 @@ class _OnboardingHomeScreenState extends State<OnboardingHomeScreen> {
 
                       ShadowTextField(
                       maxLine: 1,
-                      keyboardType: TextInputType.number,
+                     
                       
                       hintText: "Enter Serial Number",
                       controller: serialNumnerController,

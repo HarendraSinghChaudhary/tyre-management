@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:io';
+
 import 'package:PrimeMetrics/controllers/tyre/tyre_controller.dart';
 import 'package:PrimeMetrics/models/tyre_module/vehicle_structure.dart';
 import 'package:PrimeMetrics/screens/fuel_master/fuel_master_widgets/shadow_textfield.dart';
@@ -10,6 +12,7 @@ import 'package:PrimeMetrics/utils/toast.dart';
 import 'package:animations/animations.dart';
 
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../controllers/fuel/fuel_controller.dart';
@@ -1032,38 +1035,110 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                       SizedBox(
                         height: 10,
                       ),
-                      Container(
-                        width: ScreenSize.width * 1,
-                        child: Column(
-                          children: [
-                            Text(
-                              "you want to deploy Tyre #" + storeCodeSerialNumber.toString() +" to Vehicle "+ regNumber.toString() + " to postion "
 
-                              ,
-                              style: TextStyle(color: Colors.black, fontSize: 18),
-                              textAlign: TextAlign.center,
-                            ),
+                                        Center(
+                        child: Text.rich(
+                          
+                   
 
-                                    Text(
+                          // ignore: prefer_const_literals_to_create_immutables
+                          TextSpan(
+                            
+                            children: [
                               
-                              totalUnit.toString() == "1LO" ? "1 Left Outer" : 
-                              totalUnit.toString() == "1RO" ? "1 Right Outer" :
-                              totalUnit.toString() == "2LO" ? "2 Left Outer" :
-                              totalUnit.toString() == "2LI" ? "2 Left Inner" :
-                              totalUnit.toString() == "2RO" ? "2 Right Outer" :
-                              totalUnit.toString() == "2RI" ? "2 Right Inner" :
-                              totalUnit.toString() == "3LO" ? "3 Left Outer" :
-                              totalUnit.toString() == "3LI" ? "3 Left Inner" :
-                              totalUnit.toString() == "3RO" ? "3 Right Outer" :
-                              totalUnit.toString() == "3RI" ? "3 Right Inner" : ""
 
-                              ,
-                              style: TextStyle(color: Colors.black, fontSize: 18),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
+                        
+
+
+                           TextSpan(
+                            text: "you want to deploy Tyre #",
+                            style:  TextStyle(color: Colors.black, fontSize: 18, ),
+                           
+                          ),
+
+                          TextSpan(
+                            text:  widget.serialNumber.toString().trim() == "null" ?  storeCodeSerialNumber.toString() : widget.serialNumber.toString(),
+                                 
+                           style:  TextStyle(color: Colors.black, fontSize: 18),
+                          ),
+
+                          TextSpan(
+                            text:  " to Vehicle "+
+                                 regNumber.toString() + " to postion ",
+                           style:  TextStyle(color: Colors.black, fontSize: 18),
+                          ),
+
+
+                           TextSpan(
+                            text:  totalUnit.toString() == "1LO" ? "1 Left Outer" : 
+                          totalUnit.toString() == "1RO" ? "1 Right Outer" :
+                          totalUnit.toString() == "2LO" ? "2 Left Outer" :
+                          totalUnit.toString() == "2LI" ? "2 Left Inner" :
+                          totalUnit.toString() == "2RO" ? "2 Right Outer" :
+                          totalUnit.toString() == "2RI" ? "2 Right Inner" :
+                          totalUnit.toString() == "3LO" ? "3 Left Outer" :
+                          totalUnit.toString() == "3LI" ? "3 Left Inner" :
+                          totalUnit.toString() == "3RO" ? "3 Right Outer" :
+                          totalUnit.toString() == "3RI" ? "3 Right Inner" : "" ,
+                           style:  TextStyle(color: Colors.black, fontSize: 18),
+                          )
+
+
+
+
+                          ]),
+
+
                         ),
                       ),
+                      // Container(
+                      //   width: ScreenSize.width * 1,
+                      //   child: Column(
+                      //     children: [
+                      //       Container(
+                            
+                      //         child: Row(
+                      //           children: [
+                      //             Text(
+                      //               "you want to deploy Tyre #"
+                      //               ,
+                      //               style: TextStyle(color: Colors.black, fontSize: 18),
+                      //               textAlign: TextAlign.center,
+                      //             ),
+
+                      //               Text(
+                                    
+                      //               widget.serialNumber.toString().trim() == "null" ?  storeCodeSerialNumber.toString() : widget.serialNumber.toString() +" to Vehicle "+
+                      //                regNumber.toString() + " to postion "
+
+                      //               ,
+                      //               style: TextStyle(color: Colors.black, fontSize: 18),
+                      //               textAlign: TextAlign.center,
+                      //             ),
+                      //           ],
+                      //         ),
+                      //       ),
+
+                      //               Text(
+                              
+                      //         totalUnit.toString() == "1LO" ? "1 Left Outer" : 
+                      //         totalUnit.toString() == "1RO" ? "1 Right Outer" :
+                      //         totalUnit.toString() == "2LO" ? "2 Left Outer" :
+                      //         totalUnit.toString() == "2LI" ? "2 Left Inner" :
+                      //         totalUnit.toString() == "2RO" ? "2 Right Outer" :
+                      //         totalUnit.toString() == "2RI" ? "2 Right Inner" :
+                      //         totalUnit.toString() == "3LO" ? "3 Left Outer" :
+                      //         totalUnit.toString() == "3LI" ? "3 Left Inner" :
+                      //         totalUnit.toString() == "3RO" ? "3 Right Outer" :
+                      //         totalUnit.toString() == "3RI" ? "3 Right Inner" : ""
+
+                      //         ,
+                      //         style: TextStyle(color: Colors.black, fontSize: 18),
+                      //         textAlign: TextAlign.center,
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),
@@ -1077,6 +1152,16 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+
+           tyreController.isSubmitting.value
+                  ? Align(
+                      alignment: Alignment.center,
+                      child: Platform.isAndroid
+                          ? CircularProgressIndicator()
+                          : CupertinoActivityIndicator())
+                  :
+
+
             Container(
               alignment: Alignment.center,
               child: InkWell(

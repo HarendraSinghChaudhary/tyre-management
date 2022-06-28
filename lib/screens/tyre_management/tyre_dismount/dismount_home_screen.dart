@@ -1,6 +1,14 @@
+// ignore_for_file: prefer_const_constructors, non_constant_identifier_names
+
+import 'dart:io';
+
+import 'package:PrimeMetrics/controllers/tyre/tyre_controller.dart';
+import 'package:PrimeMetrics/models/tyre_module/vehicle_structure.dart';
 import 'package:PrimeMetrics/utils/images.dart';
+import 'package:PrimeMetrics/utils/toast.dart';
 import 'package:animations/animations.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -18,6 +26,25 @@ class DismountHomeScreen extends StatefulWidget {
 }
 
 class _DismountHomeScreenState extends State<DismountHomeScreen> {
+  int vehicleId = 0;
+  String? tyre_psi;
+  String? tread_depth;
+  String? regNumber;
+  String? axle;
+  String? positionaxle;
+  String? totalUnit;
+
+  String? reason;
+
+  // ignore: prefer_final_fields
+  String _1LO = "1LO";
+
+  String? id;
+
+  //  Map<String, dynamic> data;
+
+  VehecleStructure selectedModel = VehecleStructure();
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   late bool _isFirstCompleted;
   late bool _isSecondCompleted;
@@ -27,6 +54,7 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
       SharedAxisTransitionType.horizontal;
 
   final TextEditingController odometerController = TextEditingController();
+  TyreController tyreController = Get.find();
   int value = 0;
   List deployOn = ["Truck", "Trailer"];
   List images = [truck, trailer];
@@ -49,8 +77,16 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
     });
   }
 
+  void _toggleFourth() {
+    setState(() {
+      _isFourthCompleted = !_isFourthCompleted;
+    });
+
+    print("press here step 4" + _isFourthCompleted.toString());
+  }
+
   bool isCheckboxSelected = false;
-  int selectedCard=0;
+  int selectedCard = 0;
 
   bool frontLeft = false,
       frontRight = false,
@@ -71,6 +107,12 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
     _isSecondCompleted = false;
     _isThirdCompleted = false;
     _isFourthCompleted = false;
+
+    tyreController.vehicleStructureList;
+    tyreMgmt();
+
+    tyreController.dismountReason();
+    tyreController.dismountReasonList;
   }
 
   @override
@@ -90,7 +132,9 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
           transitionType: _transitionType,
         );
       },
-      child: _isSecondCompleted
+      child: _isThirdCompleted
+          ? fourthStep()
+          : _isSecondCompleted
               ? thirdStep()
               : _isFirstCompleted
                   ? secondStep()
@@ -173,6 +217,16 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                           color: Colors.grey,
                           borderRadius: BorderRadius.circular(30)),
                     ),
+                    SizedBox(
+                      width: 2,
+                    ),
+                    Container(
+                      width: 15,
+                      height: 8,
+                      decoration: BoxDecoration(
+                          color: Colors.grey,
+                          borderRadius: BorderRadius.circular(30)),
+                    ),
                   ],
                 ),
               ),
@@ -229,12 +283,30 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                         height: 30,
                       ),
                       SearchableDropdown(
+                        withIcon: false,
                         enabled: true,
-                        hintText: "Registration Number",
-                        listItems: ['Number 1', 'Number 2']
-                            .map((e) => "${e}")
+                        hintText: "Select Registration Number",
+                        listItems: tyreController.companyVehicles
+                            .map((e) => "${e.regNumber}")
                             .toList(),
-                        onChanged: (value) {},
+                        onChanged: (value) {
+                          vehicleId = tyreController.companyVehicles
+                                  .firstWhere(
+                                      (element) => value == element.regNumber)
+                                  .id ??
+                              0;
+
+                          regNumber = tyreController.companyVehicles
+                              .firstWhere(
+                                  (element) => value == element.regNumber)
+                              .regNumber
+                              .toString();
+
+                          print("regNumber onChanged $vehicleId");
+                          print("regNumber  $regNumber");
+                          // data.remove('vehicle_id');
+                          // data.putIfAbsent('vehicle_id', () => vehicleId);
+                        },
                         searchFieldProps: TextFieldProps(
                           decoration: InputDecoration(
                             suffixIcon: Icon(
@@ -245,12 +317,13 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                             border: InputBorder.none,
                           ),
                         ),
-                        withIcon: false,
                       ),
                       SizedBox(
                         height: 10,
                       ),
                       ShadowTextField(
+                        maxLine: 1,
+                        keyboardType: TextInputType.number,
                         controller: odometerController,
                         hintText: "Odometer Reading",
                         onChanged: (value) {},
@@ -272,7 +345,23 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
         child: InkWell(
           splashColor: Colors.transparent,
           onTap: () async {
-            _toggleFirst();
+            print("press here!");
+            //  _toggleSecond();
+            if (odometerController.text.isNotEmpty && vehicleId != 0) {
+              print("press here1!");
+              await tyreController
+                  .getVehicleStructure(vehicleId: vehicleId)
+                  .then((value) {
+                print("press here2");
+                if (value) {
+                  _toggleFirst();
+                }
+              });
+            } else {
+              show("Error", "All Fields are required");
+            }
+
+            tyreMgmt();
           },
           child: Container(
             alignment: Alignment.center,
@@ -306,6 +395,7 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
   }
 
   secondStep() {
+    print("length: " + tyreController.vehicleStructureList.length.toString());
     return Scaffold(
       backgroundColor: primaryColors,
       key: _scaffoldKey,
@@ -381,6 +471,16 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                           color: Colors.grey,
                           borderRadius: BorderRadius.circular(30)),
                     ),
+                    SizedBox(
+                      width: 2,
+                    ),
+                    Container(
+                      width: 15,
+                      height: 8,
+                      decoration: BoxDecoration(
+                          color: Colors.grey,
+                          borderRadius: BorderRadius.circular(30)),
+                    ),
                   ],
                 ),
               ),
@@ -436,7 +536,6 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                 backRightOut) {
               _toggleSecond();
             }
-
           },
           child: Container(
             alignment: Alignment.center,
@@ -451,15 +550,15 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
             ),
             decoration: BoxDecoration(
               color: (frontLeft ||
-                  frontRight ||
-                  middleLeftOut ||
-                  middleLeftIn ||
-                  middleRightIn ||
-                  middleRightOut ||
-                  backLeftOut ||
-                  backLeftIn ||
-                  backRightIn ||
-                  backRightOut)
+                      frontRight ||
+                      middleLeftOut ||
+                      middleLeftIn ||
+                      middleRightIn ||
+                      middleRightOut ||
+                      backLeftOut ||
+                      backLeftIn ||
+                      backRightIn ||
+                      backRightOut)
                   ? green
                   : Colors.grey,
               boxShadow: [
@@ -479,150 +578,6 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
       ),
     );
   }
-
-  // thirdStep() {
-  //   return Scaffold(
-  //     backgroundColor: primaryColors,
-  //     key: _scaffoldKey,
-  //     body: SingleChildScrollView(
-  //       physics: BouncingScrollPhysics(),
-  //       child: Container(
-  //         color: primaryColors,
-  //         child: Column(
-  //           crossAxisAlignment: CrossAxisAlignment.start,
-  //           children: [
-  //             Container(
-  //               height: 100,
-  //               alignment: Alignment.bottomLeft,
-  //               padding: EdgeInsets.only(left: 20),
-  //               child: Row(
-  //                 children: [
-  //                   InkWell(
-  //                     onTap: () {
-  //                       // Get.back();
-  //                       _toggleSecond();
-  //                     },
-  //                     child: CircleAvatar(
-  //                       backgroundColor: green,
-  //                       radius: 18,
-  //                       child: Icon(
-  //                         Icons.arrow_back,
-  //                         color: Colors.white,
-  //                       ),
-  //                     ),
-  //                   ),
-  //                   SizedBox(
-  //                     width: 20.0,
-  //                   ),
-  //                   Text(
-  //                     "Tyre Position",
-  //                     style: TextStyle(
-  //                         fontWeight: FontWeight.w500,
-  //                         color: Colors.black,
-  //                         fontSize: 22),
-  //                   ),
-  //                 ],
-  //               ),
-  //             ),
-  //             Container(
-  //               margin: EdgeInsets.only(top: 30),
-  //               child: Row(
-  //                 mainAxisAlignment: MainAxisAlignment.center,
-  //                 children: [
-  //                   Container(
-  //                     width: 15,
-  //                     height: 8,
-  //                     decoration: BoxDecoration(
-  //                         color: Colors.grey,
-  //                         borderRadius: BorderRadius.circular(30)),
-  //                   ),
-  //                   SizedBox(
-  //                     width: 2,
-  //                   ),
-  //                   Container(
-  //                     width: 15,
-  //                     height: 8,
-  //                     decoration: BoxDecoration(
-  //                         color: Colors.grey,
-  //                         borderRadius: BorderRadius.circular(30)),
-  //                   ),
-  //                   SizedBox(
-  //                     width: 2,
-  //                   ),
-  //                   Container(
-  //                     width: 35,
-  //                     height: 8,
-  //                     decoration: BoxDecoration(
-  //                         color: green,
-  //                         borderRadius: BorderRadius.circular(30)),
-  //                   ),
-  //                   SizedBox(
-  //                     width: 2,
-  //                   ),
-  //                   Container(
-  //                     width: 15,
-  //                     height: 8,
-  //                     decoration: BoxDecoration(
-  //                         color: Colors.grey,
-  //                         borderRadius: BorderRadius.circular(30)),
-  //                   )
-  //                 ],
-  //               ),
-  //             ),
-  //             Container(
-  //               padding: EdgeInsets.symmetric(horizontal: 30),
-  //               child: SingleChildScrollView(
-  //                 physics: NeverScrollableScrollPhysics(),
-  //                 child: Column(
-  //                   crossAxisAlignment: CrossAxisAlignment.start,
-  //                   children: [
-  //                     tyreDetailView(0),
-  //                   ],
-  //                 ),
-  //               ),
-  //             )
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //     bottomNavigationBar: Container(
-  //       height: 100,
-  //       alignment: Alignment.center,
-  //       child: InkWell(
-  //         splashColor: Colors.transparent,
-  //         onTap: () async {
-  //           _toggleThird();
-  //         },
-  //         child: Container(
-  //           alignment: Alignment.center,
-  //           width: ScreenSize.width * 0.82,
-  //           height: ScreenSize.height * 0.065,
-  //           child: Text(
-  //             "Dismount",
-  //             style: TextStyle(
-  //                 fontWeight: FontWeight.normal,
-  //                 color: Colors.white,
-  //                 fontSize: 18),
-  //           ),
-  //           decoration: BoxDecoration(
-  //             color: green,
-  //             boxShadow: [
-  //               BoxShadow(
-  //                 blurRadius: 3,
-  //                 spreadRadius: 1.2,
-  //                 offset: Offset(0, 3),
-  //                 color: Colors.black.withOpacity(0.3),
-  //               )
-  //             ],
-  //             borderRadius: BorderRadius.circular(
-  //               ScreenSize.width * 0.1,
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
 
   thirdStep() {
     return Scaffold(
@@ -659,7 +614,7 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                       width: 20.0,
                     ),
                     Text(
-                      "Select Store Code",
+                      "Select Dismount Reason",
                       style: TextStyle(
                           fontWeight: FontWeight.w500,
                           color: Colors.black,
@@ -700,6 +655,16 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                           color: green,
                           borderRadius: BorderRadius.circular(30)),
                     ),
+                    SizedBox(
+                      width: 2,
+                    ),
+                    Container(
+                      width: 15,
+                      height: 8,
+                      decoration: BoxDecoration(
+                          color: Colors.grey,
+                          borderRadius: BorderRadius.circular(30)),
+                    ),
                   ],
                 ),
               ),
@@ -710,25 +675,82 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SearchableDropdown(
-                        enabled: true,
-                        hintText: "Reason to Dismount",
-                        listItems: ['Reason 1', 'Reason 2']
-                            .map((e) => "${e}")
-                            .toList(),
-                        onChanged: (value) {},
-                        searchFieldProps: TextFieldProps(
-                          decoration: InputDecoration(
-                            suffixIcon: Icon(
-                              Icons.keyboard_arrow_down,
-                              color: Colors.black,
+                      ObxValue((RxList list) {
+                        return SearchableDropdown(
+                          withIcon: false,
+                          enabled: true,
+                          hintText: "Reason to Dismount",
+                          listItems: tyreController.dismountReasonList
+                              .map((e) => "${e.dismountResion}")
+                              .toList(),
+                          onChanged: (value) {
+                            id = tyreController.dismountReasonList
+                                .firstWhere((element) =>
+                                    value == element.dismountResion.toString())
+                                .id
+                                .toString();
+
+                            reason = tyreController.dismountReasonList
+                                .firstWhere((element) =>
+                                    value == element.dismountResion.toString())
+                                .dismountResion
+                                .toString();
+
+                            print("id: " + id.toString());
+                            print("reason depth: " + reason.toString());
+
+                            // widget.data.remove('store');
+                            // widget.data.putIfAbsent('store', () => storeCodeSerialNumber);
+                          },
+                          searchFieldProps: TextFieldProps(
+                            decoration: InputDecoration(
+                              suffixIcon: Icon(
+                                Icons.keyboard_arrow_down,
+                                color: Colors.black,
+                              ),
+                              hintText: "Search",
+                              border: InputBorder.none,
                             ),
-                            hintText: "Search",
-                            border: InputBorder.none,
                           ),
-                        ),
-                        withIcon: false,
-                      ),
+                        );
+                      }, tyreController.dismountReasonList),
+
+                      // SearchableDropdown(
+                      //   withIcon: false,
+                      //   enabled: true,
+                      //   hintText: "Reason to Dismount",
+                      //   listItems: tyreController.dismountReasonList
+                      //       .map((e) => "${e.dismountResion}")
+                      //       .toList(),
+                      //   onChanged: (value) {
+                      //     id  = tyreController.dismountReasonList
+                      //             .firstWhere(
+                      //                 (element) => value == element.id)
+                      //             .id ??
+                      //         0;
+
+                      //     reason = tyreController.dismountReasonList
+                      //         .firstWhere(
+                      //             (element) => value == element.dismountResion)
+                      //         .dismountResion
+                      //         .toString();
+
+                      //     print("reason onChanged $id");
+                      //     print("reason  $reason");
+                      //     // data.remove('vehicle_id');
+                      //     // data.putIfAbsent('vehicle_id', () => vehicleId);
+                      //   },
+                      //   searchFieldProps: TextFieldProps(
+                      //     decoration: InputDecoration(
+                      //       suffixIcon: Icon(
+                      //         Icons.keyboard_arrow_down,
+                      //         color: Colors.black,
+                      //       ),
+                      //       hintText: "Search",
+                      //       border: InputBorder.none,
+                      //     ),
+                      //   ),
+                      // ),
                       SizedBox(
                         height: 10,
                       ),
@@ -751,64 +773,274 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
         ),
       ),
       bottomNavigationBar: Container(
+        height: 100,
+        alignment: Alignment.center,
+        child: InkWell(
+          splashColor: Colors.transparent,
+          onTap: () async {
+            print("press..one");
+
+            _toggleThird();
+          },
+          child: Container(
+            alignment: Alignment.center,
+            width: ScreenSize.width * 0.82,
+            height: ScreenSize.height * 0.065,
+            child: Text(
+              "Next",
+              style: TextStyle(
+                  fontWeight: FontWeight.normal,
+                  color: Colors.white,
+                  fontSize: 18),
+            ),
+            decoration: BoxDecoration(
+              color: (frontLeft ||
+                      frontRight ||
+                      middleLeftOut ||
+                      middleLeftIn ||
+                      middleRightIn ||
+                      middleRightOut ||
+                      backLeftOut ||
+                      backLeftIn ||
+                      backRightIn ||
+                      backRightOut)
+                  ? green
+                  : Colors.grey,
+              boxShadow: [
+                BoxShadow(
+                  blurRadius: 3,
+                  spreadRadius: 1.2,
+                  offset: Offset(0, 3),
+                  color: Colors.black.withOpacity(0.3),
+                )
+              ],
+              borderRadius: BorderRadius.circular(
+                ScreenSize.width * 0.1,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  fourthStep() {
+    return Scaffold(
+      backgroundColor: primaryColors,
+      key: _scaffoldKey,
+      body: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        child: Container(
+          color: primaryColors,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                height: 100,
+                alignment: Alignment.bottomLeft,
+                padding: EdgeInsets.only(left: 20),
+                child: Row(
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        // Get.back();
+                        _toggleThird();
+                      },
+                      child: CircleAvatar(
+                        backgroundColor: green,
+                        radius: 18,
+                        child: Icon(
+                          Icons.arrow_back,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 20.0,
+                    ),
+                    Text(
+                      "Confirmation",
+                      style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black,
+                          fontSize: 22),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 30),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 15,
+                      height: 8,
+                      decoration: BoxDecoration(
+                          color: Colors.grey,
+                          borderRadius: BorderRadius.circular(30)),
+                    ),
+                    SizedBox(
+                      width: 2,
+                    ),
+                    Container(
+                      width: 15,
+                      height: 8,
+                      decoration: BoxDecoration(
+                          color: Colors.grey,
+                          borderRadius: BorderRadius.circular(30)),
+                    ),
+                    SizedBox(
+                      width: 2,
+                    ),
+                    Container(
+                      width: 15,
+                      height: 8,
+                      decoration: BoxDecoration(
+                          color: Colors.grey,
+                          borderRadius: BorderRadius.circular(30)),
+                    ),
+                    SizedBox(
+                      width: 2,
+                    ),
+                    Container(
+                      width: 35,
+                      height: 8,
+                      decoration: BoxDecoration(
+                          color: green,
+                          borderRadius: BorderRadius.circular(30)),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.all(30),
+                child: SingleChildScrollView(
+                  physics: NeverScrollableScrollPhysics(),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Are you sure?",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                                fontSize: 24),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Center(
+                        child: Text.rich(
+                          // ignore: prefer_const_literals_to_create_immutables
+                          TextSpan(children: [
+                            TextSpan(
+                              text: "you want to dismount Tyre #",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 18,
+                              ),
+                            ),
+                            TextSpan(
+                              text: selectedModel.tyre_serial_number.toString(),
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 18),
+                            ),
+                            TextSpan(
+                              text: " from Vehicle " +
+                                  regNumber.toString() +
+                                  " from position ",
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 18),
+                            ),
+                            TextSpan(
+                              text: selectedModel.tyre_axel_id.toString() +
+                                  selectedModel.tyre_position.toString(),
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 18),
+                            )
+                          ]),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: Container(
         height: 200,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              alignment: Alignment.center,
-              child: InkWell(
-                splashColor: Colors.transparent,
-                onTap: () async {
-                  // _toggleFourth();
-                  if (_isFirstCompleted &&
-                      _isSecondCompleted &&
-                      _isThirdCompleted) {
-                    Get.offAll(TyreHomeScreen(),
-                        transition: Transition.leftToRight);
-                  }
-                },
-                child: Container(
-                  alignment: Alignment.center,
-                  width: ScreenSize.width * 0.82,
-                  height: ScreenSize.height * 0.065,
-                  child: Text(
-                    "Dismount",
-                    style: TextStyle(
-                        fontWeight: FontWeight.normal,
-                        color: Colors.white,
-                        fontSize: 18),
-                  ),
-                  decoration: BoxDecoration(
-                    color: green,
-                    boxShadow: [
-                      BoxShadow(
-                        blurRadius: 3,
-                        spreadRadius: 1.2,
-                        offset: Offset(0, 3),
-                        color: Colors.black.withOpacity(0.3),
-                      )
-                    ],
-                    borderRadius: BorderRadius.circular(
-                      ScreenSize.width * 0.1,
+            tyreController.isSubmitting.value
+                ? Align(
+                    alignment: Alignment.center,
+                    child: Platform.isAndroid
+                        ? CircularProgressIndicator()
+                        : CupertinoActivityIndicator())
+                : Container(
+                    alignment: Alignment.center,
+                    child: InkWell(
+                      splashColor: Colors.transparent,
+                      onTap: () async {
+                        tyreController.tyreUnMount(
+                            vehicle_id: vehicleId.toString(),
+                            odometer: odometerController.text.toString().trim(),
+                            tyre_id: selectedModel.id.toString(),
+                            dismount_resion: reason.toString());
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: ScreenSize.width * 0.82,
+                        height: ScreenSize.height * 0.065,
+                        child: Text(
+                          "DISMOUNT",
+                          style: TextStyle(
+                              fontWeight: FontWeight.normal,
+                              color: Colors.white,
+                              fontSize: 18),
+                        ),
+                        decoration: BoxDecoration(
+                          color: green,
+                          boxShadow: [
+                            BoxShadow(
+                              blurRadius: 3,
+                              spreadRadius: 1.2,
+                              offset: Offset(0, 3),
+                              color: Colors.black.withOpacity(0.3),
+                            )
+                          ],
+                          borderRadius: BorderRadius.circular(
+                            ScreenSize.width * 0.1,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
-            ),
             SizedBox(
               height: 20,
             ),
             Container(
               alignment: Alignment.center,
               child: InkWell(
-                onTap: () {},
+                onTap: () {
+                  _toggleThird();
+                },
                 child: Container(
                   alignment: Alignment.center,
                   width: ScreenSize.width * 0.82,
                   height: ScreenSize.height * 0.065,
                   child: Text(
-                    "Cancel",
+                    "Change Configuration",
                     style: TextStyle(
                       fontWeight: FontWeight.normal,
                       color: green,
@@ -882,12 +1114,23 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                   SizedBox(
                     height: 5,
                   ),
-                  Text(
-                    "Tyre # 1234567",
-                    style: TextStyle(
-                        fontWeight: FontWeight.normal,
-                        color: Colors.white,
-                        fontSize: 18),
+                  Row(
+                    children: [
+                      Text(
+                        "Tyre # ",
+                        style: TextStyle(
+                            fontWeight: FontWeight.normal,
+                            color: Colors.white,
+                            fontSize: 18),
+                      ),
+                      Text(
+                        selectedModel.tyre_serial_number.toString(),
+                        style: TextStyle(
+                            fontWeight: FontWeight.normal,
+                            color: Colors.white,
+                            fontSize: 18),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -926,7 +1169,8 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                               ),
                             ),
                             Text(
-                              "123",
+                              //"123",
+                              selectedModel.tread_depth.toString(),
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,
@@ -953,7 +1197,9 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                               ),
                             ),
                             Text(
-                              "123",
+                              // "123",
+
+                              selectedModel.tyre_psi.toString(),
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,
@@ -1066,8 +1312,37 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                         GestureDetector(
                           onTap: () {
                             setState(() {
-                              frontLeft = true;
+                              print("1 Left outer");
 
+                              positionaxle = "1LO";
+
+                              bool exist = false;
+                              tyreController.vehicleStructureList
+                                  .forEach((element) {
+                                if (element.tyre_position == "LO" &&
+                                    element.tyre_axel_id == "1") {
+                                  exist = true;
+                                }
+                              });
+                              if (exist) {
+                                selectedModel = tyreController
+                                    .vehicleStructureList
+                                    .firstWhere((element) =>
+                                        element.tyre_axel_id == "1" &&
+                                        element.tyre_position == "LO");
+
+                                        frontLeft = true;
+
+                                showBottomSheet(context);
+                              } else {
+                              Get.snackbar("No Tyre Found!", "");
+                              }
+                              print("selected model: " +
+                                  selectedModel.toString());
+
+                              
+
+                              print(selectedModel.id);
                               frontRight = false;
                               middleLeftOut = false;
                               middleLeftIn = false;
@@ -1078,7 +1353,6 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                               backRightIn = false;
                               backRightOut = false;
                             });
-                            showBottomSheet(context);
                           },
                           child: Container(
                             height: frontLeft ? 60 : 40,
@@ -1107,8 +1381,34 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                         GestureDetector(
                           onTap: () {
                             setState(() {
+                              positionaxle = "1RO";
+
+                              bool exist = false;
+                              tyreController.vehicleStructureList
+                                  .forEach((element) {
+                                if (element.tyre_position == "RO" &&
+                                    element.tyre_axel_id == "1") {
+                                  exist = true;
+                                }
+                              });
+                              if (exist) {
+                                selectedModel = tyreController
+                                    .vehicleStructureList
+                                    .firstWhere((element) =>
+                                        element.tyre_axel_id == "1" &&
+                                        element.tyre_position == "RO");
+
+                                         frontRight = true;
+
+                                showBottomSheet(context);
+                              } else {
+                              Get.snackbar("No Tyre Found!", "");
+                              }
+                              print("selected model: " +
+                                  selectedModel.toString());
+
                               frontLeft = false;
-                              frontRight = true;
+                             
                               middleLeftOut = false;
                               middleLeftIn = false;
                               middleRightIn = false;
@@ -1119,7 +1419,7 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                               backRightOut = false;
                             });
 
-                            showBottomSheet(context);
+                  
                           },
                           child: Container(
                             height: frontRight ? 60 : 40, //60
@@ -1149,9 +1449,33 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                         GestureDetector(
                           onTap: () {
                             setState(() {
+                              bool exist = false;
+                              tyreController.vehicleStructureList
+                                  .forEach((element) {
+                                if (element.tyre_position == "LO" &&
+                                    element.tyre_axel_id == "2") {
+                                  exist = true;
+                                }
+                              });
+                              if (exist) {
+                                selectedModel = tyreController
+                                    .vehicleStructureList
+                                    .firstWhere((element) =>
+                                        element.tyre_axel_id == "2" &&
+                                        element.tyre_position == "LO");
+
+                                         middleLeftOut = true;
+
+                                showBottomSheet(context);
+                              } else {
+                              Get.snackbar("No Tyre Found!", "");
+                              }
+                              print("selected model: " +
+                                  selectedModel.toString());
+
                               frontLeft = false;
                               frontRight = false;
-                              middleLeftOut = true;
+                             
                               middleLeftIn = false;
                               middleRightIn = false;
                               middleRightOut = false;
@@ -1160,7 +1484,7 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                               backRightIn = false;
                               backRightOut = false;
                             });
-                            showBottomSheet(context);
+                        
                           },
                           child: Container(
                             height: middleLeftOut ? 60 : 40,
@@ -1176,10 +1500,34 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                         GestureDetector(
                           onTap: () {
                             setState(() {
+                              bool exist = false;
+                              tyreController.vehicleStructureList
+                                  .forEach((element) {
+                                if (element.tyre_position == "LI" &&
+                                    element.tyre_axel_id == "2") {
+                                  exist = true;
+                                }
+                              });
+                              if (exist) {
+                                selectedModel = tyreController
+                                    .vehicleStructureList
+                                    .firstWhere((element) =>
+                                        element.tyre_axel_id == "2" &&
+                                        element.tyre_position == "LI");
+
+                                           middleLeftIn = true;
+
+                                showBottomSheet(context);
+                              } else {
+                               Get.snackbar("No Tyre Found!", "");
+                              }
+                              print("selected model: " +
+                                  selectedModel.toString());
+
                               frontLeft = false;
                               frontRight = false;
                               middleLeftOut = false;
-                              middleLeftIn = true;
+                           
                               middleRightIn = false;
                               middleRightOut = false;
                               backLeftOut = false;
@@ -1187,7 +1535,7 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                               backRightIn = false;
                               backRightOut = false;
                             });
-                            showBottomSheet(context);
+                
                           },
                           child: Container(
                             height: middleLeftIn ? 60 : 40,
@@ -1216,18 +1564,42 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                         GestureDetector(
                           onTap: () {
                             setState(() {
+                              bool exist = false;
+                              tyreController.vehicleStructureList
+                                  .forEach((element) {
+                                if (element.tyre_position == "RI" &&
+                                    element.tyre_axel_id == "2") {
+                                  exist = true;
+                                }
+                              });
+                              if (exist) {
+                                selectedModel = tyreController
+                                    .vehicleStructureList
+                                    .firstWhere((element) =>
+                                        element.tyre_axel_id == "2" &&
+                                        element.tyre_position == "RI");
+
+                                          middleRightIn = true;
+
+                                showBottomSheet(context);
+                              } else {
+                               Get.snackbar("No Tyre Found!", "");
+                              }
+                              print("selected model: " +
+                                  selectedModel.toString());
+
                               frontLeft = false;
                               frontRight = false;
                               middleLeftOut = false;
                               middleLeftIn = false;
-                              middleRightIn = true;
+                            
                               middleRightOut = false;
                               backLeftOut = false;
                               backLeftIn = false;
                               backRightIn = false;
                               backRightOut = false;
                             });
-                            showBottomSheet(context);
+                      
                           },
                           child: Container(
                             height: middleRightIn ? 60 : 40,
@@ -1243,18 +1615,42 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                         GestureDetector(
                           onTap: () {
                             setState(() {
+                              bool exist = false;
+                              tyreController.vehicleStructureList
+                                  .forEach((element) {
+                                if (element.tyre_position == "RO" &&
+                                    element.tyre_axel_id == "2") {
+                                  exist = true;
+                                }
+                              });
+                              if (exist) {
+                                selectedModel = tyreController
+                                    .vehicleStructureList
+                                    .firstWhere((element) =>
+                                        element.tyre_axel_id == "2" &&
+                                        element.tyre_position == "RO");
+
+                                          middleRightOut = true;
+
+                                showBottomSheet(context);
+                              } else {
+                              Get.snackbar("No Tyre Found!", "");
+                              }
+                              print("selected model: " +
+                                  selectedModel.toString());
+
                               frontLeft = false;
                               frontRight = false;
                               middleLeftOut = false;
                               middleLeftIn = false;
                               middleRightIn = false;
-                              middleRightOut = true;
+                            
                               backLeftOut = false;
                               backLeftIn = false;
                               backRightIn = false;
                               backRightOut = false;
                             });
-                            showBottomSheet(context);
+                
                           },
                           child: Container(
                             height: middleRightOut ? 60 : 40,
@@ -1284,18 +1680,42 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                         GestureDetector(
                           onTap: () {
                             setState(() {
+                              bool exist = false;
+                              tyreController.vehicleStructureList
+                                  .forEach((element) {
+                                if (element.tyre_position == "LO" &&
+                                    element.tyre_axel_id == "3") {
+                                  exist = true;
+                                }
+                              });
+                              if (exist) {
+                                selectedModel = tyreController
+                                    .vehicleStructureList
+                                    .firstWhere((element) =>
+                                        element.tyre_axel_id == "3" &&
+                                        element.tyre_position == "LO");
+
+                                           backLeftOut = true;
+
+                                showBottomSheet(context);
+                              } else {
+                               Get.snackbar("No Tyre Found!", "");
+                              }
+                              print("selected model: " +
+                                  selectedModel.toString());
+
                               frontLeft = false;
                               frontRight = false;
                               middleLeftOut = false;
                               middleLeftIn = false;
                               middleRightIn = false;
                               middleRightOut = false;
-                              backLeftOut = true;
+                           
                               backLeftIn = false;
                               backRightIn = false;
                               backRightOut = false;
                             });
-                            showBottomSheet(context);
+                   
                           },
                           child: Container(
                             height: backLeftOut ? 60 : 40,
@@ -1311,6 +1731,35 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                         GestureDetector(
                           onTap: () {
                             setState(() {
+                              bool exist = false;
+                              tyreController.vehicleStructureList
+                                  .forEach((element) {
+                                if (element.tyre_position == "LI" &&
+                                    element.tyre_axel_id == "3") {
+                                  exist = true;
+                                }
+                              });
+                              if (exist) {
+                                selectedModel = tyreController
+                                    .vehicleStructureList
+                                    .firstWhere((element) =>
+                                        element.tyre_axel_id == "3" &&
+                                        element.tyre_position == "LI");
+
+                                          backLeftIn = true;
+
+                                showBottomSheet(context);
+                              } else {
+                                Get.snackbar("No Tyre Found!", "");
+                              }
+                              print("selected model: " +
+                                  selectedModel.toString());
+
+                              selectedModel = tyreController
+                                  .vehicleStructureList
+                                  .firstWhere((element) =>
+                                      element.tyre_axel_id == "3" &&
+                                      element.tyre_position == "LI");
                               frontLeft = false;
                               frontRight = false;
                               middleLeftOut = false;
@@ -1318,11 +1767,11 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                               middleRightIn = false;
                               middleRightOut = false;
                               backLeftOut = false;
-                              backLeftIn = true;
+                            
                               backRightIn = false;
                               backRightOut = false;
                             });
-                            showBottomSheet(context);
+                       
                           },
                           child: Container(
                             height: backLeftIn ? 60 : 40,
@@ -1351,6 +1800,31 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                         GestureDetector(
                           onTap: () {
                             setState(() {
+                              bool exist = false;
+                              tyreController.vehicleStructureList
+                                  .forEach((element) {
+                                if (element.tyre_position == "RI" &&
+                                    element.tyre_axel_id == "3") {
+                                  exist = true;
+                                }
+                              });
+                              if (exist) {
+                                selectedModel = tyreController
+                                    .vehicleStructureList
+                                    .firstWhere((element) =>
+                                        element.tyre_axel_id == "3" &&
+                                        element.tyre_position == "RI");
+
+                                          backRightIn = true;
+
+                                showBottomSheet(context);
+                              } else {
+                             Get.snackbar("No Tyre Found!", "");
+                              }
+                              print("selected model: " +
+                                  selectedModel.toString());
+
+                          
                               frontLeft = false;
                               frontRight = false;
                               middleLeftOut = false;
@@ -1359,10 +1833,10 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                               middleRightOut = false;
                               backLeftOut = false;
                               backLeftIn = false;
-                              backRightIn = true;
+                            
                               backRightOut = false;
                             });
-                            showBottomSheet(context);
+                         
                           },
                           child: Container(
                             height: backRightIn ? 60 : 40,
@@ -1378,6 +1852,30 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                         GestureDetector(
                           onTap: () {
                             setState(() {
+                              bool exist = false;
+                              tyreController.vehicleStructureList
+                                  .forEach((element) {
+                                if (element.tyre_position == "RO" &&
+                                    element.tyre_axel_id == "3") {
+                                  exist = true;
+                                }
+                              });
+                              if (exist) {
+                                selectedModel = tyreController
+                                    .vehicleStructureList
+                                    .firstWhere((element) =>
+                                        element.tyre_axel_id == "3" &&
+                                        element.tyre_position == "RO");
+
+                                         backRightOut = true;
+
+                                showBottomSheet(context);
+                              } else {
+                                Get.snackbar("No Tyre Found!", "");
+                              }
+                              print("selected model: " +
+                                  selectedModel.toString());
+
                               frontLeft = false;
                               frontRight = false;
                               middleLeftOut = false;
@@ -1387,9 +1885,9 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                               backLeftOut = false;
                               backLeftIn = false;
                               backRightIn = false;
-                              backRightOut = true;
+                             
                             });
-                            showBottomSheet(context);
+                          
                           },
                           child: Container(
                             height: backRightOut ? 60 : 40,
@@ -1423,5 +1921,15 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
         builder: (context) {
           return tyreDetailView(0);
         });
+  }
+
+  tyreMgmt() {
+    if (tyreController.vehicleStructureList.length != 0) {
+      selectedModel = tyreController.vehicleStructureList.first;
+      // id = selectedModel.id.toString();
+      //   getClassElementApi();
+
+      print("selected model " + selectedModel.toString());
+    }
   }
 }
