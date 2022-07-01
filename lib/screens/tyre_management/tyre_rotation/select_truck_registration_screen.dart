@@ -1,3 +1,6 @@
+// ignore_for_file: prefer_const_constructors
+
+import 'package:PrimeMetrics/controllers/tyre/tyre_controller.dart';
 import 'package:PrimeMetrics/screens/fuel_master/fuel_master_widgets/searchable_dropdown.dart';
 import 'package:PrimeMetrics/screens/tyre_management/tyre_rotation/select_tyre_rotation_screen.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -16,6 +19,31 @@ class SelectTruckRegistrationScreen extends StatefulWidget {
 
 class _SelectTruckRegistrationScreenState extends State<SelectTruckRegistrationScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+   int vehicleId = 0;
+  String? tyre_psi;
+  String? tread_depth;
+  String regNumber = "";
+  String? axle;
+  String? positionaxle;
+  String? totalUnit;
+
+  TyreController tyreController = Get.find();
+
+  String? reason;
+
+  // @override
+  // void initState() {
+  //   // TODO: implement initState
+
+  //   tyreController.
+  //   super.initState();
+  // }
+
+  // ignore: prefer_final_fields
+  String _1LO = "1LO";
+
+  String? id;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,25 +93,42 @@ class _SelectTruckRegistrationScreenState extends State<SelectTruckRegistrationS
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SearchableDropdown(
-                      enabled: true,
-                      hintText: "Registration Number",
-                      listItems: ['ABC 123', 'XYZ 079']
-                          .map((e) => "${e}")
-                          .toList(),
-                      onChanged: (value) {},
-                      searchFieldProps: TextFieldProps(
-                        decoration: InputDecoration(
-                          suffixIcon: Icon(
-                            Icons.keyboard_arrow_down,
-                            color: Colors.black,
+                   SearchableDropdown(
+                        withIcon: false,
+                        enabled: true,
+                        hintText: "Select Registration Number",
+                        listItems: tyreController.companyVehicles
+                            .map((e) => "${e.regNumber}")
+                            .toList(),
+                        onChanged: (value) {
+                          vehicleId = tyreController.companyVehicles
+                                  .firstWhere(
+                                      (element) => value == element.regNumber)
+                                  .id ??
+                              0;
+
+                          regNumber = tyreController.companyVehicles
+                              .firstWhere(
+                                  (element) => value == element.regNumber)
+                              .regNumber
+                              .toString();
+
+                          print("regNumber onChanged $vehicleId");
+                          print("regNumber  $regNumber");
+                          // data.remove('vehicle_id');
+                          // data.putIfAbsent('vehicle_id', () => vehicleId);
+                        },
+                        searchFieldProps: TextFieldProps(
+                          decoration: InputDecoration(
+                            suffixIcon: Icon(
+                              Icons.keyboard_arrow_down,
+                              color: Colors.black,
+                            ),
+                            hintText: "Search",
+                            border: InputBorder.none,
                           ),
-                          hintText: "Search",
-                          border: InputBorder.none,
                         ),
                       ),
-                      withIcon: false,
-                    ),
                   ],
                 ),
               ),
@@ -96,8 +141,25 @@ class _SelectTruckRegistrationScreenState extends State<SelectTruckRegistrationS
         alignment: Alignment.center,
         child: InkWell(
           splashColor: Colors.transparent,
-          onTap: () async {
-            Get.to(SelectTyreRotationScreen(), transition: Transition.rightToLeft);
+          onTap: ()  {
+
+            if (regNumber.toString() != "") {
+
+               Get.to(SelectTyreRotationScreen(regNumber: regNumber.toString(), vehicle_id: vehicleId,), transition: Transition.rightToLeft);
+
+            }else {
+
+              Get.snackbar("Please select registration", "");
+
+            }
+
+
+
+
+
+           
+
+          
           },
           child: Container(
             alignment: Alignment.center,

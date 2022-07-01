@@ -392,6 +392,8 @@ class TyreController extends BaseController {
   }
 
   Future<bool> getVehicleStructure({required int vehicleId}) async {
+
+    isSubmitting(true);
     print("vehcle id: "+vehicleId.toString());
     var token = "";
     if (getUserInfo() != null) {
@@ -411,19 +413,25 @@ class TyreController extends BaseController {
           List list = response.data['data']['tyres'];
           vehicleStructureList.addAll(list.map((e) => VehecleStructure.fromJson(e)).toList());
           //VehicleStructure vehicleStructure = VehicleStructure.fromJson(response.data['data']);
+
+          isSubmitting(false);
           vehicleStructure =
               VehicleStructure.fromJson(response.data['data']).obs;
           return Future.value(true);
 
           
-
+      
 
 
           
         } else {
+          isSubmitting(false);
+
+
           show("Error", response.data['message']);
           return Future.value(false);
         }
+   
         
       }
 
@@ -435,6 +443,93 @@ class TyreController extends BaseController {
     }
   }
 
+ 
+
+
+
+
+      rotateTyre(
+      { required String tyre_position, 
+      required String tyreId, required String tyre_axel_id, 
+      }) async {
+
+
+        isSubmitting (true);
+        Map<String, String> map = HashMap();
+        map["tyreId"] = tyreId.toString();
+        map["tyre_position"] = tyre_position.toString();
+       
+        map["tyre_axel_id"] = tyre_axel_id.toString();
+       
+
+
+    print("tyreId: " + tyreId.toString());
+    print("tyre_position: " + tyre_position.toString());
+  
+    print("tyre_axel_id: " + tyre_axel_id.toString());
+  
+    
+    var token = "";
+    if (getUserInfo() != null) {
+      token = getUserInfo()!.data!.token.toString();
+    }
+
+    dioo.options.headers['content-Type'] = 'application/json';
+    dioo.options.headers["Authorization"] = "Bearer ${token}";
+
+    try {
+      isSubmitting(true);
+      res.FormData formData = res.FormData.fromMap(map);
+
+      // formData.files.add(MapEntry(
+      //     "tyre_image",
+      //     await res.MultipartFile.fromFile(
+      //       file.path,
+      //       filename: file.name,
+      //     )));
+
+      print("Data: "+formData.toString());
+      res.Response response =
+          await dioo.post("/rotatetyre", data: formData );
+          print("Res "+response.data.toString()+"^^");
+      if (response.statusCode == 200) {
+        print("press here...!");
+          isSubmitting(false);
+
+          Get.snackbar("Tyre Rotated successfully", "");
+     
+          Get.offAll(TyreHomeScreen(), transition: Transition.leftToRight);
+     
+  
+      } else {
+        show("Error", response.data['message']);
+         isSubmitting(false);
+      }
+    } on res.DioError catch (e, trace) {
+      isSubmitting(false);
+      print(trace);
+    }
+  }
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
       tyreUnMount(
       {required String vehicle_id, required String odometer, 
       required String tyre_id, required String dismount_resion, 

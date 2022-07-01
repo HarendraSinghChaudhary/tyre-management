@@ -1,3 +1,4 @@
+import 'package:PrimeMetrics/controllers/tyre/tyre_controller.dart';
 import 'package:PrimeMetrics/screens/tyre_management/tyre_home_screen.dart';
 import 'package:PrimeMetrics/utils/colors.dart';
 import 'package:PrimeMetrics/utils/screen_size.dart';
@@ -8,7 +9,18 @@ import 'package:get/get.dart';
 import '../../fuel_master/fuel_master_widgets/searchable_dropdown.dart';
 
 class TyreRotationNewPositionScreen extends StatefulWidget {
-  const TyreRotationNewPositionScreen({Key? key}) : super(key: key);
+  String regNumber;
+  String axlePosition;
+  String tyre_id;
+  String tyre_position;
+  String tyre_size;
+
+  TyreRotationNewPositionScreen(
+      {required this.regNumber,
+      required this.axlePosition,
+      required this.tyre_id,
+      required this.tyre_position,
+      required this.tyre_size});
 
   @override
   _TyreRotationNewPositionScreenState createState() =>
@@ -18,6 +30,21 @@ class TyreRotationNewPositionScreen extends StatefulWidget {
 class _TyreRotationNewPositionScreenState
     extends State<TyreRotationNewPositionScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  String? axleNew = "";
+  String? tyre_positionNew = "";
+
+  TyreController tyreController = Get.find();
+  bool frontLeft = false,
+      frontRight = false,
+      middleLeftOut = false,
+      middleLeftIn = false,
+      middleRightIn = false,
+      middleRightOut = false,
+      backLeftOut = false,
+      backLeftIn = false,
+      backRightIn = false,
+      backRightOut = false;
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +108,7 @@ class _TyreRotationNewPositionScreenState
                         height: 5,
                       ),
                       Text(
-                        "Tyre # 1234567",
+                        "Tyre # " + widget.regNumber,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
@@ -103,7 +130,8 @@ class _TyreRotationNewPositionScreenState
                             ),
                           ),
                           Text(
-                            "123",
+                            // "123",
+                            widget.tyre_size.toString(),
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
@@ -127,7 +155,11 @@ class _TyreRotationNewPositionScreenState
                             ),
                           ),
                           Text(
-                            "2-RI",
+                            //"2-RI",
+
+                            widget.axlePosition.toString() +
+                                "-" +
+                                widget.tyre_position.toString(),
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
@@ -149,24 +181,7 @@ class _TyreRotationNewPositionScreenState
                       SizedBox(
                         height: 10,
                       ),
-                      SearchableDropdown(
-                        enabled: true,
-                        hintText: "1-LO",
-                        listItems:
-                            ['5-LA', '10-MA'].map((e) => "${e}").toList(),
-                        onChanged: (value) {},
-                        searchFieldProps: TextFieldProps(
-                          decoration: InputDecoration(
-                            suffixIcon: Icon(
-                              Icons.keyboard_arrow_down,
-                              color: Colors.black,
-                            ),
-                            hintText: "Search",
-                            border: InputBorder.none,
-                          ),
-                        ),
-                        withIcon: false,
-                      ),
+                      getTyreViews()
                     ],
                   ),
                 ),
@@ -182,7 +197,12 @@ class _TyreRotationNewPositionScreenState
           splashColor: Colors.transparent,
           onTap: () async {
             //Get.offAll(TyreHomeScreen(), transition: Transition.rightToLeft);
-            showGeneralDialog(
+
+
+            if (tyre_positionNew.toString() != "" &&
+                              axleNew.toString() != "") {
+
+               showGeneralDialog(
               context: context,
               barrierColor: Colors.black.withOpacity(0.9),
               // Background color
@@ -204,7 +224,14 @@ class _TyreRotationNewPositionScreenState
                             ),
                             children: [
                               TextSpan(
-                                text: ' from 2-RI to 1-LO',
+                                text: " from " +
+                                    widget.axlePosition +
+                                    "-" +
+                                    widget.tyre_position +
+                                    " to " +
+                                    axleNew.toString() +
+                                    "-" +
+                                    tyre_positionNew.toString(),
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: green,
@@ -229,10 +256,15 @@ class _TyreRotationNewPositionScreenState
                       ),
                       GestureDetector(
                         onTap: () {
-                          Get.offAll(
-                            TyreHomeScreen(),
-                            transition: Transition.leftToRight,
-                          );
+                          if (tyre_positionNew.toString() != "" &&
+                              axleNew.toString() != "") {
+                            Get.to(tyreController.rotateTyre(
+                                tyre_position: tyre_positionNew.toString(),
+                                tyreId: widget.tyre_id.toString(),
+                                tyre_axel_id: axleNew.toString()));
+                          } else {
+                            Get.snackbar("Please select new tyre position", "");
+                          }
                         },
                         child: Container(
                           alignment: Alignment.center,
@@ -301,6 +333,19 @@ class _TyreRotationNewPositionScreenState
                 });
               },
             );
+        
+        
+
+            }else {
+
+               Get.snackbar("Please select new tyre position", "");
+
+            }
+
+
+
+           
+        
           },
           child: Container(
             alignment: Alignment.center,
@@ -326,6 +371,408 @@ class _TyreRotationNewPositionScreenState
           ),
         ),
       ),
+    );
+  }
+
+  Widget getTyreViews() {
+    return Stack(
+      fit: StackFit.loose,
+      children: [
+        Positioned(
+          top: 0,
+          bottom: 0,
+          left: ScreenSize.width * 0.5 - 40,
+          child: VerticalDivider(
+            color: Colors.black,
+            thickness: 4,
+            indent: 40,
+            endIndent: 40,
+          ),
+        ),
+        Column(
+          children: [
+            Container(
+              height: ScreenSize.height * 0.1,
+              color: Colors.grey.withOpacity(0.1),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              print("1 Left outer");
+
+                              axleNew = "1";
+
+                              tyre_positionNew = "LO";
+
+                              frontLeft = true;
+                              frontRight = false;
+                              middleLeftOut = false;
+                              middleLeftIn = false;
+                              middleRightIn = false;
+                              middleRightOut = false;
+                              backLeftOut = false;
+                              backLeftIn = false;
+                              backRightIn = false;
+                              backRightOut = false;
+                            });
+                          },
+                          child: Container(
+                            height: frontLeft ? 60 : 40,
+                            width: frontLeft ? 20 : 10,
+                            decoration: BoxDecoration(
+                                color: frontLeft ? green : Colors.black,
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                        )
+                      ],
+                      mainAxisAlignment: MainAxisAlignment.end,
+                    ),
+                  ),
+                  Container(
+                    width: 100,
+                    margin: EdgeInsets.symmetric(horizontal: 2),
+                    child: Divider(
+                      color: Colors.black,
+                      thickness: 4,
+                    ),
+                  ),
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              axleNew = "1";
+
+                              tyre_positionNew = "RO";
+
+                              frontLeft = false;
+                              frontRight = true;
+                              middleLeftOut = false;
+                              middleLeftIn = false;
+                              middleRightIn = false;
+                              middleRightOut = false;
+                              backLeftOut = false;
+                              backLeftIn = false;
+                              backRightIn = false;
+                              backRightOut = false;
+                            });
+                          },
+                          child: Container(
+                            height: frontRight ? 60 : 40, //60
+                            width: frontRight ? 20 : 10, //20
+                            decoration: BoxDecoration(
+                                color: frontRight ? green : Colors.black,
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 100,
+            ),
+            Container(
+              height: ScreenSize.height * 0.1,
+              color: Colors.grey.withOpacity(0.1),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              axleNew = "2";
+
+                              tyre_positionNew = "LO";
+
+                              frontLeft = false;
+                              frontRight = false;
+                              middleLeftOut = true;
+                              middleLeftIn = false;
+                              middleRightIn = false;
+                              middleRightOut = false;
+                              backLeftOut = false;
+                              backLeftIn = false;
+                              backRightIn = false;
+                              backRightOut = false;
+                            });
+                          },
+                          child: Container(
+                            height: middleLeftOut ? 60 : 40,
+                            width: middleLeftOut ? 20 : 10,
+                            decoration: BoxDecoration(
+                                color: middleLeftOut ? green : Colors.black,
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              axleNew = "2";
+
+                              tyre_positionNew = "LI";
+
+                              frontLeft = false;
+                              frontRight = false;
+                              middleLeftOut = false;
+                              middleLeftIn = true;
+                              middleRightIn = false;
+                              middleRightOut = false;
+                              backLeftOut = false;
+                              backLeftIn = false;
+                              backRightIn = false;
+                              backRightOut = false;
+                            });
+                          },
+                          child: Container(
+                            height: middleLeftIn ? 60 : 40,
+                            width: middleLeftIn ? 20 : 10,
+                            decoration: BoxDecoration(
+                                color: middleLeftIn ? green : Colors.black,
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                        ),
+                      ],
+                      mainAxisAlignment: MainAxisAlignment.end,
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 2),
+                    width: 100,
+                    child: Divider(
+                      color: Colors.black,
+                      thickness: 4,
+                    ),
+                  ),
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              axleNew = "2";
+
+                              tyre_positionNew = "RI";
+                              frontLeft = false;
+                              frontRight = false;
+                              middleLeftOut = false;
+                              middleLeftIn = false;
+                              middleRightIn = true;
+                              middleRightOut = false;
+                              backLeftOut = false;
+                              backLeftIn = false;
+                              backRightIn = false;
+                              backRightOut = false;
+                            });
+                          },
+                          child: Container(
+                            height: middleRightIn ? 60 : 40,
+                            width: middleRightIn ? 20 : 10,
+                            decoration: BoxDecoration(
+                                color: middleRightIn ? green : Colors.black,
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              axleNew = "2";
+
+                              tyre_positionNew = "RO";
+
+                              frontLeft = false;
+                              frontRight = false;
+                              middleLeftOut = false;
+                              middleLeftIn = false;
+                              middleRightIn = false;
+                              middleRightOut = true;
+                              backLeftOut = false;
+                              backLeftIn = false;
+                              backRightIn = false;
+                              backRightOut = false;
+                            });
+                          },
+                          child: Container(
+                            height: middleRightOut ? 60 : 40,
+                            width: middleRightOut ? 20 : 10,
+                            decoration: BoxDecoration(
+                                color: middleRightOut ? green : Colors.black,
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              height: ScreenSize.height * 0.1,
+              color: Colors.grey.withOpacity(0.1),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              axleNew = "3";
+
+                              tyre_positionNew = "LO";
+
+                              frontLeft = false;
+                              frontRight = false;
+                              middleLeftOut = false;
+                              middleLeftIn = false;
+                              middleRightIn = false;
+                              middleRightOut = false;
+                              backLeftOut = true;
+                              backLeftIn = false;
+                              backRightIn = false;
+                              backRightOut = false;
+                            });
+                          },
+                          child: Container(
+                            height: backLeftOut ? 60 : 40,
+                            width: backLeftOut ? 20 : 10,
+                            decoration: BoxDecoration(
+                                color: backLeftOut ? green : Colors.black,
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              axleNew = "3";
+
+                              tyre_positionNew = "LI";
+
+                              frontLeft = false;
+                              frontRight = false;
+                              middleLeftOut = false;
+                              middleLeftIn = false;
+                              middleRightIn = false;
+                              middleRightOut = false;
+                              backLeftOut = false;
+                              backLeftIn = true;
+                              backRightIn = false;
+                              backRightOut = false;
+                            });
+                          },
+                          child: Container(
+                            height: backLeftIn ? 60 : 40,
+                            width: backLeftIn ? 20 : 10,
+                            decoration: BoxDecoration(
+                                color: backLeftIn ? green : Colors.black,
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                        ),
+                      ],
+                      mainAxisAlignment: MainAxisAlignment.end,
+                    ),
+                  ),
+                  Container(
+                    width: 100,
+                    margin: EdgeInsets.symmetric(horizontal: 2),
+                    child: Divider(
+                      color: Colors.black,
+                      thickness: 4,
+                    ),
+                  ),
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              axleNew = "3";
+
+                              tyre_positionNew = "RI";
+
+                              frontLeft = false;
+                              frontRight = false;
+                              middleLeftOut = false;
+                              middleLeftIn = false;
+                              middleRightIn = false;
+                              middleRightOut = false;
+                              backLeftOut = false;
+                              backLeftIn = false;
+                              backRightIn = true;
+                              backRightOut = false;
+                            });
+                          },
+                          child: Container(
+                            height: backRightIn ? 60 : 40,
+                            width: backRightIn ? 20 : 10,
+                            decoration: BoxDecoration(
+                                color: backRightIn ? green : Colors.black,
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              axleNew = "3";
+
+                              tyre_positionNew = "RO";
+
+                              frontLeft = false;
+                              frontRight = false;
+                              middleLeftOut = false;
+                              middleLeftIn = false;
+                              middleRightIn = false;
+                              middleRightOut = false;
+                              backLeftOut = false;
+                              backLeftIn = false;
+                              backRightIn = false;
+                              backRightOut = true;
+                            });
+                          },
+                          child: Container(
+                            height: backRightOut ? 60 : 40,
+                            width: backRightOut ? 20 : 10,
+                            decoration: BoxDecoration(
+                                color: backRightOut ? green : Colors.black,
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

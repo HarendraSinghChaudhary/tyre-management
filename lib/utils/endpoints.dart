@@ -65,6 +65,9 @@ final String TYRE_UNMOUNT = baseUrl + "/tyre-unmount";
 final String TYRE_SERIAL_NUMBER = baseUrl + "/get_tyre";
 final String SERIALNUMBER_URL = baseUrl + "/serial_number";
 final String DISMOUNTREASON_URL = baseUrl + "/dismountResion";
+final String ROTATETYRE_URL = baseUrl + "/rotatetyre";
+
+
 
 // final String  VEHICLE_STRUCTURE
 
