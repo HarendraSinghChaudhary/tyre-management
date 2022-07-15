@@ -175,19 +175,23 @@ class SerialNumberModel {
     this.id,
     this.tyre_serial_number,
     this.tyre_psi,
-    this.tread_depth
+    this.tread_depth,
+    this.max_psi,
+    this.recom_psi,
  
   });
 
   int? id;
-  String? tyre_serial_number, tyre_psi, tread_depth;
+  String? tyre_serial_number, tyre_psi, tread_depth, max_psi, recom_psi;
 
 
   factory SerialNumberModel.fromJson(Map<String, dynamic> json) => SerialNumberModel(
     id: json["id"],
     tyre_serial_number: json["tyre_serial_number"],
     tyre_psi: json["tyre_psi"],
-    tread_depth: json["tread_depth"]
+    tread_depth: json["tread_depth"],
+    max_psi: json['max_psi'],
+    recom_psi: json['recom_psi'],
   
   );
 
@@ -195,7 +199,9 @@ class SerialNumberModel {
     "id": id,
     "tyre_serial_number": tyre_serial_number,
     "tyre_psi": tyre_psi,
-    "tread_depth": tread_depth
+    "tread_depth": tread_depth,
+    "max_psi": max_psi,
+    "recom_psi": recom_psi
    
   };
 }

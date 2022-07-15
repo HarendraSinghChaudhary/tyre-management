@@ -1,3 +1,5 @@
+import 'package:PrimeMetrics/controllers/tyre/tyre_controller.dart';
+import 'package:PrimeMetrics/screens/tyre_management/tyre_inspection/registration_number_by_shop.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -16,12 +18,31 @@ class ShopInspectionScreen extends StatefulWidget {
 
 class _ShopInspectionSAcreenState extends State<ShopInspectionScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  TyreController tyreController = Get.find();
+  TextEditingController odometerController = TextEditingController();
+
+
+    @override
+  void initState() {
+    tyreController.getStoreList();
+    tyreController.storeList;
+    // TODO: implement initState
+    super.initState();
+  }
+
+  int storeCode = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: primaryColors,
-      body: SingleChildScrollView(
+      body:
+      
+      
+      
+      
+      
+       SingleChildScrollView(
         physics: BouncingScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,25 +86,40 @@ class _ShopInspectionSAcreenState extends State<ShopInspectionScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+
+
+                    Obx((() =>
+
                     SearchableDropdown(
-                      enabled: true,
-                      hintText: "Store Number",
-                      listItems: ['Store Code 1', 'Store Code 2']
-                          .map((e) => "${e}")
-                          .toList(),
-                      onChanged: (value) {},
-                      searchFieldProps: TextFieldProps(
-                        decoration: InputDecoration(
-                          suffixIcon: Icon(
-                            Icons.keyboard_arrow_down,
-                            color: Colors.black,
+                        withIcon: false,
+                        enabled: true,
+                        hintText: "Store Code",
+                        listItems: tyreController.storeList.map((e) => "${e.storeCode}").toList(),
+                        onChanged: (value) {
+                          storeCode = tyreController.storeList.firstWhere((element) => value == element.storeCode).id??0;
+                          // widget.data.remove('store');
+                          // widget.data.putIfAbsent('store', () => storeCode);
+
+                          print("id: "+storeCode.toString());
+                        },
+                        searchFieldProps: TextFieldProps(
+                          decoration: InputDecoration(
+                            suffixIcon: Icon(
+                              Icons.keyboard_arrow_down,
+                              color: Colors.black,
+                            ),
+                            hintText: "Search",
+                            border: InputBorder.none,
                           ),
-                          hintText: "Search",
-                          border: InputBorder.none,
                         ),
-                      ),
-                      withIcon: false,
-                    ),
+                      )
+                 
+                     ))
+
+
+
+
+                  
                   ],
                 ),
               ),
@@ -97,7 +133,19 @@ class _ShopInspectionSAcreenState extends State<ShopInspectionScreen> {
         child: InkWell(
           splashColor: Colors.transparent,
           onTap: () async {
-            Get.to(InspectionSelectTyre(), transition: Transition.rightToLeft);
+
+            if (storeCode.toString() != "0"  && odometerController.text.isNotEmpty) {
+
+
+           Get.to(RegistrationNumberByShop(
+
+             id: storeCode.toString(),
+             odometer: "",
+           ), transition: Transition.rightToLeft);
+
+            } else {
+              Get.snackbar("Please select store code", "");
+            }
           },
           child: Container(
             alignment: Alignment.center,

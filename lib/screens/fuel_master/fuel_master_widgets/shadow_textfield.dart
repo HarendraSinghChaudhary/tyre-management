@@ -10,6 +10,7 @@ class ShadowTextField extends StatelessWidget {
   final double? width;
   final int? maxLine;
   final bool? enabled;
+  final int? maxLength;
   final TextInputType? keyboardType;
 
   const ShadowTextField({
@@ -20,6 +21,7 @@ class ShadowTextField extends StatelessWidget {
     this.onChanged,
     this.width,
     this.maxLine,
+    this.maxLength,
     this.enabled=true,
     this.keyboardType
   }) : super(key: key);
@@ -55,7 +57,9 @@ class ShadowTextField extends StatelessWidget {
             child: TextFormField(
               controller: controller,
               keyboardType: keyboardType,
+              maxLength: maxLength,
               decoration: InputDecoration(
+                counterText: "",
                   hintText: hintText,
                   hintStyle: TextStyle(
                     color: Colors.grey.withOpacity(0.5),

@@ -1,3 +1,4 @@
+import 'package:PrimeMetrics/screens/tyre_management/tyre_retiring/tyre_retiring_form.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -6,7 +7,9 @@ import '../../../utils/screen_size.dart';
 import '../tyre_home_screen.dart';
 
 class TyreRetiringConfirmationScreen extends StatefulWidget {
-  const TyreRetiringConfirmationScreen({Key? key}) : super(key: key);
+   List<TyreRetiringForm> data;
+
+  TyreRetiringConfirmationScreen({required this.data});
 
   @override
   _TyreRetiringConfirmationScreenState createState() =>
@@ -19,6 +22,7 @@ class _TyreRetiringConfirmationScreenState
 
   @override
   Widget build(BuildContext context) {
+    print("data: "+widget.data.toString());
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: primaryColors,
@@ -78,7 +82,7 @@ class _TyreRetiringConfirmationScreenState
                       addAutomaticKeepAlives: true,
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
-                      itemCount: 2,
+                      itemCount: widget.data.length,
                       itemBuilder: (context, index) {
                         return tyreDetailView();
                       },

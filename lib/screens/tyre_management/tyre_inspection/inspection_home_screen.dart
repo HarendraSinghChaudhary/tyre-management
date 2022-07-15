@@ -1,4 +1,5 @@
-import 'package:PrimeMetrics/screens/tyre_management/tyre_inspection/inspection_store_code.dart';
+import 'package:PrimeMetrics/screens/tyre_management/tyre_home_screen.dart';
+import 'package:PrimeMetrics/screens/tyre_management/tyre_inspection/inspection_registarion_number.dart';
 import 'package:PrimeMetrics/screens/tyre_management/tyre_inspection/shop_inspection_screen.dart';
 import 'package:PrimeMetrics/utils/images.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,7 @@ class InspectionHomeScreen extends StatefulWidget {
 class _InspectionHomeScreenState extends State<InspectionHomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int value = 0;
-  List deployOn = ["Truck", "Trailer","Shop"];
+  List deployOn = ["Truck", "Trailer","Store"];
   List images = [truck, trailer,shop];
 
   @override
@@ -38,7 +39,7 @@ class _InspectionHomeScreenState extends State<InspectionHomeScreen> {
                 children: [
                   InkWell(
                     onTap: () {
-                      Get.back();
+                     Get.offAll(TyreHomeScreen(), transition: Transition.leftToRight);
                     },
                     child: CircleAvatar(
                       backgroundColor: green,
@@ -128,7 +129,7 @@ class _InspectionHomeScreenState extends State<InspectionHomeScreen> {
           splashColor: Colors.transparent,
           onTap: () async {
             if(value==0 || value == 1){
-              Get.to(InspectionStoreCode(), transition: Transition.rightToLeft);
+              Get.to(InspectionRegistrationCode(), transition: Transition.rightToLeft);
             }else{
               Get.to(ShopInspectionScreen(), transition: Transition.rightToLeft);
             }

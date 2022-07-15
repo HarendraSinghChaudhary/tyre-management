@@ -126,6 +126,10 @@ class _LoginScreenState extends State<LoginScreen> {
     // TODO: implement initState
 
 
+    emailController.text = "specky9coder@gmail.com";
+    passwordController.text = "111111";
+
+
     super.initState();
   }
 

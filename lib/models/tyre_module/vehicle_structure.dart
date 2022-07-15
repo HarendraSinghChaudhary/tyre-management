@@ -147,7 +147,8 @@ class VehecleStructure {
     this.tyre_position,
     this.tyre_size_id,
     this.size_name,
-   
+    this.recom_psi,
+    this.max_psi,
     this.axcelOrder,
     this.noOfTyres,
     this.createdAt,
@@ -164,7 +165,8 @@ class VehecleStructure {
   String? tyre_position;
   String? tyre_size_id;
   String? size_name;
-
+  String? recom_psi;
+  String? max_psi;
   String? tyre_serial_number;
   DateTime? createdAt;
   DateTime? updatedAt;
@@ -180,7 +182,8 @@ class VehecleStructure {
     tyre_position: json["tyre_position"],
     tyre_size_id: json["tyre_size_id"],
     size_name: json ["size_name"],
-   
+    recom_psi: json ["recom_psi"],
+    max_psi: json['max_psi'],
     tyre_serial_number: json["tyre_serial_number"],
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
@@ -199,6 +202,8 @@ class VehecleStructure {
     "tyre_serial_number": tyre_serial_number,
     "created_at": createdAt?.toIso8601String(),
     "updated_at": updatedAt?.toIso8601String(),
-    "size_name": size_name.toString()
+    "size_name": size_name.toString(),
+    "recom_psi": recom_psi.toString(),
+    "max_psi": max_psi.toString()
   };
 }

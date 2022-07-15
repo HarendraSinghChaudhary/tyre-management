@@ -1,3 +1,4 @@
+import 'package:PrimeMetrics/controllers/tyre/tyre_controller.dart';
 import 'package:PrimeMetrics/screens/tyre_management/tyre_retiring/tyre_retiring_confirmation_screen.dart';
 import 'package:PrimeMetrics/screens/tyre_management/tyre_retiring/tyre_retiring_form.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -20,11 +21,14 @@ class _TyreRetiringHomeScreenState extends State<TyreRetiringHomeScreen> with Au
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   List<TyreRetiringForm> tyres= [];
+   TyreController tyreController = Get.find();
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     tyres.add(TyreRetiringForm());
+     tyreController.getTyreSerialNumberApi();
+    tyreController.retiringReasonApi();
   }
 
   @override
@@ -32,7 +36,12 @@ class _TyreRetiringHomeScreenState extends State<TyreRetiringHomeScreen> with Au
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: primaryColors,
-      body: SingleChildScrollView(
+      body:  
+
+   
+
+       
+       SingleChildScrollView(
         physics: BouncingScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,7 +120,10 @@ class _TyreRetiringHomeScreenState extends State<TyreRetiringHomeScreen> with Au
                             splashColor: Colors.transparent,
                             onTap: () async {
                               setState(() {
-                                tyres.add(TyreRetiringForm());
+                                tyres.add(
+                                  TyreRetiringForm()
+                                  
+                                );
                               });
                             },
                             child: Container(
@@ -147,13 +159,30 @@ class _TyreRetiringHomeScreenState extends State<TyreRetiringHomeScreen> with Au
           ],
         ),
       ),
+     
+     
+      
+      
+
+      
+      
+      
+      
+     
+     
+     
+     
+     
+     
       bottomNavigationBar: Container(
         height: 100,
         alignment: Alignment.center,
         child: InkWell(
           splashColor: Colors.transparent,
           onTap: () async {
-            Get.to(TyreRetiringConfirmationScreen(), transition: Transition.rightToLeft);
+            Get.to(TyreRetiringConfirmationScreen(
+              data: tyres
+            ), transition: Transition.rightToLeft);
           },
           child: Container(
             alignment: Alignment.center,

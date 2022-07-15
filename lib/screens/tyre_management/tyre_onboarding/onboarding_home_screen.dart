@@ -34,6 +34,8 @@ class _OnboardingHomeScreenState extends State<OnboardingHomeScreen> {
   TextEditingController monthController = TextEditingController();
   TextEditingController yearController = TextEditingController();
   TextEditingController warrantyController = TextEditingController();
+  TextEditingController maxPsiController = TextEditingController();
+  TextEditingController recommendedPsiController = TextEditingController();
 
   DateTime date = DateTime.now();
 
@@ -234,6 +236,34 @@ class _OnboardingHomeScreenState extends State<OnboardingHomeScreen> {
                       onChanged: (value) {
                         data.remove("width");
                         data.putIfAbsent('width', () => tyreWidthController.text);
+                      },
+                    ),
+
+                     SizedBox(
+                      height: 10,
+                    ),
+                    ShadowTextField(
+                      maxLine: 1,
+                      keyboardType: TextInputType.number,
+                      hintText: "Enter Maximum PSI",
+                      controller: maxPsiController,
+                      onChanged: (value) {
+                        data.remove("max_psi");
+                        data.putIfAbsent('max_psi', () => tyreWidthController.text);
+                      },
+                    ),
+
+                     SizedBox(
+                      height: 10,
+                    ),
+                    ShadowTextField(
+                      maxLine: 1,
+                      keyboardType: TextInputType.number,
+                      hintText: "Enter Recommended PSI",
+                      controller: recommendedPsiController,
+                      onChanged: (value) {
+                        data.remove("recom_psi");
+                        data.putIfAbsent('recom_psi', () => tyreWidthController.text);
                       },
                     ),
                     SizedBox(

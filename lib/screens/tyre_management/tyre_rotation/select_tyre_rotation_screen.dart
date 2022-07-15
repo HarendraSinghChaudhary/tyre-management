@@ -37,7 +37,8 @@ class _SelectTyreRotationScreenState extends State<SelectTyreRotationScreen> {
   String? axle;
   String? positionaxle;
   String? totalUnit;
-
+  String? max_psi;
+  String? recom_psi;
   bool frontLeft = false,
       frontRight = false,
       middleLeftOut = false,
@@ -560,7 +561,41 @@ class _SelectTyreRotationScreenState extends State<SelectTyreRotationScreen> {
                               ),
                             ),
                             Text(
-                              "123",
+                              // "123",
+
+                              selectedModel.max_psi.toString(),
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+
+                                  SizedBox(
+                        height: 10,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 30),
+                        child: Row(
+                          // ignore: prefer_const_literals_to_create_immutables
+                          children: [
+                            Expanded(
+                              child: Text(
+                                "Recommended PSI",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                            Text(
+                              // "123",
+
+                              selectedModel.recom_psi.toString(),
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,

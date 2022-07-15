@@ -1,25 +1,63 @@
+import 'package:PrimeMetrics/controllers/tyre/tyre_controller.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../../utils/colors.dart';
 import '../../../utils/screen_size.dart';
 import '../../fuel_master/fuel_master_widgets/searchable_dropdown.dart';
 import '../../fuel_master/fuel_master_widgets/shadow_textfield.dart';
 
-class TyreRetiringForm extends StatelessWidget {
+class TyreRetiringForm extends StatefulWidget {
   const TyreRetiringForm({Key? key}) : super(key: key);
 
   @override
+  State<TyreRetiringForm> createState() => _TyreRetiringFormState();
+}
+
+class _TyreRetiringFormState extends State<TyreRetiringForm> {
+  int vehicleId = 0;
+  String? tyre_psi;
+  String? tread_depth;
+  String? regNumber;
+  String? axle;
+  String? positionaxle;
+  String? totalUnit;
+  String? storeCodeSerialNumber;
+  String? retreads_status;
+  String? max_psi;
+  String? recom_psi;
+  String? reasonId;
+
+  String? reason;
+
+  // ignore: prefer_final_fields
+  String _1LO = "1LO";
+
+  String? id;
+
+  TyreController tyreController = Get.find();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    tyreController.getTyreSerialNumberApi();
+    tyreController.retiringReasonApi();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final TextEditingController serialNumberController = TextEditingController();
+    // final TextEditingController serialNumberController = TextEditingController();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SearchableDropdown(
           enabled: true,
           hintText: "Select Tyre",
-          listItems:
-          ['Tyre 1', 'Tyre 2'].map((e) => "${e}").toList(),
+          listItems: ['Tyre 1', 'Tyre 2'].map((e) => "${e}").toList(),
           onChanged: (value) {},
           searchFieldProps: TextFieldProps(
             decoration: InputDecoration(
@@ -36,10 +74,63 @@ class TyreRetiringForm extends StatelessWidget {
         SizedBox(
           height: 10,
         ),
-        ShadowTextField(
-          hintText: "Type the Serial Number",
-          controller: serialNumberController,
-          onChanged: (value) {},
+        SearchableDropdown(
+          withIcon: false,
+          enabled: true,
+          hintText: "Select serial number",
+          listItems: tyreController.tyreSerialNumberList
+              .map((e) => "${e.tyre_serial_number}")
+              .toList(),
+          onChanged: (value) {
+            id = tyreController.tyreSerialNumberList
+                .firstWhere(
+                    (element) => value == element.tyre_serial_number.toString())
+                .id
+                .toString();
+
+            storeCodeSerialNumber = tyreController.tyreSerialNumberList
+                .firstWhere(
+                    (element) => value == element.tyre_serial_number.toString())
+                .tyre_serial_number
+                .toString();
+
+            tyre_psi = tyreController.tyreSerialNumberList
+                .firstWhere((element) => value == element.tyre_serial_number)
+                .tyre_psi
+                .toString();
+
+            tread_depth = tyreController.tyreSerialNumberList
+                .firstWhere((element) => value == element.tyre_serial_number)
+                .tread_depth
+                .toString();
+
+            max_psi = tyreController.tyreSerialNumberList
+                .firstWhere((element) => value == element.tyre_serial_number)
+                .max_psi
+                .toString();
+
+            recom_psi = tyreController.tyreSerialNumberList
+                .firstWhere((element) => value == element.tyre_serial_number)
+                .recom_psi
+                .toString();
+
+            print("tyrePsi: " + tyre_psi.toString());
+            print("tread depth: " + tread_depth.toString());
+            print("tyre id: " + id.toString());
+
+            // widget.data.remove('store');
+            // widget.data.putIfAbsent('store', () => storeCodeSerialNumber);
+          },
+          searchFieldProps: TextFieldProps(
+            decoration: InputDecoration(
+              suffixIcon: Icon(
+                Icons.keyboard_arrow_down,
+                color: Colors.black,
+              ),
+              hintText: "Search",
+              border: InputBorder.none,
+            ),
+          ),
         ),
         SizedBox(
           height: 10,
@@ -62,11 +153,26 @@ class TyreRetiringForm extends StatelessWidget {
           height: 20,
         ),
         SearchableDropdown(
+          withIcon: false,
           enabled: true,
           hintText: "Reason for Retiring",
-          listItems:
-          ['Reason 1', 'Reason 2'].map((e) => "${e}").toList(),
-          onChanged: (value) {},
+          listItems: tyreController.retiringReasonList
+              .map((e) => "${e.reason}")
+              .toList(),
+          onChanged: (value) {
+            id = tyreController.retiringReasonList
+                .firstWhere(
+                    (element) => value == element.id.toString())
+                .id
+                .toString();
+
+            print("tyrePsi: " + id.toString());
+            //  print("tread depth: "+tread_depth.toString());
+            //  print("tyre id: "+id.toString());
+
+            // widget.data.remove('store');
+            // widget.data.putIfAbsent('store', () => storeCodeSerialNumber);
+          },
           searchFieldProps: TextFieldProps(
             decoration: InputDecoration(
               suffixIcon: Icon(
@@ -77,8 +183,8 @@ class TyreRetiringForm extends StatelessWidget {
               border: InputBorder.none,
             ),
           ),
-          withIcon: false,
         ),
+    
         SizedBox(
           height: 20,
         ),

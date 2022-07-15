@@ -1,3 +1,4 @@
+import 'package:PrimeMetrics/controllers/tyre/tyre_controller.dart';
 import 'package:PrimeMetrics/screens/fuel_master/fuel_master_widgets/shadow_textfield.dart';
 import 'package:PrimeMetrics/screens/tyre_management/tyre_inspection/inspection_select_tyre.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -8,16 +9,32 @@ import '../../../utils/colors.dart';
 import '../../../utils/screen_size.dart';
 import '../../fuel_master/fuel_master_widgets/searchable_dropdown.dart';
 
-class InspectionStoreCode extends StatefulWidget {
-  const InspectionStoreCode({Key? key}) : super(key: key);
+class InspectionRegistrationCode extends StatefulWidget {
+  const InspectionRegistrationCode({Key? key}) : super(key: key);
 
   @override
   _InspectionStoreCodeState createState() => _InspectionStoreCodeState();
 }
 
-class _InspectionStoreCodeState extends State<InspectionStoreCode> {
+class _InspectionStoreCodeState extends State<InspectionRegistrationCode> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController odometerController = TextEditingController();
+
+    int vehicleId = 0;
+
+  String regNumber = "";
+  String? axle;
+  String? positionaxle;
+  String? totalUnit;
+
+  TyreController tyreController = Get.find();
+
+  String? reason;
+
+ 
+  String _1LO = "1LO";
+
+  String? id;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,7 +68,7 @@ class _InspectionStoreCodeState extends State<InspectionStoreCode> {
                     width: 20.0,
                   ),
                   Text(
-                    "Select Store Code",
+                     "Select Truck Registration",
                     style: TextStyle(
                         fontWeight: FontWeight.w500,
                         color: Colors.black,
@@ -60,34 +77,60 @@ class _InspectionStoreCodeState extends State<InspectionStoreCode> {
                 ],
               ),
             ),
-            Container(
+           Container(
               padding: EdgeInsets.all(30),
               child: SingleChildScrollView(
                 physics: NeverScrollableScrollPhysics(),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SearchableDropdown(
-                      enabled: true,
-                      hintText: "Select Store Code",
-                      listItems: ['Store Code 1', 'Store Code 2']
-                          .map((e) => "${e}")
-                          .toList(),
-                      onChanged: (value) {},
-                      searchFieldProps: TextFieldProps(
-                        decoration: InputDecoration(
-                          suffixIcon: Icon(
-                            Icons.keyboard_arrow_down,
-                            color: Colors.black,
+                   SearchableDropdown(
+                        withIcon: false,
+                        enabled: true,
+                        hintText: "Select Registration Number",
+                        listItems: tyreController.companyVehicles
+                            .map((e) => "${e.regNumber}")
+                            .toList(),
+                        onChanged: (value) {
+                          vehicleId = tyreController.companyVehicles
+                                  .firstWhere(
+                                      (element) => value == element.regNumber)
+                                  .id ??
+                              0;
+
+                          regNumber = tyreController.companyVehicles
+                              .firstWhere(
+                                  (element) => value == element.regNumber)
+                              .regNumber
+                              .toString();
+
+                          print("regNumber onChanged $vehicleId");
+                          print("regNumber  $regNumber");
+                          // data.remove('vehicle_id');
+                          // data.putIfAbsent('vehicle_id', () => vehicleId);
+                        },
+                        searchFieldProps: TextFieldProps(
+                          decoration: InputDecoration(
+                            suffixIcon: Icon(
+                              Icons.keyboard_arrow_down,
+                              color: Colors.black,
+                            ),
+                            hintText: "Search",
+                            border: InputBorder.none,
                           ),
-                          hintText: "Search",
-                          border: InputBorder.none,
                         ),
                       ),
-                      withIcon: false,
-                    ),
-                    SizedBox(height: 10,),
-                    ShadowTextField(controller: odometerController, hintText: "Odometer Reading"),
+
+                      SizedBox(height: 10,),
+
+
+                       ShadowTextField(
+                        maxLine: 1,
+                        keyboardType: TextInputType.number,
+                        controller: odometerController,
+                        hintText: "Odometer Reading",
+                        onChanged: (value) {},
+                      ),
                   ],
                 ),
               ),
@@ -101,7 +144,20 @@ class _InspectionStoreCodeState extends State<InspectionStoreCode> {
         child: InkWell(
           splashColor: Colors.transparent,
           onTap: () async {
-            Get.to(InspectionSelectTyre(), transition: Transition.rightToLeft);
+
+            if (regNumber.toString() != "" && odometerController.text.isNotEmpty){
+
+
+            Get.to(InspectionSelectTyre(
+              regNumber: regNumber,
+              vehicle_id: vehicleId,
+              odometer: odometerController.text.toString(),
+
+            ), transition: Transition.rightToLeft); }
+
+            else {
+              Get.snackbar("Please fill all fields", "");
+            }
           },
           child: Container(
             alignment: Alignment.center,

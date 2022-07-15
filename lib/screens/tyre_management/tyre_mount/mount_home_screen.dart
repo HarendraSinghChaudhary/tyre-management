@@ -48,6 +48,8 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
    String? axle;
    String? positionaxle;
    String? totalUnit;
+   String? max_psi;
+   String? recom_psi;
 
    String? id ;
 
@@ -379,7 +381,19 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                                             .tyreSerialNumberList
                                             .firstWhere((element) =>
                                                 value ==
-                                                element.tyre_serial_number).tread_depth.toString();             
+                                                element.tyre_serial_number).tread_depth.toString();  
+
+                                     max_psi =  tyreController
+                                            .tyreSerialNumberList
+                                            .firstWhere((element) =>
+                                                value ==
+                                                element.tyre_serial_number).max_psi.toString();  
+
+                                      recom_psi =  tyreController
+                                            .tyreSerialNumberList
+                                            .firstWhere((element) =>
+                                                value ==
+                                                element.tyre_serial_number).recom_psi.toString();                                 
 
 
                                      print("tyrePsi: "+tyre_psi.toString());  
@@ -1415,7 +1429,37 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                             Text(
                               // "123",
                               // tyre_psi.toString(),
-                               widget.serialNumber.toString().trim() == "null" ?  tyre_psi.toString() : tyreController.maximum_psi.toString(),
+                               widget.serialNumber.toString().trim() == "null" ?  max_psi.toString() : tyreController.maximum_psi.toString(),
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                        SizedBox(
+                        height: 10,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 30),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                "Recommended PSI",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                            Text(
+                              // "123",
+                             recom_psi.toString(),
+                              //  widget.serialNumber.toString().trim() == "null" ?  tyre_psi.toString() : tyreController.maximum_psi.toString(),
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,

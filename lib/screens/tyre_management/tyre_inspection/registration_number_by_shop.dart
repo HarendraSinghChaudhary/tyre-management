@@ -1,6 +1,9 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:PrimeMetrics/controllers/tyre/tyre_controller.dart';
-import 'package:PrimeMetrics/screens/tyre_management/tyre_retread/post_retread_screen.dart';
-import 'package:PrimeMetrics/screens/tyre_management/tyre_retread/pre_retread_screen.dart';
+import 'package:PrimeMetrics/screens/fuel_master/fuel_master_widgets/shadow_textfield.dart';
+import 'package:PrimeMetrics/screens/tyre_management/tyre_inspection/inspection_select_tyre.dart';
+import 'package:PrimeMetrics/screens/tyre_management/tyre_inspection/selected_tyre_inspection.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,30 +12,34 @@ import '../../../utils/colors.dart';
 import '../../../utils/screen_size.dart';
 import '../../fuel_master/fuel_master_widgets/searchable_dropdown.dart';
 
-class RetreadScreen extends StatefulWidget {
+class RegistrationNumberByShop extends StatefulWidget {
+  String id;
+  String odometer;
 
+  RegistrationNumberByShop ({required this.id, required this.odometer});
 
   @override
-  _RetreadScreenState createState() => _RetreadScreenState();
+  _InspectionStoreCodeState createState() => _InspectionStoreCodeState();
 }
 
-class _RetreadScreenState extends State<RetreadScreen> {
+class _InspectionStoreCodeState extends State<RegistrationNumberByShop> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final TextEditingController odometerController = TextEditingController();
 
-
-     String? tyre_psi;
+  String? tyre_psi;
    String? tread_depth;
    String? regNumber;
    String? axle;
    String? positionaxle;
    String? totalUnit;
-    int vehicleId = 0;
+  int vehicleId = 0;
   String storeCodeSerialNumber = "";
   String recordedPsi = "";
+  String? max_psi;
+  String? recom_psi;
 
 
-   String? id;
-   String? retreads_status;
+   int? id;
 
 
   TyreController tyreController = Get.find();
@@ -43,9 +50,12 @@ class _RetreadScreenState extends State<RetreadScreen> {
   void initState() {
     super.initState();
 
-   tyreController.getRetreadTyreApi();
+   tyreController.getVehiclesbyShopApi(widget.id);
     
   }
+
+ 
+  String _1LO = "1LO";
 
 
   @override
@@ -55,7 +65,8 @@ class _RetreadScreenState extends State<RetreadScreen> {
       backgroundColor: primaryColors,
       body:  Obx((() => 
 
-      SingleChildScrollView(
+         
+       SingleChildScrollView(
         physics: BouncingScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,7 +94,7 @@ class _RetreadScreenState extends State<RetreadScreen> {
                     width: 20.0,
                   ),
                   Text(
-                    "Retread",
+                     "Select Serial Number",
                     style: TextStyle(
                         fontWeight: FontWeight.w500,
                         color: Colors.black,
@@ -92,59 +103,64 @@ class _RetreadScreenState extends State<RetreadScreen> {
                 ],
               ),
             ),
-            Container(
+           Container(
               padding: EdgeInsets.all(30),
               child: SingleChildScrollView(
                 physics: NeverScrollableScrollPhysics(),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                        SearchableDropdown(
+                    
+             SearchableDropdown(
                                   withIcon: false,
                                   enabled: true,
                                   hintText: "Select serial number",
-                                  listItems: tyreController.retreaTyreSerialNumberList
+                                  listItems: tyreController.tyreSerialNumberList
                                       .map((e) => "${e.tyre_serial_number}")
                                       .toList(),
                                   onChanged: (value) {
 
                                     id = tyreController
-                                            .retreaTyreSerialNumberList
+                                            .tyreSerialNumberList
                                             .firstWhere((element) =>
                                                 value ==
-                                                element.tyre_serial_number.toString()).id.toString();
+                                                element.tyre_serial_number.toString()).id;
 
 
                                     storeCodeSerialNumber = tyreController
-                                            .retreaTyreSerialNumberList
+                                            .tyreSerialNumberList
                                             .firstWhere((element) =>
                                                 value ==
                                                 element.tyre_serial_number.toString()).tyre_serial_number.toString();
 
                                      tyre_psi =  tyreController
-                                            .retreaTyreSerialNumberList
+                                            .tyreSerialNumberList
                                             .firstWhere((element) =>
                                                 value ==
                                                 element.tyre_serial_number).tyre_psi.toString();  
 
 
                                      tread_depth =  tyreController
-                                            .retreaTyreSerialNumberList
+                                            .tyreSerialNumberList
                                             .firstWhere((element) =>
                                                 value ==
-                                                element.tyre_serial_number).tread_depth.toString();
+                                                element.tyre_serial_number).tread_depth.toString(); 
 
-                                     retreads_status =  tyreController
-                                            .retreaTyreSerialNumberList
+                                     max_psi =  tyreController
+                                            .tyreSerialNumberList
                                             .firstWhere((element) =>
                                                 value ==
-                                                element.tyre_serial_number).retreads_status.toString();                          
+                                                element.tyre_serial_number).max_psi.toString();
+                                     recom_psi =  tyreController
+                                            .tyreSerialNumberList
+                                            .firstWhere((element) =>
+                                                value ==
+                                                element.tyre_serial_number).recom_psi.toString();                                    
 
 
-                                     print("tyrePsi: "+storeCodeSerialNumber.toString());  
+                                     print("tyrePsi: "+tyre_psi.toString());  
                                      print("tread depth: "+tread_depth.toString());  
-                                     print("tyre id: "+id.toString());
-                                     print("retread status:___ "+ retreads_status.toString());                 
+                                     print("tyre id: "+id.toString());                 
                                           
                                     // widget.data.remove('store');
                                     // widget.data.putIfAbsent('store', () => storeCodeSerialNumber);
@@ -160,7 +176,7 @@ class _RetreadScreenState extends State<RetreadScreen> {
                                     ),
                                   ),
                                 )
-                 
+                            
                   ],
                 ),
               ),
@@ -171,46 +187,24 @@ class _RetreadScreenState extends State<RetreadScreen> {
       
       
       
-      
       )),
       
-      
-      
-       
-      
-      
-      
-      
+   
       bottomNavigationBar: Container(
         height: 100,
         alignment: Alignment.center,
         child: InkWell(
           splashColor: Colors.transparent,
           onTap: () async {
-
-            print("status: "+retreads_status.toString());
-            print("id: "+id.toString());
-
-
-            if (retreads_status.toString().trim() != "null") {
-
-           
-
-            if(retreads_status.toString().trim() == "1") {
-
-               Get.to(PostRetreadScreen(tyre_id: id.toString()), transition: Transition.leftToRight);
-
-            } else {
-
-                Get.to(PreRetreadScreen(tyre_id: id.toString()), transition: Transition.leftToRight);
-
-            }
-
-
-            }else {
-              Get.snackbar("Please select serial number", "");
-            }
-
+           Get.to(SelectedTyreInspection(
+             tyre_serial_number: storeCodeSerialNumber, 
+             thread_depth: tread_depth, 
+             recorded_psi: tyre_psi,
+             max_psi: max_psi.toString(), 
+             tyre_id: id.toString(),
+             recom_psi: recom_psi.toString(),
+             odometer: widget.odometer,
+             ));
           },
           child: Container(
             alignment: Alignment.center,
@@ -224,19 +218,15 @@ class _RetreadScreenState extends State<RetreadScreen> {
                   fontSize: 18),
             ),
             decoration: BoxDecoration(
-              color: green,
-              boxShadow: [
-                BoxShadow(
-                  blurRadius: 3,
-                  spreadRadius: 1.2,
-                  offset: Offset(0, 3),
-                  color: Colors.black.withOpacity(0.3),
-                )
-              ],
-              borderRadius: BorderRadius.circular(
-                ScreenSize.width * 0.1,
-              ),
-            ),
+                color: green,
+                boxShadow: [
+                  BoxShadow(
+                      blurRadius: 3,
+                      spreadRadius: 1.2,
+                      offset: Offset(0, 3),
+                      color: Colors.black.withOpacity(0.3))
+                ],
+                borderRadius: BorderRadius.circular(ScreenSize.width * 0.1)),
           ),
         ),
       ),

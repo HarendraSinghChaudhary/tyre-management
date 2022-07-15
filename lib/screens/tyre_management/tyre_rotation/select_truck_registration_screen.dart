@@ -21,8 +21,7 @@ class _SelectTruckRegistrationScreenState extends State<SelectTruckRegistrationS
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
    int vehicleId = 0;
-  String? tyre_psi;
-  String? tread_depth;
+
   String regNumber = "";
   String? axle;
   String? positionaxle;
@@ -32,15 +31,7 @@ class _SelectTruckRegistrationScreenState extends State<SelectTruckRegistrationS
 
   String? reason;
 
-  // @override
-  // void initState() {
-  //   // TODO: implement initState
-
-  //   tyreController.
-  //   super.initState();
-  // }
-
-  // ignore: prefer_final_fields
+ 
   String _1LO = "1LO";
 
   String? id;

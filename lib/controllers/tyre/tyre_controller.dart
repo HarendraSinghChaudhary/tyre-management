@@ -3,9 +3,17 @@
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
+import 'package:PrimeMetrics/models/tyre_module/defect_model.dart';
 import 'package:PrimeMetrics/models/tyre_module/dismount_reason.dart';
+import 'package:PrimeMetrics/models/tyre_module/menufactur_model.dart';
+import 'package:PrimeMetrics/models/tyre_module/puncture_repair.dart';
+import 'package:PrimeMetrics/models/tyre_module/retiring_reason.dart';
+import 'package:PrimeMetrics/models/tyre_module/retread_tyre_model.dart';
 import 'package:PrimeMetrics/models/tyre_module/tyre_serial_number.dart';
+import 'package:PrimeMetrics/screens/tyre_management/tyre_inspection/inspection_home_screen.dart';
 import 'package:PrimeMetrics/screens/tyre_management/tyre_mount/mount_home_screen.dart';
+import 'package:PrimeMetrics/screens/tyre_management/tyre_retread/post_retread_screen.dart';
+import 'package:PrimeMetrics/utils/app_extensions.dart';
 import 'package:flutter/material.dart';
 
 import 'package:PrimeMetrics/models/CompanyVehicle.dart';
@@ -43,13 +51,20 @@ class TyreController extends BaseController {
   RxList<ThreadPattern> threadPatternList = RxList();
   RxList<Vendor> vendorList = RxList();
   RxList<VehecleStructure> vehicleStructureList = RxList();
+  RxList<PunctureTyreRepairModel> punctureRepairReasonList = RxList();
+  RxList<DefectModel> defectList = RxList();
+  RxList<MenufactureModel> menufactureList = RxList();
+  RxList<MenufactureModel> rubberTyreList = RxList();
+  RxList<RetiringReasonModel> retiringReasonList = RxList();
 
   RxList<Tyre> tyreList = RxList();
   String tyreId = "";
   String? thread_depth;
   String? maximum_psi;
+  String? message;
   RxList<Vehicle> companyVehicles = RxList();
   RxList<SerialNumberModel> tyreSerialNumberList = RxList();
+  RxList<RetreadTyreModel> retreaTyreSerialNumberList = RxList();
 
   Rx<VehicleStructure?>? vehicleStructure;
   final dioo = Dio(BaseOptions(
@@ -200,20 +215,16 @@ class TyreController extends BaseController {
       });
 
       if (response.statusCode == 200) {
-           print("object is here...1");
+        print("object is here...1");
         var data = jsonDecode(response.data);
-        print("yesss: "+data.toString());
-
+        print("yesss: " + data.toString());
 
         if (data['status'] == true) {
-
-          
-
-
           print("object is here...");
           tyreSerialNumberList.clear();
           List list = data['data'];
-         tyreSerialNumberList.addAll(list.map((e) => SerialNumberModel.fromJson(e)).toList());
+          tyreSerialNumberList
+              .addAll(list.map((e) => SerialNumberModel.fromJson(e)).toList());
         }
       }
       print("tyreSizeList : ${tyreSizeList.length}");
@@ -334,32 +345,29 @@ class TyreController extends BaseController {
     }
   }
 
-    dismountReason() async {
-
-      print("cleck here 1");
+  dismountReason() async {
+    print("cleck here 1");
     var token = "";
     if (getUserInfo() != null) {
       token = getUserInfo()!.data!.token.toString();
     }
 
     dioo.options.headers['content-Type'] = 'application/json';
-   
 
     try {
       res.Response response = await dioo.get("/dismountResion");
-       print("cleck here 2");
+      print("cleck here 2");
       if (response.statusCode == 200) {
-
-         print("cleck here 3");
+        print("cleck here 3");
         if (response.data['data'] != null) {
-
-           print("cleck here 4....");
+          print("cleck here 4....");
           dismountReasonList.clear();
           List list = response.data['data'];
-          dismountReasonList.addAll(list.map((e) => DismountReason.fromJson(e)).toList());
+          dismountReasonList
+              .addAll(list.map((e) => DismountReason.fromJson(e)).toList());
         }
       }
-     print("dismountResion list : ${dismountReasonList.length}");
+      print("dismountResion list : ${dismountReasonList.length}");
       dismountReasonList.forEach((element) {
         print("${element.dismountResion}");
       });
@@ -392,9 +400,8 @@ class TyreController extends BaseController {
   }
 
   Future<bool> getVehicleStructure({required int vehicleId}) async {
-
     isSubmitting(true);
-    print("vehcle id: "+vehicleId.toString());
+    print("vehcle id: " + vehicleId.toString());
     var token = "";
     if (getUserInfo() != null) {
       token = getUserInfo()!.data!.token.toString();
@@ -406,36 +413,27 @@ class TyreController extends BaseController {
     try {
       res.Response response = await dioo
           .get("/vehiclestructure", queryParameters: {"vehicle_id": vehicleId});
-          print("response..: "+response.toString());
+      print("response..: " + response.toString());
       if (response.statusCode == 200) {
         if (response.data['success'] == true) {
-            vehicleStructureList.clear();
+          vehicleStructureList.clear();
           List list = response.data['data']['tyres'];
-          vehicleStructureList.addAll(list.map((e) => VehecleStructure.fromJson(e)).toList());
+          vehicleStructureList
+              .addAll(list.map((e) => VehecleStructure.fromJson(e)).toList());
           //VehicleStructure vehicleStructure = VehicleStructure.fromJson(response.data['data']);
 
           isSubmitting(false);
           vehicleStructure =
               VehicleStructure.fromJson(response.data['data']).obs;
           return Future.value(true);
-
-          
-      
-
-
-          
         } else {
           isSubmitting(false);
-
 
           show("Error", response.data['message']);
           return Future.value(false);
         }
-   
-        
       }
 
-      
       return Future.value(false);
     } on res.DioError catch (e, trace) {
       print(trace);
@@ -443,32 +441,23 @@ class TyreController extends BaseController {
     }
   }
 
- 
+  rotateTyre({
+    required String tyre_position,
+    required String tyreId,
+    required String tyre_axel_id,
+  }) async {
+    isSubmitting(true);
+    Map<String, String> map = HashMap();
+    map["tyreId"] = tyreId.toString();
+    map["tyre_position"] = tyre_position.toString();
 
-
-
-
-      rotateTyre(
-      { required String tyre_position, 
-      required String tyreId, required String tyre_axel_id, 
-      }) async {
-
-
-        isSubmitting (true);
-        Map<String, String> map = HashMap();
-        map["tyreId"] = tyreId.toString();
-        map["tyre_position"] = tyre_position.toString();
-       
-        map["tyre_axel_id"] = tyre_axel_id.toString();
-       
-
+    map["tyre_axel_id"] = tyre_axel_id.toString();
 
     print("tyreId: " + tyreId.toString());
     print("tyre_position: " + tyre_position.toString());
-  
+
     print("tyre_axel_id: " + tyre_axel_id.toString());
-  
-    
+
     var token = "";
     if (getUserInfo() != null) {
       token = getUserInfo()!.data!.token.toString();
@@ -488,70 +477,45 @@ class TyreController extends BaseController {
       //       filename: file.name,
       //     )));
 
-      print("Data: "+formData.toString());
-      res.Response response =
-          await dioo.post("/rotatetyre", data: formData );
-          print("Res "+response.data.toString()+"^^");
+      print("Data: " + formData.toString());
+      res.Response response = await dioo.post("/rotatetyre", data: formData);
+      print("Res " + response.data.toString() + "^^");
       if (response.statusCode == 200) {
         print("press here...!");
-          isSubmitting(false);
+        isSubmitting(false);
 
-          Get.snackbar("Tyre Rotated successfully", "");
-     
-          Get.offAll(TyreHomeScreen(), transition: Transition.leftToRight);
-     
-  
+        Get.snackbar("Tyre Rotated successfully", "");
+
+        Get.offAll(TyreHomeScreen(), transition: Transition.leftToRight);
       } else {
         show("Error", response.data['message']);
-         isSubmitting(false);
+        isSubmitting(false);
       }
     } on res.DioError catch (e, trace) {
       isSubmitting(false);
       print(trace);
     }
   }
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
-      tyreUnMount(
-      {required String vehicle_id, required String odometer, 
-      required String tyre_id, required String dismount_resion, 
-      }) async {
 
-
-        isSubmitting (true);
-        Map<String, String> map = HashMap();
-        map["tyre_id"] = tyre_id.toString();
-        map["odometer"] = odometer.toString();
-        map["vehicle_id"] = vehicle_id.toString();
-        map["dismount_resion"] = dismount_resion.toString();
-       
-
+  tyreUnMount({
+    required String vehicle_id,
+    required String odometer,
+    required String tyre_id,
+    required String dismount_resion,
+  }) async {
+    isSubmitting(true);
+    Map<String, String> map = HashMap();
+    map["tyre_id"] = tyre_id.toString();
+    map["odometer"] = odometer.toString();
+    map["vehicle_id"] = vehicle_id.toString();
+    map["dismount_resion"] = dismount_resion.toString();
 
     print("tyre_id: " + tyre_id.toString());
     print("odometer: " + odometer.toString());
     print("vehicle_id: " + vehicle_id.toString());
     print("dismount_resion: " + dismount_resion.toString());
-  
-    
-     print("serial numner onBoarding:" +vehicle_id.toString());
+
+    print("serial numner onBoarding:" + vehicle_id.toString());
     var token = "";
     if (getUserInfo() != null) {
       token = getUserInfo()!.data!.token.toString();
@@ -571,10 +535,9 @@ class TyreController extends BaseController {
       //       filename: file.name,
       //     )));
 
-      print("Data: "+formData.toString());
-      res.Response response =
-          await dioo.post("/tyre-unmount", data: formData );
-          print("Res "+response.data.toString()+"^^");
+      print("Data: " + formData.toString());
+      res.Response response = await dioo.post("/tyre-unmount", data: formData);
+      print("Res " + response.data.toString() + "^^");
       if (response.statusCode == 200) {
         print("press here...!");
         if (response.data['success'] == true) {
@@ -582,40 +545,36 @@ class TyreController extends BaseController {
           isSubmitting(false);
 
           Get.snackbar("", "Tyre dismounted successfully");
-     
+
           Get.offAll(TyreHomeScreen(), transition: Transition.leftToRight);
-     
-  
         }
       } else {
         show("Error", response.data['message']);
-         isSubmitting(false);
+        isSubmitting(false);
       }
     } on res.DioError catch (e, trace) {
       isSubmitting(false);
       print(trace);
     }
   }
-   
-   
-   
-    tyreMount(
-      {required String id, required String deploy_on, 
-      required String vehicle_id, required String odometer, required String vehicle_axcel,
-      required String tyre_position, required String tyre_status
-      }) async {
 
-
-        isSubmitting (true);
-        Map<String, String> map = HashMap();
-        map["tyre_id"] = id.toString();
-        map["deploy_on"] = deploy_on.toString();
-        map["vehicle_id"] = vehicle_id.toString();
-        map["odometer"] = odometer.toString();
-        map["vehicle_axcel"] = vehicle_axcel.toString();
-        map["tyre_position"] = tyre_position.toString();
-        map["tyre_status"] = "2";
-
+  tyreMount(
+      {required String id,
+      required String deploy_on,
+      required String vehicle_id,
+      required String odometer,
+      required String vehicle_axcel,
+      required String tyre_position,
+      required String tyre_status}) async {
+    isSubmitting(true);
+    Map<String, String> map = HashMap();
+    map["tyre_id"] = id.toString();
+    map["deploy_on"] = deploy_on.toString();
+    map["vehicle_id"] = vehicle_id.toString();
+    map["odometer"] = odometer.toString();
+    map["vehicle_axcel"] = vehicle_axcel.toString();
+    map["tyre_position"] = tyre_position.toString();
+    map["tyre_status"] = "2";
 
     print("Data " + id.toString());
     print("deploy_on " + deploy_on.toString());
@@ -624,8 +583,8 @@ class TyreController extends BaseController {
     print("vehicle_axcel " + vehicle_axcel.toString());
     print("tyre_position " + tyre_position.toString());
     print("tyre_status " + "2");
-    
-     print("serial numner onBoarding:" +vehicle_id.toString());
+
+    print("serial numner onBoarding:" + vehicle_id.toString());
     var token = "";
     if (getUserInfo() != null) {
       token = getUserInfo()!.data!.token.toString();
@@ -645,10 +604,9 @@ class TyreController extends BaseController {
       //       filename: file.name,
       //     )));
 
-      print("Data: "+formData.toString());
-      res.Response response =
-          await dioo.post("/tyre-mount", data: formData );
-          print("Res "+response.data.toString()+"^^");
+      print("Data: " + formData.toString());
+      res.Response response = await dioo.post("/tyre-mount", data: formData);
+      print("Res " + response.data.toString() + "^^");
       if (response.statusCode == 200) {
         print("press here...!");
         if (response.data['success'] == true) {
@@ -656,14 +614,12 @@ class TyreController extends BaseController {
           isSubmitting(false);
 
           Get.snackbar("", "Tyre mounted successfully");
-     
+
           Get.offAll(TyreHomeScreen(), transition: Transition.leftToRight);
-     
-  
         }
       } else {
         show("Error", response.data['message']);
-         isSubmitting(false);
+        isSubmitting(false);
       }
     } on res.DioError catch (e, trace) {
       isSubmitting(false);
@@ -672,12 +628,14 @@ class TyreController extends BaseController {
   }
 
   onBoardingTyre(
-      {required Map<String, dynamic> data, required XFile file, required bool isNavigate,String? serialNumber}) async {
+      {required Map<String, dynamic> data,
+      required XFile file,
+      required bool isNavigate,
+      String? serialNumber}) async {
     print("Data " + data.toString());
 
-   
     print("file image:  " + file.toString());
-     print("serial numner onBoarding:" +serialNumber.toString());
+    print("serial numner onBoarding:" + serialNumber.toString());
     var token = "";
     if (getUserInfo() != null) {
       token = getUserInfo()!.data!.token.toString();
@@ -697,25 +655,28 @@ class TyreController extends BaseController {
             filename: file.name,
           )));
 
-          print("file image"+ file.name.toString());
+      print("file image" + file.name.toString());
       res.Response response =
           await dioo.post("/tyre-onboarding", data: formData);
       if (response.statusCode == 200) {
         if (response.data['data'] != null) {
-
           print("response: " + response.data['data'].toString());
 
           tyreId = response.data['data']['id'].toString();
           thread_depth = response.data['data']['tread_depth'].toString();
-          maximum_psi = response.data['data']['tyre_psi'].toString();
+          maximum_psi = response.data['data']['max_psi'].toString();
 
-          print("id: "+ tyreId.toString());
-          print("thread_depth: "+ thread_depth.toString());
-          print("maxPsi: "+ maximum_psi.toString());
+          print("id: " + tyreId.toString());
+          print("thread_depth: " + thread_depth.toString());
+          print("maxPsi: " + maximum_psi.toString());
           isSubmitting(false);
-          isNavigate != true ?
-          Get.offAll(TyreHomeScreen(), transition: Transition.leftToRight) :
-          Get.offAll(MountHomeScreen(serialNumber: serialNumber.toString(),), transition: Transition.leftToRight);
+          isNavigate != true
+              ? Get.offAll(TyreHomeScreen(), transition: Transition.leftToRight)
+              : Get.offAll(
+                  MountHomeScreen(
+                    serialNumber: serialNumber.toString(),
+                  ),
+                  transition: Transition.leftToRight);
           Get.defaultDialog(
               contentPadding: EdgeInsets.all(10),
               title: "",
@@ -764,12 +725,738 @@ class TyreController extends BaseController {
                   ),
                 ],
               ));
+       
+       
+       
         }
       } else {
         show("Error", response.data['message']);
       }
     } on res.DioError catch (e, trace) {
       isSubmitting(false);
+      print(trace);
+    }
+  }
+
+  pressureCheckApi({
+    required String tyre_id,
+    required String Pressure,
+  }) async {
+    isSubmitting(true);
+    Map<String, String> map = HashMap();
+    map["tyre_id"] = tyre_id.toString();
+    map["Pressure"] = Pressure.toString();
+
+    print("tyre_id: " + tyre_id.toString());
+    print("Pressure: " + Pressure.toString());
+
+    var token = "";
+    if (getUserInfo() != null) {
+      token = getUserInfo()!.data!.token.toString();
+    }
+
+    dioo.options.headers['content-Type'] = 'application/json';
+    dioo.options.headers["Authorization"] = "Bearer ${token}";
+
+    try {
+      isSubmitting(true);
+      res.FormData formData = res.FormData.fromMap(map);
+
+      print("Data: " + formData.toString());
+      res.Response response = await dioo.post("/checkPressure", data: formData);
+      print("Res " + response.data.toString() + "^^");
+      if (response.statusCode == 200) {
+        print("press here...!");
+        if (response.data['success'] == true) {
+          print("press here...2");
+          isSubmitting(false);
+
+          // Get.snackbar("Pressure check successfully", "");
+          Get.snackbar(response.data['message'], "");
+          message = response.data['message'];
+
+           Get.defaultDialog(
+              contentPadding: EdgeInsets.all(10),
+              title: "",
+
+              // titleStyle: TextStyle(color: Colors.black, fontSize: 17),
+
+              content: Column(
+                children: [
+                  Lottie.asset(
+                    "assets/images/loading.json",
+                    width: 200,
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(response.data['message'],
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500)),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  SizedBox(
+                    width: 140,
+                    height: 40,
+                    child: FlatButton(
+                      color: Colors.amber,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                      onPressed: () {
+                        Get.back();
+                      },
+                      child: Text(
+                        "Ok",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ),
+                ],
+              ));
+       
+
+          // Get.offAll(TyreHomeScreen(), transition: Transition.leftToRight);
+
+        }
+      } else {
+        show("Error", response.data['message']);
+        isSubmitting(false);
+      }
+    } on res.DioError catch (e, trace) {
+      isSubmitting(false);
+      print(trace);
+    }
+  }
+
+  punctureRepairReasonApi() async {
+    var token = "";
+    if (getUserInfo() != null) {
+      token = getUserInfo()!.data!.token.toString();
+    }
+
+    dioo.options.headers['content-Type'] = 'application/json';
+    dioo.options.headers["Authorization"] = "Bearer ${token}";
+
+    try {
+      res.Response response = await dioo.get("/puncturerepairlist");
+      if (response.statusCode == 200) {
+        if (response.data['data'] != null) {
+          punctureRepairReasonList.clear();
+          List list = response.data['data'];
+          punctureRepairReasonList.addAll(
+              list.map((e) => PunctureTyreRepairModel.fromJson(e)).toList());
+        }
+      }
+    } on res.DioError catch (e, trace) {
+      print(trace);
+    }
+  }
+
+  tyreInspectionApi({
+    required String tyre_id,
+    required String type,
+    required String tyre_psi,
+    required String is_puncture,
+    required String tyre_puncture_repair_id,
+    required String odometer,
+  }) async {
+    isSubmitting(true);
+    Map<String, String> map = HashMap();
+    map["tyre_id"] = tyre_id.toString();
+    map["type"] = type.toString();
+    map["tyre_psi"] = tyre_psi.toString();
+    map["is_puncture"] = is_puncture.toString();
+    map["tyre_puncture_repair_id"] = tyre_puncture_repair_id.toString();
+    map["odometer"] = odometer.toString();
+
+    print("tyre_id: " + tyre_id.toString());
+    print("type: " + type.toString());
+    print("tyre_psi: " + tyre_psi.toString());
+    print("is_puncture: " + is_puncture.toString());
+    print("tyre_puncture_repair_id: " + tyre_puncture_repair_id.toString());
+    print("odometer: " + odometer.toString());
+
+    var token = "";
+    if (getUserInfo() != null) {
+      token = getUserInfo()!.data!.token.toString();
+    }
+
+    dioo.options.headers['content-Type'] = 'application/json';
+    dioo.options.headers["Authorization"] = "Bearer ${token}";
+
+    try {
+      isSubmitting(true);
+      res.FormData formData = res.FormData.fromMap(map);
+
+      print("Data: " + formData.toString());
+      res.Response response =
+          await dioo.post("/tyreinspection", data: formData);
+      print("Res " + response.data.toString() + "^^");
+      if (response.statusCode == 200) {
+        print("press here...!");
+        if (response.data['success'] == true) {
+          print("press here...2");
+          isSubmitting(false);
+
+          // Get.snackbar("Pressure check successfully", "");
+          Get.snackbar(response.data['message'], "");
+          message = response.data['message'];
+
+         Get.offAll(InspectionHomeScreen(),
+              transition: Transition.leftToRight);
+
+          print("image: "+ response.data['message'].toString());
+
+          // Get.(TyreHomeScreen(), transition: Transition.leftToRight);
+        }
+      } else {
+        show("Error", response.data['message']);
+        isSubmitting(false);
+      }
+    } on res.DioError catch (e, trace) {
+      isSubmitting(false);
+      print(trace);
+    }
+  }
+
+  defectApi() async {
+    var token = "";
+    if (getUserInfo() != null) {
+      token = getUserInfo()!.data!.token.toString();
+    }
+
+    dioo.options.headers['content-Type'] = 'application/json';
+    dioo.options.headers["Authorization"] = "Bearer ${token}";
+
+    try {
+      res.Response response = await dioo.get("/tyredefectlist");
+      if (response.statusCode == 200) {
+       
+        if (response.data['data'] != null) {
+          defectList.clear();
+          List list = response.data['data'];
+          defectList.addAll(list.map((e) => DefectModel.fromJson(e)).toList());
+        }
+      }
+    } on res.DioError catch (e, trace) {
+      print(trace);
+    }
+  }
+
+  detailedInspectionApi(
+      {required String type,
+      // required XFile file,
+      required String tyre_id,
+      required String tyre_serial_number,
+      required String tread_depth,
+      required String tyre_psi,
+      required String tyre_defect,
+      required String inspection_note,
+      required String is_retread,
+      required String defect_id,
+
+      required String odometer,
+      }) async {
+    isSubmitting(true);
+    Map<String, String> map = HashMap();
+    map["type"] = type.toString();
+    map["tyre_id"] = tyre_id.toString();
+    map["tyre_serial_number"] = tyre_serial_number.toString();
+    map["tread_depth"] = tread_depth.toString();
+    map["tyre_psi"] = tyre_psi.toString();
+    map["tyre_defect"] = tyre_defect.toString();
+    map["inspection_note"] = inspection_note.toString();
+    map["is_retread"] = is_retread.toString();
+    map["defect_id"] = defect_id.toString();
+    map["odometer"] = odometer.toString();
+
+    print("type " + type.toString());
+    print("tyre_serial_number " + tyre_serial_number.toString());
+    print("tread_depth " + tread_depth.toString());
+    print("tyre_psi " + tyre_psi.toString());
+    print("tyre_defect " + tyre_defect.toString());
+    print("inspection_note " + inspection_note.toString());
+    print("is_retread " + is_retread);
+    print("defect_id " + defect_id);
+    print("odometer " + odometer);
+
+    print("serial numner onBoarding:" + tyre_defect.toString());
+    var token = "";
+    if (getUserInfo() != null) {
+      token = getUserInfo()!.data!.token.toString();
+    }
+
+    dioo.options.headers['content-Type'] = 'application/json';
+    dioo.options.headers["Authorization"] = "Bearer ${token}";
+
+    try {
+      isSubmitting(true);
+      res.FormData formData = res.FormData.fromMap(map);
+
+      //  formData.files.add(MapEntry(
+      //       "image",
+      //       await res.MultipartFile.fromFile(
+      //         file.path,
+      //         filename: file.name,
+      //       )));
+
+      //   print("file image" + file.name.toString());
+
+      print("Data: " + formData.toString());
+      res.Response response =
+          await dioo.post("/tyreinspection", data: formData);
+      print("Res " + response.data.toString() + "^^");
+      if (response.statusCode == 200) {
+        print("press here...!");
+        if (response.data['success'] == true) {
+          print("press here...2");
+          isSubmitting(false);
+
+          Get.snackbar(response.data['message'], "");
+
+          Get.offAll(InspectionHomeScreen(),
+              transition: Transition.leftToRight);
+        }
+      } else {
+        show("Error", response.data['message']);
+        isSubmitting(false);
+      }
+    } on res.DioError catch (e, trace) {
+      isSubmitting(false);
+      print(trace);
+    }
+  }
+
+  getVehiclesbyShopApi(String id) async {
+    var token = "";
+    if (getUserInfo() != null) {
+      token = getUserInfo()!.data!.token.toString();
+    }
+
+    dioo.options.headers['content-Type'] = 'application/json';
+    dioo.options.headers["Authorization"] = "Bearer ${token}";
+
+    try {
+      res.Response response = await dioo
+          .get(
+        "/tyresbystoresid?store=" + id,
+      )
+          .then((value) {
+        print("Value " + value.toString() + "^^");
+        return value;
+      });
+
+      if (response.statusCode == 200) {
+        if (response.data['data'] != null) {
+          tyreSerialNumberList.clear();
+          List list = response.data['data'];
+          tyreSerialNumberList
+              .addAll(list.map((e) => SerialNumberModel.fromJson(e)).toList());
+        }
+      }
+
+      print("tyreSizeList : ${tyreSizeList.length}");
+      tyreSerialNumberList.forEach((element) {
+        print("serial number: ${element.tyre_serial_number}");
+        print("tyrePsi: ${element.tyre_psi}");
+        print("tyreId: ${element.id}");
+      });
+    } on res.DioError catch (e, trace) {
+      print(trace);
+    }
+  }
+
+  getRetreadTyreApi() async {
+    var token = "";
+    if (getUserInfo() != null) {
+      token = getUserInfo()!.data!.token.toString();
+    }
+
+    dioo.options.headers['content-Type'] = 'application/json';
+    dioo.options.headers["Authorization"] = "Bearer ${token}";
+
+    try {
+      res.Response response = await dioo
+          .get(
+        "/is_retread",
+      )
+          .then((value) {
+        print("Value " + value.toString() + "^^");
+        return value;
+      });
+
+      var jsonRes;
+
+      if (response.statusCode == 200) {
+        print("here 1");
+
+        final JsonDecoder _decoder = new JsonDecoder();
+        print("here 2");
+        jsonRes = _decoder.convert(response.body.toString());
+        print("here 3");
+
+        retreaTyreSerialNumberList.clear();
+
+        List list = jsonRes['data'];
+        print("here 4");
+        // print("response: "+ response.data['data'].toString());
+        retreaTyreSerialNumberList
+            .addAll(list.map((e) => RetreadTyreModel.fromJson(e)).toList());
+        print("here 5");
+      }
+
+      print("tyreSizeList : ${retreaTyreSerialNumberList.length}");
+      retreaTyreSerialNumberList.forEach((element) {
+        print("serial number: ${element.tyre_serial_number}");
+        print("tyrePsi: ${element.tyre_psi}");
+        print("tyreId: ${element.id}");
+        print("tyreId: ${element.retreads_status}");
+      });
+    } on res.DioError catch (e, trace) {
+      print(trace);
+    }
+  }
+
+  preRetreadApi(
+      {required String tyre_id,
+      required String weight,
+      required String width,
+      required String thread_depth,
+      required String day,
+      required String month,
+      required String year,
+      required String vendor}) async {
+    isSubmitting(true);
+    Map<String, String> map = HashMap();
+
+    map["tyre_id"] = tyre_id.toString();
+    map["weight"] = weight.toString();
+    map["width"] = width.toString();
+    map["thread_depth"] = thread_depth.toString();
+    map["day"] = day.toString();
+    map["month"] = month.toString();
+    map["year"] = year.toString();
+    map["vendor"] = vendor.toString();
+
+    print("tyre_id " + tyre_id.toString());
+    print("width " + width.toString());
+    print("thread_depth " + thread_depth.toString());
+    print("day " + day.toString());
+    print("month " + month.toString());
+    print("year " + year);
+    print("vendor " + vendor.toString());
+
+    print("serial numner onBoarding:" + day.toString());
+    var token = "";
+    if (getUserInfo() != null) {
+      token = getUserInfo()!.data!.token.toString();
+    }
+
+    dioo.options.headers['content-Type'] = 'application/json';
+    dioo.options.headers["Authorization"] = "Bearer ${token}";
+
+    try {
+      isSubmitting(true);
+      res.FormData formData = res.FormData.fromMap(map);
+
+      //  formData.files.add(MapEntry(
+      //       "image",
+      //       await res.MultipartFile.fromFile(
+      //         file.path,
+      //         filename: file.name,
+      //       )));
+
+      //   print("file image" + file.name.toString());
+
+      var jsonRes;
+
+      print("Data: " + formData.toString());
+      res.Response response =
+          await dioo.post("/Preretread_Details", data: formData);
+      print("Res " + response.data.toString() + "^^");
+      if (response.statusCode == 200) {
+        final JsonDecoder _decoder = new JsonDecoder();
+        print("here 2");
+        jsonRes = _decoder.convert(response.body.toString());
+        print("press here...!");
+        if (jsonRes['data'] != null) {
+          print("press here...2");
+          isSubmitting(false);
+
+          Get.snackbar(jsonRes['message'], "");
+
+          Get.to(
+              PostRetreadScreen(
+                tyre_id: tyre_id,
+              ),
+              transition: Transition.leftToRight);
+        }
+      } else {
+        show("Error", jsonRes['message']);
+        isSubmitting(false);
+      }
+    } on res.DioError catch (e, trace) {
+      isSubmitting(false);
+      print(trace);
+    }
+  }
+
+  postRetreadApi({
+    required String tyre_id,
+    required String tyre_weight,
+    required String tread_depth,
+    required String tyre_width,
+    required String tyre_warranty_kms,
+    required String cost_of_retread,
+    required String retread_warranty_duration,
+    required String completion_date,
+    required String completion_month,
+    required String completion_year,
+    required String manufacturer,
+    required String retread_rubber_tyre,
+  }) async {
+    isSubmitting(true);
+    Map<String, String> map = HashMap();
+
+    map["tyre_id"] = tyre_id.toString();
+    map["tyre_weight"] = tyre_weight.toString();
+    map["tread_depth"] = tread_depth.toString();
+    map["tyre_width"] = tyre_width.toString();
+    map["tyre_warranty_kms"] = tyre_warranty_kms.toString();
+    map["cost_of_retread"] = cost_of_retread.toString();
+    map["retread_warranty_duration"] = retread_warranty_duration.toString();
+    map["completion_date"] = completion_date.toString();
+    map["completion_month"] = completion_month.toString();
+    map["completion_year"] = completion_year.toString();
+    map["manufacturer"] = manufacturer.toString();
+    map["retread_rubber_tyre"] = retread_rubber_tyre.toString();
+
+    print("tyre_id " + tyre_id.toString());
+    print("tyre_weight " + tyre_weight.toString());
+    print("thread_depth " + thread_depth.toString());
+    print("tyre_width " + tyre_width.toString());
+    print("tyre_warranty_kms " + tyre_warranty_kms.toString());
+    print("cost_of_retread " + cost_of_retread);
+    print("retread_warranty_duration " + retread_warranty_duration.toString());
+    print("completion_date " + completion_date.toString());
+    print("completion_month " + completion_month.toString());
+    print("completion_year " + completion_year.toString());
+    print("manufacturer " + manufacturer.toString());
+    print("retread_rubber_tyre " + retread_rubber_tyre.toString());
+
+    var token = "";
+    if (getUserInfo() != null) {
+      token = getUserInfo()!.data!.token.toString();
+    }
+
+    dioo.options.headers['content-Type'] = 'application/json';
+    dioo.options.headers["Authorization"] = "Bearer ${token}";
+
+    try {
+      isSubmitting(true);
+      res.FormData formData = res.FormData.fromMap(map);
+
+      //  formData.files.add(MapEntry(
+      //       "image",
+      //       await res.MultipartFile.fromFile(
+      //         file.path,
+      //         filename: file.name,
+      //       )));
+
+      //   print("file image" + file.name.toString());
+
+      var jsonRes;
+
+      print("Data: " + formData.toString());
+      res.Response response =
+          await dioo.post("/postRetread_details", data: formData);
+      print("Res " + response.data.toString() + "^^");
+      if (response.statusCode == 200) {
+        final JsonDecoder _decoder = new JsonDecoder();
+        print("here 2");
+        jsonRes = _decoder.convert(response.body.toString());
+        print("press here...!");
+        if (jsonRes['data'] != null) {
+          print("press here...2");
+          isSubmitting(false);
+
+          Get.snackbar(jsonRes['message'], "");
+
+          Get.offAll(TyreHomeScreen(), transition: Transition.leftToRight);
+        }
+      } else {
+        show("Error", jsonRes['message']);
+        isSubmitting(false);
+      }
+    } on res.DioError catch (e, trace) {
+      isSubmitting(false);
+      print(trace);
+    }
+  }
+
+  menufactureApi() async {
+    var token = "";
+    if (getUserInfo() != null) {
+      token = getUserInfo()!.data!.token.toString();
+    }
+
+    dioo.options.headers['content-Type'] = 'application/json';
+    dioo.options.headers["Authorization"] = "Bearer ${token}";
+
+    try {
+      res.Response response = await dioo
+          .get(
+        "/get_manufacturer",
+      )
+          .then((value) {
+        print("Value " + value.toString() + "^^");
+        return value;
+      });
+
+      var jsonRes;
+
+      if (response.statusCode == 200) {
+        print("here 1");
+
+        final JsonDecoder _decoder = new JsonDecoder();
+        print("here 2");
+        jsonRes = _decoder.convert(response.body.toString());
+        print("here 3");
+
+        menufactureList.clear();
+
+        List list = jsonRes['data'];
+        print("here 4");
+        // print("response: "+ response.data['data'].toString());
+        menufactureList
+            .addAll(list.map((e) => MenufactureModel.fromJson(e)).toList());
+        print("here 5");
+      }
+
+      print("tyreSizeList : ${retreaTyreSerialNumberList.length}");
+      menufactureList.forEach((element) {
+        print("serial number: ${element.name}");
+        print("tyrePsi: ${element.company_reg_number}");
+        print("tyreId: ${element.id}");
+      });
+    } on res.DioError catch (e, trace) {
+      print(trace);
+    }
+  }
+
+
+
+
+    rubberTyreApi() async {
+    var token = "";
+    if (getUserInfo() != null) {
+      token = getUserInfo()!.data!.token.toString();
+    }
+
+    dioo.options.headers['content-Type'] = 'application/json';
+    dioo.options.headers["Authorization"] = "Bearer ${token}";
+
+    try {
+      res.Response response = await dioo
+          .get(
+        "/get_retread_rubber_tyre",
+      )
+          .then((value) {
+        print("Value " + value.toString() + "^^");
+        return value;
+      });
+
+      var jsonRes;
+
+      if (response.statusCode == 200) {
+        print("here 1");
+
+        final JsonDecoder _decoder = new JsonDecoder();
+        print("here 2");
+        jsonRes = _decoder.convert(response.body.toString());
+        print("here 3");
+
+        rubberTyreList.clear();
+
+        List list = jsonRes['data'];
+        print("here 4");
+        // print("response: "+ response.data['data'].toString());
+        rubberTyreList
+            .addAll(list.map((e) => MenufactureModel.fromJson(e)).toList());
+        print("here 5");
+      }
+
+      print("tyreSizeList : ${rubberTyreList.length}");
+      rubberTyreList.forEach((element) {
+        print("serial number: ${element.name}");
+        print("tyrePsi: ${element.company_reg_number}");
+        print("tyreId: ${element.id}");
+      });
+    } on res.DioError catch (e, trace) {
+      print(trace);
+    }
+  }
+
+
+
+
+
+      retiringReasonApi() async {
+    var token = "";
+    if (getUserInfo() != null) {
+      token = getUserInfo()!.data!.token.toString();
+    }
+
+    dioo.options.headers['content-Type'] = 'application/json';
+    dioo.options.headers["Authorization"] = "Bearer ${token}";
+
+    try {
+      res.Response response = await dioo
+          .get(
+        "/get_retiring_reason",
+      )
+          .then((value) {
+        print("Value " + value.toString() + "^^");
+        return value;
+      });
+
+      var jsonRes;
+
+      if (response.statusCode == 200) {
+        print("here 1");
+
+        
+        print("here 2");
+        jsonRes = jsonDecode(response.body.toString());
+        print("here 3");
+
+        rubberTyreList.clear();
+
+        List list = jsonRes['data'];
+        print("here 4");
+        // print("response: "+ response.data['data'].toString());
+        retiringReasonList
+            .addAll(list.map((e) => RetiringReasonModel.fromJson(e)).toList());
+        print("here 5");
+      }
+
+      print("retiringReasonList : ${retiringReasonList.length}");
+      retiringReasonList.forEach((element) {
+   
+        print("reason: ${element.reason}");
+        print("tyreId: ${element.id}");
+      });
+    } on res.DioError catch (e, trace) {
       print(trace);
     }
   }

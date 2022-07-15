@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:PrimeMetrics/screens/tyre_management/tyre_inspection/detailed_inspection/detailed_inspection_screen.dart';
 import 'package:PrimeMetrics/screens/tyre_management/tyre_inspection/pressure_check/pressure_check_home_screen.dart';
 import 'package:PrimeMetrics/utils/images.dart';
@@ -8,7 +10,21 @@ import '../../../utils/colors.dart';
 import '../../../utils/screen_size.dart';
 
 class SelectedTyreInspection extends StatefulWidget {
-  const SelectedTyreInspection({Key? key}) : super(key: key);
+ String? tyre_serial_number;
+ String? tyre_id;
+ String? thread_depth;
+ String? recorded_psi;
+ String? max_psi;
+ String? recom_psi;
+ String? odometer;
+  SelectedTyreInspection ({required this.tyre_serial_number,
+   required this.thread_depth,
+   required this.recorded_psi,
+   required this.max_psi,
+   required this.tyre_id, 
+   required this.recom_psi,
+   required this.odometer,
+   });
 
   @override
   _SelectedTyreInspectionState createState() => _SelectedTyreInspectionState();
@@ -17,7 +33,9 @@ class SelectedTyreInspection extends StatefulWidget {
 class _SelectedTyreInspectionState extends State<SelectedTyreInspection> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int value = 0;
+  String? isSelect;
   List deployOn = ["Pressure Check", "Detailed Inspection"];
+  List checkList = ["pressure_check", "details_inspection"];
   List images = [pressure_check, detailed_inspection];
 
   @override
@@ -80,6 +98,7 @@ class _SelectedTyreInspectionState extends State<SelectedTyreInspection> {
                       ),
                     ),
                     tyreDetailView(),
+                    
                     ListView.builder(
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
@@ -102,6 +121,8 @@ class _SelectedTyreInspectionState extends State<SelectedTyreInspection> {
                                       setState(
                                             () {
                                           value = int.parse(index.toString());
+                                          print(value);
+                                          
                                         },
                                       );
                                     },
@@ -130,9 +151,18 @@ class _SelectedTyreInspectionState extends State<SelectedTyreInspection> {
           onTap: () async {
             //Get.to(SelectedTyreInspection(), transition: Transition.rightToLeft);
             if(value==0){
-              Get.to(PressureCheckHomeScreen(), transition: Transition.rightToLeft);
+              Get.to(PressureCheckHomeScreen(
+                type: value.toString(),
+                tyre_id: widget.tyre_id,
+                odometer: widget.odometer,
+              ), transition: Transition.rightToLeft);
             }else if(value==1){
-              Get.to(DetailedInspectionScreen(), transition: Transition.rightToLeft);
+              Get.to(DetailedInspectionScreen(
+                tyre_id: widget.tyre_id.toString(),
+                tyre_serial_number: widget.tyre_serial_number.toString(),
+                tread_depth: widget.thread_depth.toString(),
+                odometer:widget.odometer.toString()
+              ), transition: Transition.rightToLeft);
             }
           },
           child: Container(
@@ -193,12 +223,24 @@ class _SelectedTyreInspectionState extends State<SelectedTyreInspection> {
                       fontSize: 14),
                 ),
                 SizedBox(height: 5,),
-                Text(
-                  "Tyre # 1234567",
-                  style: TextStyle(
-                      fontWeight: FontWeight.normal,
-                      color: Colors.white,
-                      fontSize: 18),
+                Row(
+                  children: [
+                    Text(
+                      "Tyre # ",
+                      style: TextStyle(
+                          fontWeight: FontWeight.normal,
+                          color: Colors.white,
+                          fontSize: 18),
+                    ),
+
+                     Text(
+                      widget.tyre_serial_number.toString(),
+                      style: TextStyle(
+                          fontWeight: FontWeight.normal,
+                          color: Colors.white,
+                          fontSize: 18),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -233,7 +275,8 @@ class _SelectedTyreInspectionState extends State<SelectedTyreInspection> {
                           ),
                         ),
                         Text(
-                          "123",
+                          // "123",
+                          widget.thread_depth.toString(),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.black,
@@ -255,7 +298,8 @@ class _SelectedTyreInspectionState extends State<SelectedTyreInspection> {
                           ),
                         ),
                         Text(
-                          "123",
+                          // "123",
+                          widget.recorded_psi.toString(),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.black,
@@ -277,7 +321,34 @@ class _SelectedTyreInspectionState extends State<SelectedTyreInspection> {
                           ),
                         ),
                         Text(
-                          "123",
+                          // "123",
+                          
+                          widget.max_psi.toString(),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                           SizedBox(height: 10,),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            "Recommended PSI",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          // "123",
+                          
+                          widget.recom_psi.toString(),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.black,

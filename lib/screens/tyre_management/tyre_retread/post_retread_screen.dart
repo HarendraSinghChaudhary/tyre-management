@@ -1,3 +1,6 @@
+// ignore_for_file: prefer_const_constructors
+
+import 'package:PrimeMetrics/controllers/tyre/tyre_controller.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,7 +12,10 @@ import '../../fuel_master/fuel_master_widgets/shadow_textfield.dart';
 import '../tyre_home_screen.dart';
 
 class PostRetreadScreen extends StatefulWidget {
-  const PostRetreadScreen({Key? key}) : super(key: key);
+    String? tyre_id;
+
+  PostRetreadScreen({required this.tyre_id});
+  
 
   @override
   _PostRetreadScreenState createState() => _PostRetreadScreenState();
@@ -25,14 +31,31 @@ class _PostRetreadScreenState extends State<PostRetreadScreen> {
   TextEditingController dayController = TextEditingController();
   TextEditingController monthController = TextEditingController();
   TextEditingController yearController = TextEditingController();
-  TextEditingController warrantyController = TextEditingController();
+  TextEditingController warrantyKilometerController = TextEditingController();
+
+  TyreController tyreController = Get.find();
+
+  String? warrantyDuration;
+  String? menufactureId;
+  String? rubberId;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    tyreController.menufactureApi();
+
+    tyreController.rubberTyreApi();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: primaryColors,
-      body: SingleChildScrollView(
+      body: Obx((() => 
+
+      SingleChildScrollView(
         physics: BouncingScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -88,6 +111,8 @@ class _PostRetreadScreenState extends State<PostRetreadScreen> {
                     ),
                     ShadowTextField(
                       hintText: "Weight (Kgs)",
+                      maxLine: 1,
+                      keyboardType: TextInputType.number,
                       controller: tyreWeightController,
                       onChanged: (value) {},
                     ),
@@ -96,6 +121,8 @@ class _PostRetreadScreenState extends State<PostRetreadScreen> {
                     ),
                     ShadowTextField(
                       hintText: "Width (mms)",
+                      maxLine: 1,
+                      keyboardType: TextInputType.number,
                       controller: tyreWidthController,
                       onChanged: (value) {},
                     ),
@@ -104,6 +131,8 @@ class _PostRetreadScreenState extends State<PostRetreadScreen> {
                     ),
                     ShadowTextField(
                       hintText: "Thread Depth (mm)",
+                      maxLine: 1,
+                      keyboardType: TextInputType.number,
                       controller: threadDepthController,
                       onChanged: (value) {},
                     ),
@@ -112,6 +141,8 @@ class _PostRetreadScreenState extends State<PostRetreadScreen> {
                     ),
                     ShadowTextField(
                       hintText: "Cost of Retread",
+                      maxLine: 1,
+                      keyboardType: TextInputType.number,
                       controller: costRetreadController,
                       onChanged: (value) {},
                     ),
@@ -132,6 +163,9 @@ class _PostRetreadScreenState extends State<PostRetreadScreen> {
                       ShadowTextField(
                         width: ScreenSize.width * 0.2,
                         hintText: "Day",
+                        maxLine: 1,
+                      keyboardType: TextInputType.number,
+                      maxLength: 2,
                         controller: dayController,
                         onChanged: (value) {},
                       ),
@@ -141,6 +175,9 @@ class _PostRetreadScreenState extends State<PostRetreadScreen> {
                       Expanded(
                           child: ShadowTextField(
                         hintText: "Month",
+                          maxLine: 1,
+                      keyboardType: TextInputType.number,
+                      maxLength: 2,
                         controller: monthController,
                         onChanged: (value) {},
                       )),
@@ -150,6 +187,9 @@ class _PostRetreadScreenState extends State<PostRetreadScreen> {
                       ShadowTextField(
                         width: ScreenSize.width * 0.2,
                         hintText: "Year",
+                          maxLine: 1,
+                      keyboardType: TextInputType.number,
+                      maxLength: 2,
                         controller: yearController,
                         onChanged: (value) {},
                       ),
@@ -157,53 +197,141 @@ class _PostRetreadScreenState extends State<PostRetreadScreen> {
                     SizedBox(
                       height: 30,
                     ),
-                    SearchableDropdown(
-                      enabled: true,
-                      hintText: "Select Manufacturer",
-                      listItems: ['Manufacturer 1', 'Manufacturer 2']
-                          .map((e) => "${e}")
-                          .toList(),
-                      onChanged: (value) {},
-                      searchFieldProps: TextFieldProps(
-                        decoration: InputDecoration(
-                          suffixIcon: Icon(
-                            Icons.keyboard_arrow_down,
-                            color: Colors.black,
-                          ),
-                          hintText: "Search",
-                          border: InputBorder.none,
-                        ),
-                      ),
-                      withIcon: false,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    SearchableDropdown(
-                      enabled: true,
-                      hintText: "Select Retread Rubber Tyre",
-                      listItems: ['Rubber Tyre 1', 'Rubber Tyre 2']
-                          .map((e) => "${e}")
-                          .toList(),
-                      onChanged: (value) {},
-                      searchFieldProps: TextFieldProps(
-                        decoration: InputDecoration(
-                          suffixIcon: Icon(
-                            Icons.keyboard_arrow_down,
-                            color: Colors.black,
-                          ),
-                          hintText: "Search",
-                          border: InputBorder.none,
-                        ),
-                      ),
-                      withIcon: false,
-                    ),
+
+
+                      SearchableDropdown(
+                                  withIcon: false,
+                                  enabled: true,
+                                  hintText: "Select Manufacturer",
+                                  listItems: tyreController.menufactureList
+                                      .map((e) => "${e.name}")
+                                      .toList(),
+                                  onChanged: (value) {
+
+                                    menufactureId = tyreController
+                                            .menufactureList
+                                            .firstWhere((element) =>
+                                                value ==
+                                                element.name.toString()).id.toString();
+
+
+                                                            
+
+
+                                    
+                                     print("menu id: "+menufactureId.toString());
+                                                    
+                                          
+                                    // widget.data.remove('store');
+                                    // widget.data.putIfAbsent('store', () => storeCodeSerialNumber);
+                                  },
+                                  searchFieldProps: TextFieldProps(
+                                    decoration: InputDecoration(
+                                      suffixIcon: Icon(
+                                        Icons.keyboard_arrow_down,
+                                        color: Colors.black,
+                                      ),
+                                      hintText: "Search",
+                                      border: InputBorder.none,
+                                    ),
+                                  ),
+                                ),
+
+
+
+                                SizedBox(height: 10,),
+
+
+
+                                         SearchableDropdown(
+                                  withIcon: false,
+                                  enabled: true,
+                                  hintText: "Select Retread Rubber Tyre",
+                                  listItems: tyreController.rubberTyreList
+                                      .map((e) => "${e.name}")
+                                      .toList(),
+                                  onChanged: (value) {
+
+                                    rubberId = tyreController
+                                            .rubberTyreList
+                                            .firstWhere((element) =>
+                                                value ==
+                                                element.name.toString()).id.toString();
+
+
+                                                            
+
+
+                                    
+                                     print("rubber id: "+rubberId.toString());
+                                                    
+                                          
+                                    // widget.data.remove('store');
+                                    // widget.data.putIfAbsent('store', () => storeCodeSerialNumber);
+                                  },
+                                  searchFieldProps: TextFieldProps(
+                                    decoration: InputDecoration(
+                                      suffixIcon: Icon(
+                                        Icons.keyboard_arrow_down,
+                                        color: Colors.black,
+                                      ),
+                                      hintText: "Search",
+                                      border: InputBorder.none,
+                                    ),
+                                  ),
+                                ),
+
+
+                    // SearchableDropdown(
+                    //   enabled: true,
+                    //   hintText: "Select Manufacturer",
+                    //   listItems: ['Manufacturer 1', 'Manufacturer 2']
+                    //       .map((e) => "${e}")
+                    //       .toList(),
+                    //   onChanged: (value) {},
+                    //   searchFieldProps: TextFieldProps(
+                    //     decoration: InputDecoration(
+                    //       suffixIcon: Icon(
+                    //         Icons.keyboard_arrow_down,
+                    //         color: Colors.black,
+                    //       ),
+                    //       hintText: "Search",
+                    //       border: InputBorder.none,
+                    //     ),
+                    //   ),
+                    //   withIcon: false,
+                    // ),
+                    // SizedBox(
+                    //   height: 10,
+                    // ),
+                    // SearchableDropdown(
+                    //   enabled: true,
+                    //   hintText: "Select Retread Rubber Tyre",
+                    //   listItems: ['Rubber Tyre 1', 'Rubber Tyre 2']
+                    //       .map((e) => "${e}")
+                    //       .toList(),
+                    //   onChanged: (value) {},
+                    //   searchFieldProps: TextFieldProps(
+                    //     decoration: InputDecoration(
+                    //       suffixIcon: Icon(
+                    //         Icons.keyboard_arrow_down,
+                    //         color: Colors.black,
+                    //       ),
+                    //       hintText: "Search",
+                    //       border: InputBorder.none,
+                    //     ),
+                    //   ),
+                    //   withIcon: false,
+                    // ),
                     SizedBox(
                       height: 10,
                     ),
                     ShadowTextField(
                       hintText: "Retread Warranty Kilometers",
-                      controller: warrantyController,
+                         maxLine: 1,
+                      keyboardType: TextInputType.number,
+                 
+                      controller: warrantyKilometerController,
                       onChanged: (value) {},
                     ),
                     SizedBox(
@@ -221,10 +349,14 @@ class _PostRetreadScreenState extends State<PostRetreadScreen> {
                     ),
                     SearchableDropdown(
                       enabled: true,
-                      hintText: "3 Years",
+                      hintText: "Select warranty duration",
                       listItems:
-                          ['2 Years', '1 Years'].map((e) => "${e}").toList(),
-                      onChanged: (value) {},
+                          ['5 Years', '4 Years', '3 Years', '2 Years', '1 Years'].map((e) => "${e}").toList(),
+                      onChanged: (value) {
+                        warrantyDuration = value;
+                        print(warrantyDuration);
+
+                      },
                       searchFieldProps: TextFieldProps(
                         decoration: InputDecoration(
                           suffixIcon: Icon(
@@ -242,8 +374,37 @@ class _PostRetreadScreenState extends State<PostRetreadScreen> {
                     ),
                     InkWell(
                       onTap: () {
-                        Get.offAll(TyreHomeScreen(),
-                            transition: Transition.leftToRight);
+
+                        if (
+                          tyreWeightController.text.isNotEmpty && threadDepthController.text.isNotEmpty &&
+                          tyreWidthController.text.isNotEmpty && warrantyKilometerController.text.isNotEmpty &&
+                          costRetreadController.text.isNotEmpty && warrantyDuration.toString() != ""
+                          && dayController.text.isNotEmpty && monthController.text.isNotEmpty && 
+                          yearController.text.isNotEmpty && menufactureId.toString() != ""
+                          && rubberId.toString() != "" && widget.tyre_id.toString() != ""
+                        ) {
+
+                        tyreController.postRetreadApi(
+                          tyre_id: widget.tyre_id.toString(), 
+                          tyre_weight: tyreWeightController.text.trim(), 
+                          tread_depth: threadDepthController.text.trim(), 
+                          tyre_width: tyreWidthController.text.trim(), 
+                          tyre_warranty_kms: warrantyKilometerController.text.trim(), 
+                          cost_of_retread: costRetreadController.text.trim(), 
+                          retread_warranty_duration: warrantyDuration.toString(), 
+                          completion_date: dayController.text.trim(), 
+                          completion_month: monthController.text.trim(), 
+                          completion_year: yearController.text.trim(), 
+                          manufacturer: menufactureId.toString(), 
+                          retread_rubber_tyre: rubberId.toString()
+                          );
+                        } else 
+                        {
+                          Get.snackbar("Please fill all fields", "");
+                        }
+
+                        
+                     
                       },
                       child: Container(
                         alignment: Alignment.center,
@@ -279,7 +440,22 @@ class _PostRetreadScreenState extends State<PostRetreadScreen> {
             )
           ],
         ),
-      ),
+      )
+    
+    
+    
+      
+      
+      
+      ))
+      
+      
+      
+      
+    
+    
+    
+    
     );
   }
 }

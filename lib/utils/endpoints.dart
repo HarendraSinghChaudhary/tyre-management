@@ -69,6 +69,11 @@ final String ROTATETYRE_URL = baseUrl + "/rotatetyre";
 
 
 
+
+final String CHECKPRESSURE_URL = baseUrl + "/checkPressure";
+
+
+
 // final String  VEHICLE_STRUCTURE
 
 
