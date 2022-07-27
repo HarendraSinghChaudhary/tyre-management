@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:PrimeMetrics/controllers/tyre/tyre_controller.dart';
 import 'package:PrimeMetrics/screens/tyre_management/tyre_retiring/tyre_retiring_form.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -7,7 +10,7 @@ import '../../../utils/screen_size.dart';
 import '../tyre_home_screen.dart';
 
 class TyreRetiringConfirmationScreen extends StatefulWidget {
-   List<TyreRetiringForm> data;
+   List<TyreRetiringFormModel> data;
 
   TyreRetiringConfirmationScreen({required this.data});
 
@@ -19,6 +22,31 @@ class TyreRetiringConfirmationScreen extends StatefulWidget {
 class _TyreRetiringConfirmationScreenState
     extends State<TyreRetiringConfirmationScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  TyreController tyreController = TyreController();
+
+  
+
+  List <RetiringModel> retiringList = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    for(int i = 0; i<widget.data.length; i++) {
+      RetiringModel modelRetiring = RetiringModel();
+
+      modelRetiring.tyre_id = widget.data[i].id.toString();
+      modelRetiring.reason = widget.data[i].reason.toString();
+
+      retiringList.add(modelRetiring);
+
+
+    }
+
+  
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +112,7 @@ class _TyreRetiringConfirmationScreenState
                       physics: NeverScrollableScrollPhysics(),
                       itemCount: widget.data.length,
                       itemBuilder: (context, index) {
-                        return tyreDetailView();
+                        return tyreDetailView(index);
                       },
                     ),
                     SizedBox(
@@ -104,8 +132,21 @@ class _TyreRetiringConfirmationScreenState
                     ),
                     GestureDetector(
                       onTap: () {
-                        Get.offAll(TyreHomeScreen(),
-                            transition: Transition.leftToRight);
+
+
+                        if (retiringList.isNotEmpty) {
+
+                        
+
+                        tyreController.tyreRetiringApi(tyre_retiring: jsonEncode(retiringList));
+
+                        }else {
+                          Get.snackbar("Please fill all fields", "");
+                        }
+
+                        
+                        
+                    
                       },
                       child: Container(
                         alignment: Alignment.center,
@@ -138,6 +179,7 @@ class _TyreRetiringConfirmationScreenState
                     ),
                     GestureDetector(
                       onTap: () {
+                        Get.back();
                       },
                       child: Container(
                         alignment: Alignment.center,
@@ -175,7 +217,7 @@ class _TyreRetiringConfirmationScreenState
     );
   }
 
-  Widget tyreDetailView() {
+  Widget tyreDetailView(int index) {
     return Container(
       width: ScreenSize.width * 0.9,
       height: ScreenSize.height * 0.3,
@@ -208,7 +250,7 @@ class _TyreRetiringConfirmationScreenState
                 ),
                 SizedBox(height: 5,),
                 Text(
-                  "Tyre # 1234567",
+                  "Tyre # " + widget.data[index].storeCodeSerialNumber.toString(),
                   style: TextStyle(
                       fontWeight: FontWeight.normal,
                       color: Colors.white,
@@ -247,7 +289,8 @@ class _TyreRetiringConfirmationScreenState
                           ),
                         ),
                         Text(
-                          "123",
+                        //  "123",
+                        widget.data[index].tread_depth.toString(),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.black,
@@ -269,7 +312,7 @@ class _TyreRetiringConfirmationScreenState
                           ),
                         ),
                         Text(
-                          "123",
+                          widget.data[index].tyre_psi.toString(),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.black,
@@ -291,7 +334,8 @@ class _TyreRetiringConfirmationScreenState
                           ),
                         ),
                         Text(
-                          "123",
+                          // "123",
+                          widget.data[index].max_psi.toString(),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.black,
@@ -300,6 +344,49 @@ class _TyreRetiringConfirmationScreenState
                         ),
                       ],
                     ),
+
+                          SizedBox(height: 10,),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            "Recommended PSI",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          // "123",
+                          widget.data[index].recom_psi.toString(),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Text(
+                            "Reason",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                            ),
+                          ),
+
+                            SizedBox(height: 5,),
+
+                             Text(
+                          // "123",
+                          widget.data[index].reason.toString(),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                            fontSize: 18,
+                          ),
+                        ),
                   ],
                 ),
               ),
@@ -309,4 +396,16 @@ class _TyreRetiringConfirmationScreenState
       ),
     );
   }
+}
+
+
+
+class RetiringModel {
+  String tyre_id = "";
+  String reason = "";
+   Map<String, dynamic> toJson() => {
+    "tyre_id ": tyre_id .toString(),
+    "reason": reason,
+  
+  };
 }

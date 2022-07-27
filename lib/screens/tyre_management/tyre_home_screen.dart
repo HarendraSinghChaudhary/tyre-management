@@ -40,7 +40,7 @@ class _TyreHomeScreenState extends State<TyreHomeScreen> {
     tyreController.getTyreVendorList();
     tyreController.getTyreList();
 
-    tyreController.getVehicles();
+    // tyreController.getVehicles();
   }
 
   @override

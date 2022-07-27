@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:PrimeMetrics/screens/tyre_management/tyre_home_screen.dart';
 import 'package:PrimeMetrics/screens/tyre_management/tyre_inspection/inspection_registarion_number.dart';
 import 'package:PrimeMetrics/screens/tyre_management/tyre_inspection/shop_inspection_screen.dart';
@@ -18,8 +20,8 @@ class InspectionHomeScreen extends StatefulWidget {
 class _InspectionHomeScreenState extends State<InspectionHomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int value = 0;
-  List deployOn = ["Truck", "Trailer","Store"];
-  List images = [truck, trailer,shop];
+  List deployOn = ["Truck", "Trailer", "Store"];
+  List images = [truck, trailer, shop];
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +41,8 @@ class _InspectionHomeScreenState extends State<InspectionHomeScreen> {
                 children: [
                   InkWell(
                     onTap: () {
-                     Get.offAll(TyreHomeScreen(), transition: Transition.leftToRight);
+                      Get.offAll(TyreHomeScreen(),
+                          transition: Transition.leftToRight);
                     },
                     child: CircleAvatar(
                       backgroundColor: green,
@@ -74,9 +77,7 @@ class _InspectionHomeScreenState extends State<InspectionHomeScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: Text(
                         "Select Tyre From",
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 18),
+                        style: TextStyle(color: Colors.black, fontSize: 18),
                       ),
                     ),
                     ListView.builder(
@@ -90,22 +91,24 @@ class _InspectionHomeScreenState extends State<InspectionHomeScreen> {
                             borderRadius: BorderRadius.circular(10),
                             child: Row(
                               children: [
-                                Container(padding: EdgeInsets.only(left: 10),child: Image.asset(images[index])),
+                                Container(
+                                    padding: EdgeInsets.only(left: 10),
+                                    child: Image.asset(images[index])),
                                 Expanded(
                                   child: RadioListTile(
-                                    controlAffinity: ListTileControlAffinity.trailing,
+                                    controlAffinity:
+                                        ListTileControlAffinity.trailing,
                                     activeColor: green,
                                     value: index,
                                     groupValue: value,
                                     onChanged: (index) {
                                       setState(
-                                            () {
+                                        () {
                                           value = int.parse(index.toString());
                                         },
                                       );
                                     },
                                     title: Text(deployOn[index] ?? ""),
-
                                   ),
                                 ),
                               ],
@@ -128,11 +131,35 @@ class _InspectionHomeScreenState extends State<InspectionHomeScreen> {
         child: InkWell(
           splashColor: Colors.transparent,
           onTap: () async {
-            if(value==0 || value == 1){
-              Get.to(InspectionRegistrationCode(), transition: Transition.rightToLeft);
-            }else{
-              Get.to(ShopInspectionScreen(), transition: Transition.rightToLeft);
+            print("value: " + value.toString());
+
+            switch (value) {
+              case 0:
+                {
+                  Get.to(InspectionRegistrationCode(value: value, deploy_on: value.toString(),),
+                      transition: Transition.rightToLeft);
+                }
+                // do something
+                break;
+              case 1:
+                {
+                  Get.to(InspectionRegistrationCode(value: value, deploy_on: value.toString(),),
+                      transition: Transition.rightToLeft);
+                }
+                // do something else
+                break;
+              case 2:
+                {
+                  Get.to(ShopInspectionScreen(
+                    deploy_on: value.toString(),
+                  ),
+                      transition: Transition.rightToLeft);
+                }
+                break;
+        
             }
+
+        
           },
           child: Container(
             alignment: Alignment.center,

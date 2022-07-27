@@ -16,9 +16,9 @@ import '../../../fuel_master/fuel_master_widgets/shadow_textfield.dart';
 import '../../tyre_home_screen.dart';
 
 class DetailedInspectionScreen extends StatefulWidget {
- String tyre_id, tyre_serial_number, tread_depth, odometer;
+ String tyre_id, tyre_serial_number, tread_depth, odometer, deploy_on;
 
- DetailedInspectionScreen({required this.tyre_id, required this.tyre_serial_number, required this.tread_depth, required this.odometer});
+ DetailedInspectionScreen({required this.tyre_id, required this.tyre_serial_number, required this.tread_depth, required this.odometer, required this.deploy_on});
 
   @override
   _DetailedInspectionScreenState createState() =>
@@ -51,7 +51,7 @@ class _DetailedInspectionScreenState extends State<DetailedInspectionScreen> {
     super.initState();
   
     serialNumberController.text = widget.tyre_serial_number;
-    depthController.text = widget.tread_depth;
+    // depthController.text = widget.tread_depth;
 
     tyreController.defectApi();
   }
@@ -215,24 +215,7 @@ class _DetailedInspectionScreenState extends State<DetailedInspectionScreen> {
                           ),
                         ),
                       ),
-                    // SearchableDropdown(
-                    //   enabled: true,
-                    //   hintText: "Defect",
-                    //   listItems:
-                    //       ['Defect 1', 'Defect 2'].map((e) => "${e}").toList(),
-                    //   onChanged: (value) {},
-                    //   searchFieldProps: TextFieldProps(
-                    //     decoration: InputDecoration(
-                    //       suffixIcon: Icon(
-                    //         Icons.keyboard_arrow_down,
-                    //         color: Colors.black,
-                    //       ),
-                    //       hintText: "Search",
-                    //       border: InputBorder.none,
-                    //     ),
-                    //   ),
-                    //   withIcon: false,
-                    // ),
+                 
                     SizedBox(
                       height: 10,
                     ),
@@ -245,7 +228,7 @@ class _DetailedInspectionScreenState extends State<DetailedInspectionScreen> {
                       height: 20,
                     ),
 
-                         InkWell(
+                      InkWell(
                       onTap: () async{
                         file = (await ImagePicker().pickImage(
                             source: ImageSource.camera,
@@ -258,9 +241,9 @@ class _DetailedInspectionScreenState extends State<DetailedInspectionScreen> {
                         //var selectedFile = file?.value ?? XFile("");
                         String filename = file?.value?.path.split('/').last??"";
 
-                        tyreImage =await multiFile.MultipartFile.fromFile(file?.value?.path??"", filename: filename);
-                        // data.remove("image");
-                        // data.putIfAbsent('image', () => tyreImage);
+                        var tyreImage =await multiFile.MultipartFile.fromFile(file?.value?.path??"", filename: filename);
+                        // data.remove("tyre_image");
+                        // data.putIfAbsent('tyre_image', () => tyreImage);
                       },
                       child: Container(
                         alignment: Alignment.center,
@@ -289,6 +272,11 @@ class _DetailedInspectionScreenState extends State<DetailedInspectionScreen> {
                                 BorderRadius.circular(ScreenSize.width * 0.1)),
                       ),
                     ),
+                   
+                   
+                       
+                  
+                  
                     SizedBox(
                       height: 5,
                     ),
@@ -316,10 +304,10 @@ class _DetailedInspectionScreenState extends State<DetailedInspectionScreen> {
 
 
                           if (pressureController.text.isNotEmpty && 
-                          noteController.text.isNotEmpty && 
+                          
                           defect_type.toString() != "" &&
                           depthController.text.toString() != "" && 
-                          tyreImage != null
+                          file != null
                           
                           ) {
             
@@ -380,8 +368,9 @@ class _DetailedInspectionScreenState extends State<DetailedInspectionScreen> {
                                         onTap: () {
 
                                           tyreController.detailedInspectionApi(
+                                            deploy_on: widget.deploy_on,
                                             type: "details_inspection", 
-                                            //  file: tyreImage, 
+                                            file: file?.value??XFile(""),
                                             tyre_id: widget.tyre_id, 
                                             tyre_serial_number: widget.tyre_serial_number, 
                                             tread_depth: depthController.text.toString(), 

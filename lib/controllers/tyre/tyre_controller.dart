@@ -376,7 +376,8 @@ class TyreController extends BaseController {
     }
   }
 
-  getVehicles() async {
+  getVehicles( String vehicle_type) async {
+    print("vehicle_type: "+ vehicle_type.toString());
     var token = "";
     if (getUserInfo() != null) {
       token = getUserInfo()!.data!.token.toString();
@@ -384,14 +385,17 @@ class TyreController extends BaseController {
 
     dioo.options.headers['content-Type'] = 'application/json';
     dioo.options.headers["Authorization"] = "Bearer ${token}";
+    var jsonRes;
 
     try {
-      res.Response response = await dioo.get("/vehicle");
+      res.Response response = await dioo.get("/company/vehicles", queryParameters: {"vehicle_type": vehicle_type});
       if (response.statusCode == 200) {
-        if (response.data['data'] != null) {
+        var jesres = jsonDecode(response.data);
+        if (jesres['data'] != null) {
           companyVehicles.clear();
-          List list = response.data['data'];
+          List list = jesres['data'];
           companyVehicles.addAll(list.map((e) => Vehicle.fromJson(e)).toList());
+          print("data: "+jesres['data'].toString());
         }
       }
     } on res.DioError catch (e, trace) {
@@ -442,17 +446,20 @@ class TyreController extends BaseController {
   }
 
   rotateTyre({
+    required String deploy_on,
     required String tyre_position,
     required String tyreId,
     required String tyre_axel_id,
   }) async {
     isSubmitting(true);
     Map<String, String> map = HashMap();
+    map["deploy_on"] = deploy_on.toString();
     map["tyreId"] = tyreId.toString();
     map["tyre_position"] = tyre_position.toString();
 
     map["tyre_axel_id"] = tyre_axel_id.toString();
 
+    print("deploy_on: " + deploy_on.toString());
     print("tyreId: " + tyreId.toString());
     print("tyre_position: " + tyre_position.toString());
 
@@ -498,6 +505,7 @@ class TyreController extends BaseController {
   }
 
   tyreUnMount({
+    required String deploy_on,
     required String vehicle_id,
     required String odometer,
     required String tyre_id,
@@ -505,11 +513,13 @@ class TyreController extends BaseController {
   }) async {
     isSubmitting(true);
     Map<String, String> map = HashMap();
+    map["deploy_on"] = deploy_on.toString();
     map["tyre_id"] = tyre_id.toString();
     map["odometer"] = odometer.toString();
     map["vehicle_id"] = vehicle_id.toString();
     map["dismount_resion"] = dismount_resion.toString();
 
+    print("deploy_on: " + deploy_on.toString());
     print("tyre_id: " + tyre_id.toString());
     print("odometer: " + odometer.toString());
     print("vehicle_id: " + vehicle_id.toString());
@@ -863,6 +873,7 @@ class TyreController extends BaseController {
   }
 
   tyreInspectionApi({
+    required String deploy_on,
     required String tyre_id,
     required String type,
     required String tyre_psi,
@@ -878,6 +889,7 @@ class TyreController extends BaseController {
     map["is_puncture"] = is_puncture.toString();
     map["tyre_puncture_repair_id"] = tyre_puncture_repair_id.toString();
     map["odometer"] = odometer.toString();
+    map["deploy_on"] = deploy_on.toString();
 
     print("tyre_id: " + tyre_id.toString());
     print("type: " + type.toString());
@@ -885,6 +897,7 @@ class TyreController extends BaseController {
     print("is_puncture: " + is_puncture.toString());
     print("tyre_puncture_repair_id: " + tyre_puncture_repair_id.toString());
     print("odometer: " + odometer.toString());
+    print("deploy_on: " + deploy_on.toString());
 
     var token = "";
     if (getUserInfo() != null) {
@@ -954,8 +967,10 @@ class TyreController extends BaseController {
   }
 
   detailedInspectionApi(
-      {required String type,
-      // required XFile file,
+      {
+      required String deploy_on,
+      required String type,
+      required XFile file,
       required String tyre_id,
       required String tyre_serial_number,
       required String tread_depth,
@@ -969,6 +984,7 @@ class TyreController extends BaseController {
       }) async {
     isSubmitting(true);
     Map<String, String> map = HashMap();
+    map["deploy_on"] = deploy_on.toString();
     map["type"] = type.toString();
     map["tyre_id"] = tyre_id.toString();
     map["tyre_serial_number"] = tyre_serial_number.toString();
@@ -989,8 +1005,9 @@ class TyreController extends BaseController {
     print("is_retread " + is_retread);
     print("defect_id " + defect_id);
     print("odometer " + odometer);
+    print("deploy_on " + deploy_on);
 
-    print("serial numner onBoarding:" + tyre_defect.toString());
+    print("serial numner :" + tyre_defect.toString());
     var token = "";
     if (getUserInfo() != null) {
       token = getUserInfo()!.data!.token.toString();
@@ -1003,14 +1020,14 @@ class TyreController extends BaseController {
       isSubmitting(true);
       res.FormData formData = res.FormData.fromMap(map);
 
-      //  formData.files.add(MapEntry(
-      //       "image",
-      //       await res.MultipartFile.fromFile(
-      //         file.path,
-      //         filename: file.name,
-      //       )));
+       formData.files.add(MapEntry(
+          "image",
+          await res.MultipartFile.fromFile(
+            file.path,
+            filename: file.name,
+          )));
 
-      //   print("file image" + file.name.toString());
+      print("file image" + file.name.toString());
 
       print("Data: " + formData.toString());
       res.Response response =
@@ -1440,7 +1457,7 @@ class TyreController extends BaseController {
         jsonRes = jsonDecode(response.body.toString());
         print("here 3");
 
-        rubberTyreList.clear();
+        retiringReasonList.clear();
 
         List list = jsonRes['data'];
         print("here 4");
@@ -1457,6 +1474,56 @@ class TyreController extends BaseController {
         print("tyreId: ${element.id}");
       });
     } on res.DioError catch (e, trace) {
+      print(trace);
+    }
+  }
+
+
+
+
+
+    tyreRetiringApi({
+    required String tyre_retiring,
+   
+  }) async {
+    isSubmitting(true);
+    Map<String, String> map = HashMap();
+    map["tyre_retiring"] = tyre_retiring.toString();
+
+
+    print("tyre_retiring: " + tyre_retiring.toString());
+   
+
+    var token = "";
+    if (getUserInfo() != null) {
+      token = getUserInfo()!.data!.token.toString();
+    }
+
+    dioo.options.headers['content-Type'] = 'application/json';
+    dioo.options.headers["Authorization"] = "Bearer ${token}";
+
+    try {
+      isSubmitting(true);
+      res.FormData formData = res.FormData.fromMap(map);
+
+    
+
+      print("Data: " + formData.toString());
+      res.Response response = await dioo.post("/retiring_tyre", data: formData);
+      print("Res " + response.data.toString() + "^^");
+      if (response.statusCode == 200) {
+        print("press here...!");
+        isSubmitting(false);
+
+        Get.snackbar(response.data['message'], "");
+
+        Get.offAll(TyreHomeScreen(), transition: Transition.leftToRight);
+      } else {
+        show("Error", response.data['message']);
+        isSubmitting(false);
+      }
+    } on res.DioError catch (e, trace) {
+      isSubmitting(false);
       print(trace);
     }
   }

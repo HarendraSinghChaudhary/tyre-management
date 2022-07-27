@@ -1,6 +1,7 @@
 import 'package:PrimeMetrics/controllers/tyre/tyre_controller.dart';
 import 'package:PrimeMetrics/screens/fuel_master/fuel_master_widgets/shadow_textfield.dart';
 import 'package:PrimeMetrics/screens/tyre_management/tyre_inspection/inspection_select_tyre.dart';
+import 'package:PrimeMetrics/screens/tyre_management/tyre_inspection/trailer_select_tyre.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,7 +11,9 @@ import '../../../utils/screen_size.dart';
 import '../../fuel_master/fuel_master_widgets/searchable_dropdown.dart';
 
 class InspectionRegistrationCode extends StatefulWidget {
-  const InspectionRegistrationCode({Key? key}) : super(key: key);
+  int value;
+  String deploy_on;
+  InspectionRegistrationCode({Key? key, required this.value, required this.deploy_on}) : super(key: key);
 
   @override
   _InspectionStoreCodeState createState() => _InspectionStoreCodeState();
@@ -20,7 +23,7 @@ class _InspectionStoreCodeState extends State<InspectionRegistrationCode> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController odometerController = TextEditingController();
 
-    int vehicleId = 0;
+  int vehicleId = 0;
 
   String regNumber = "";
   String? axle;
@@ -29,9 +32,15 @@ class _InspectionStoreCodeState extends State<InspectionRegistrationCode> {
 
   TyreController tyreController = Get.find();
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    tyreController.getVehicles(widget.value.toString());
+  }
+
   String? reason;
 
- 
   String _1LO = "1LO";
 
   String? id;
@@ -40,7 +49,11 @@ class _InspectionStoreCodeState extends State<InspectionRegistrationCode> {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: primaryColors,
-      body: SingleChildScrollView(
+      body: 
+
+      Obx((() => 
+
+          SingleChildScrollView(
         physics: BouncingScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,96 +80,141 @@ class _InspectionStoreCodeState extends State<InspectionRegistrationCode> {
                   SizedBox(
                     width: 20.0,
                   ),
+
+                  widget.value == 0?
                   Text(
-                     "Select Truck Registration",
+                    "Select Truck Registration",
                     style: TextStyle(
                         fontWeight: FontWeight.w500,
                         color: Colors.black,
                         fontSize: 22),
-                  ),
+                  ) :
+                   Text(
+                    "Select Trailer Registration",
+                    style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black,
+                        fontSize: 22),
+                  )
+                  
+                  ,
                 ],
               ),
             ),
-           Container(
+            Container(
               padding: EdgeInsets.all(30),
               child: SingleChildScrollView(
                 physics: NeverScrollableScrollPhysics(),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                   SearchableDropdown(
-                        withIcon: false,
-                        enabled: true,
-                        hintText: "Select Registration Number",
-                        listItems: tyreController.companyVehicles
-                            .map((e) => "${e.regNumber}")
-                            .toList(),
-                        onChanged: (value) {
-                          vehicleId = tyreController.companyVehicles
-                                  .firstWhere(
-                                      (element) => value == element.regNumber)
-                                  .id ??
-                              0;
+                    SearchableDropdown(
+                      withIcon: false,
+                      enabled: true,
+                      hintText: "Select Registration Number",
+                      listItems: tyreController.companyVehicles
+                          .map((e) => "${e.regNumber}")
+                          .toList(),
+                      onChanged: (value) {
+                        vehicleId = tyreController.companyVehicles
+                                .firstWhere(
+                                    (element) => value == element.regNumber)
+                                .id ??
+                            0;
 
-                          regNumber = tyreController.companyVehicles
-                              .firstWhere(
-                                  (element) => value == element.regNumber)
-                              .regNumber
-                              .toString();
+                        regNumber = tyreController.companyVehicles
+                            .firstWhere((element) => value == element.regNumber)
+                            .regNumber
+                            .toString();
 
-                          print("regNumber onChanged $vehicleId");
-                          print("regNumber  $regNumber");
-                          // data.remove('vehicle_id');
-                          // data.putIfAbsent('vehicle_id', () => vehicleId);
-                        },
-                        searchFieldProps: TextFieldProps(
-                          decoration: InputDecoration(
-                            suffixIcon: Icon(
-                              Icons.keyboard_arrow_down,
-                              color: Colors.black,
-                            ),
-                            hintText: "Search",
-                            border: InputBorder.none,
+                        print("regNumber onChanged $vehicleId");
+                        print("regNumber  $regNumber");
+                        // data.remove('vehicle_id');
+                        // data.putIfAbsent('vehicle_id', () => vehicleId);
+                      },
+                      searchFieldProps: TextFieldProps(
+                        decoration: InputDecoration(
+                          suffixIcon: Icon(
+                            Icons.keyboard_arrow_down,
+                            color: Colors.black,
                           ),
+                          hintText: "Search",
+                          border: InputBorder.none,
                         ),
                       ),
-
-                      SizedBox(height: 10,),
-
-
-                       ShadowTextField(
-                        maxLine: 1,
-                        keyboardType: TextInputType.number,
-                        controller: odometerController,
-                        hintText: "Odometer Reading",
-                        onChanged: (value) {},
-                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    ShadowTextField(
+                      maxLine: 1,
+                      keyboardType: TextInputType.number,
+                      controller: odometerController,
+                      hintText: "Odometer Reading",
+                      onChanged: (value) {},
+                    ),
                   ],
                 ),
               ),
             )
           ],
         ),
-      ),
+      )
+     
+     
+      
+      
+      
+      )),
+      
+      
+      
+      
+  
+     
       bottomNavigationBar: Container(
         height: 100,
         alignment: Alignment.center,
         child: InkWell(
           splashColor: Colors.transparent,
           onTap: () async {
-
-            if (regNumber.toString() != "" && odometerController.text.isNotEmpty){
-
-
-            Get.to(InspectionSelectTyre(
-              regNumber: regNumber,
-              vehicle_id: vehicleId,
-              odometer: odometerController.text.toString(),
-
-            ), transition: Transition.rightToLeft); }
-
-            else {
-              Get.snackbar("Please fill all fields", "");
+            switch (widget.value) {
+              case 0:
+                {
+                  if (regNumber.toString() != "" &&
+                      odometerController.text.isNotEmpty) {
+                    Get.to(
+                        InspectionSelectTyre(
+                          regNumber: regNumber,
+                          vehicle_id: vehicleId,
+                          odometer: odometerController.text.toString(),
+                          deploy_on: widget.deploy_on,
+                        ),
+                        transition: Transition.rightToLeft);
+                  } else {
+                    Get.snackbar("Please fill all fields", "");
+                  }
+                }
+                // do something
+                break;
+              case 1:
+                {
+                  if (regNumber.toString() != "" &&
+                      odometerController.text.isNotEmpty) {
+                    Get.to(
+                        TrailerSelectTyreInspection(
+                          regNumber: regNumber,
+                          vehicle_id: vehicleId,
+                          deploy_on: widget.deploy_on,
+                          odometer: odometerController.text.toString(),
+                        ),
+                        transition: Transition.rightToLeft);
+                  } else {
+                    Get.snackbar("Please fill all fields", "");
+                  }
+                }
+                // do something else
+                break;
             }
           },
           child: Container(

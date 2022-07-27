@@ -20,15 +20,15 @@ class TyreRetiringHomeScreen extends StatefulWidget {
 class _TyreRetiringHomeScreenState extends State<TyreRetiringHomeScreen> with AutomaticKeepAliveClientMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  List<TyreRetiringForm> tyres= [];
+  List<TyreRetiringFormModel> tyres= [];
    TyreController tyreController = Get.find();
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    tyres.add(TyreRetiringForm());
-     tyreController.getTyreSerialNumberApi();
-    tyreController.retiringReasonApi();
+    tyres.add(TyreRetiringFormModel());
+    //  tyreController.getTyreSerialNumberApi();
+    // tyreController.retiringReasonApi();
   }
 
   @override
@@ -103,7 +103,10 @@ class _TyreRetiringHomeScreenState extends State<TyreRetiringHomeScreen> with Au
                                 ),
                               ),
                             ) : Container(height: 0,),
-                            tyres[index],
+                           
+
+                            TyreRetiringForm(datamodel:  tyres[index],),
+                            
                             SizedBox(height: 30,),
                           ],
                         );
@@ -121,7 +124,7 @@ class _TyreRetiringHomeScreenState extends State<TyreRetiringHomeScreen> with Au
                             onTap: () async {
                               setState(() {
                                 tyres.add(
-                                  TyreRetiringForm()
+                                  TyreRetiringFormModel()
                                   
                                 );
                               });
@@ -180,9 +183,23 @@ class _TyreRetiringHomeScreenState extends State<TyreRetiringHomeScreen> with Au
         child: InkWell(
           splashColor: Colors.transparent,
           onTap: () async {
-            Get.to(TyreRetiringConfirmationScreen(
+
+             if (tyres.first.id.toString() != "null") {
+
+                        
+
+                       Get.to(TyreRetiringConfirmationScreen(
               data: tyres
             ), transition: Transition.rightToLeft);
+
+                        }else {
+                          Get.snackbar("Please fill all fields", "");
+                        }
+
+
+
+
+            
           },
           child: Container(
             alignment: Alignment.center,

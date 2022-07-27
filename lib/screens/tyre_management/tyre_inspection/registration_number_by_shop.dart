@@ -15,8 +15,9 @@ import '../../fuel_master/fuel_master_widgets/searchable_dropdown.dart';
 class RegistrationNumberByShop extends StatefulWidget {
   String id;
   String odometer;
+  String? deploy_on;
 
-  RegistrationNumberByShop ({required this.id, required this.odometer});
+  RegistrationNumberByShop ({required this.id, required this.odometer, required this.deploy_on});
 
   @override
   _InspectionStoreCodeState createState() => _InspectionStoreCodeState();
@@ -64,6 +65,8 @@ class _InspectionStoreCodeState extends State<RegistrationNumberByShop> {
       key: _scaffoldKey,
       backgroundColor: primaryColors,
       body:  Obx((() => 
+
+    
 
          
        SingleChildScrollView(
@@ -161,6 +164,7 @@ class _InspectionStoreCodeState extends State<RegistrationNumberByShop> {
                                      print("tyrePsi: "+tyre_psi.toString());  
                                      print("tread depth: "+tread_depth.toString());  
                                      print("tyre id: "+id.toString());                 
+                                     print("recommended: "+recom_psi.toString());                 
                                           
                                     // widget.data.remove('store');
                                     // widget.data.putIfAbsent('store', () => storeCodeSerialNumber);
@@ -204,6 +208,7 @@ class _InspectionStoreCodeState extends State<RegistrationNumberByShop> {
              tyre_id: id.toString(),
              recom_psi: recom_psi.toString(),
              odometer: widget.odometer,
+             deploy_on: widget.deploy_on,
              ));
           },
           child: Container(

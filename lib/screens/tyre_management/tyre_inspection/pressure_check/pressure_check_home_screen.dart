@@ -16,7 +16,8 @@ class PressureCheckHomeScreen extends StatefulWidget {
   String? tyre_id;
   String? type;
   String? odometer;
-  PressureCheckHomeScreen({required this.tyre_id, required this.type, required this.odometer});
+  String? deploy_on;
+  PressureCheckHomeScreen({required this.tyre_id, required this.type, required this.odometer, required this.deploy_on});
 
   @override
   _PressureCheckHomeScreenState createState() =>
@@ -207,7 +208,7 @@ class _PressureCheckHomeScreenState extends State<PressureCheckHomeScreen> {
                     child: SearchableDropdown(
                       withIcon: false,
                       enabled: true,
-                      hintText: "Select puncture reason",
+                      hintText: "Select type of puncture",
                       listItems: tyreController.punctureRepairReasonList
                           .map((e) => "${e.repair_option}")
                           .toList(),
@@ -267,7 +268,7 @@ class _PressureCheckHomeScreenState extends State<PressureCheckHomeScreen> {
                             print(agree);
                           });
                         }),
-                    Text("i am agree to proceed with this check tyre pressure")
+                    Text("I confirm pressure is now ok")
                   ],
                 ),
               ],
@@ -290,7 +291,8 @@ class _PressureCheckHomeScreenState extends State<PressureCheckHomeScreen> {
                 tyre_psi: pressureController.text.toString().trim(), 
                 is_puncture: isPuncture == true ? "1" : "0", 
                 tyre_puncture_repair_id: id.toString(),
-                odometer: widget.odometer.toString()
+                odometer: widget.odometer.toString(),
+                deploy_on: widget.deploy_on.toString()
                 
                 );
 

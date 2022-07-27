@@ -1,3 +1,4 @@
+import 'package:PrimeMetrics/controllers/tyre/tyre_controller.dart';
 import 'package:PrimeMetrics/screens/tyre_management/tyre_rotation/select_truck_registration_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -18,6 +19,8 @@ class _TyreRotationHomeScreenState extends State<TyreRotationHomeScreen> {
   int value = 0;
   List deployOn = ["Truck", "Trailer"];
   List images = [truck, trailer];
+
+  TyreController tyreController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -126,7 +129,9 @@ class _TyreRotationHomeScreenState extends State<TyreRotationHomeScreen> {
         child: InkWell(
           splashColor: Colors.transparent,
           onTap: () async {
-            Get.to(SelectTruckRegistrationScreen(), transition: Transition.rightToLeft);
+            
+            
+            Get.to(SelectTruckRegistrationScreen(deploy_on: value.toString(), value: value.toString(),), transition: Transition.rightToLeft);
           },
           child: Container(
             alignment: Alignment.center,

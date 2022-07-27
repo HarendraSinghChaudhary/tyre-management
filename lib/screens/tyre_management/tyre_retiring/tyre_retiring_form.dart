@@ -9,32 +9,17 @@ import '../../fuel_master/fuel_master_widgets/searchable_dropdown.dart';
 import '../../fuel_master/fuel_master_widgets/shadow_textfield.dart';
 
 class TyreRetiringForm extends StatefulWidget {
-  const TyreRetiringForm({Key? key}) : super(key: key);
+  const TyreRetiringForm({Key? key, required this.datamodel}) : super(key: key);
+  final TyreRetiringFormModel datamodel ; 
 
   @override
   State<TyreRetiringForm> createState() => _TyreRetiringFormState();
 }
 
 class _TyreRetiringFormState extends State<TyreRetiringForm> {
-  int vehicleId = 0;
-  String? tyre_psi;
-  String? tread_depth;
-  String? regNumber;
-  String? axle;
-  String? positionaxle;
-  String? totalUnit;
-  String? storeCodeSerialNumber;
-  String? retreads_status;
-  String? max_psi;
-  String? recom_psi;
-  String? reasonId;
 
-  String? reason;
 
-  // ignore: prefer_final_fields
-  String _1LO = "1LO";
-
-  String? id;
+TyreRetiringFormModel tyreRetiringFormModel = TyreRetiringFormModel();
 
   TyreController tyreController = Get.find();
 
@@ -42,6 +27,7 @@ class _TyreRetiringFormState extends State<TyreRetiringForm> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    tyreRetiringFormModel = widget.datamodel;
 
     tyreController.getTyreSerialNumberApi();
     tyreController.retiringReasonApi();
@@ -51,7 +37,11 @@ class _TyreRetiringFormState extends State<TyreRetiringForm> {
   Widget build(BuildContext context) {
     // final TextEditingController serialNumberController = TextEditingController();
 
-    return Column(
+ return
+
+    Obx((() => 
+    
+    Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SearchableDropdown(
@@ -82,41 +72,41 @@ class _TyreRetiringFormState extends State<TyreRetiringForm> {
               .map((e) => "${e.tyre_serial_number}")
               .toList(),
           onChanged: (value) {
-            id = tyreController.tyreSerialNumberList
+           tyreRetiringFormModel.id = tyreController.tyreSerialNumberList
                 .firstWhere(
                     (element) => value == element.tyre_serial_number.toString())
                 .id
                 .toString();
 
-            storeCodeSerialNumber = tyreController.tyreSerialNumberList
+            tyreRetiringFormModel.storeCodeSerialNumber = tyreController.tyreSerialNumberList
                 .firstWhere(
                     (element) => value == element.tyre_serial_number.toString())
                 .tyre_serial_number
                 .toString();
 
-            tyre_psi = tyreController.tyreSerialNumberList
+            tyreRetiringFormModel.tyre_psi = tyreController.tyreSerialNumberList
                 .firstWhere((element) => value == element.tyre_serial_number)
                 .tyre_psi
                 .toString();
 
-            tread_depth = tyreController.tyreSerialNumberList
+           tyreRetiringFormModel. tread_depth = tyreController.tyreSerialNumberList
                 .firstWhere((element) => value == element.tyre_serial_number)
                 .tread_depth
                 .toString();
 
-            max_psi = tyreController.tyreSerialNumberList
+            tyreRetiringFormModel.max_psi = tyreController.tyreSerialNumberList
                 .firstWhere((element) => value == element.tyre_serial_number)
                 .max_psi
                 .toString();
 
-            recom_psi = tyreController.tyreSerialNumberList
+           tyreRetiringFormModel. recom_psi = tyreController.tyreSerialNumberList
                 .firstWhere((element) => value == element.tyre_serial_number)
                 .recom_psi
                 .toString();
 
-            print("tyrePsi: " + tyre_psi.toString());
-            print("tread depth: " + tread_depth.toString());
-            print("tyre id: " + id.toString());
+            print("tyrePsi: " + tyreRetiringFormModel.tyre_psi.toString());
+            print("tread depth: " + tyreRetiringFormModel.tread_depth.toString());
+            print("tyre id: " + tyreRetiringFormModel.id.toString());
 
             // widget.data.remove('store');
             // widget.data.putIfAbsent('store', () => storeCodeSerialNumber);
@@ -160,13 +150,13 @@ class _TyreRetiringFormState extends State<TyreRetiringForm> {
               .map((e) => "${e.reason}")
               .toList(),
           onChanged: (value) {
-            id = tyreController.retiringReasonList
+            tyreRetiringFormModel.reason = tyreController.retiringReasonList
                 .firstWhere(
-                    (element) => value == element.id.toString())
-                .id
+                    (element) => value == element.reason.toString())
+                .reason
                 .toString();
 
-            print("tyrePsi: " + id.toString());
+            print("tyrePsi: " + tyreRetiringFormModel.reason.toString());
             //  print("tread depth: "+tread_depth.toString());
             //  print("tyre id: "+id.toString());
 
@@ -189,6 +179,38 @@ class _TyreRetiringFormState extends State<TyreRetiringForm> {
           height: 20,
         ),
       ],
-    );
+    )
+ 
+ 
+    
+    
+    ));
+
+    
   }
+}
+
+
+class TyreRetiringFormModel {
+
+   int vehicleId = 0;
+  String? tyre_psi;
+  String? tread_depth;
+  String? regNumber;
+  String? axle;
+  String? positionaxle;
+  String? totalUnit;
+  String? storeCodeSerialNumber;
+  String? retreads_status;
+  String? max_psi;
+  String? recom_psi;
+  String? reasonId;
+
+  String? reason;
+
+  // ignore: prefer_final_fields
+  String _1LO = "1LO";
+
+  String? id;
+
 }

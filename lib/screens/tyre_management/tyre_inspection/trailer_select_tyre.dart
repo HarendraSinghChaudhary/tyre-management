@@ -1,5 +1,3 @@
-
-
 // ignore_for_file: prefer_const_constructors
 
 import 'package:PrimeMetrics/screens/tyre_management/tyre_inspection/selected_tyre_inspection.dart';
@@ -23,19 +21,24 @@ import 'package:get/get.dart';
 import '../../../utils/colors.dart';
 import '../../../utils/screen_size.dart';
 
-class InspectionSelectTyre extends StatefulWidget {
+class TrailerSelectTyreInspection extends StatefulWidget {
   String regNumber;
   int vehicle_id;
-  String deploy_on;
-String odometer;
-  InspectionSelectTyre({required this.regNumber, required this.vehicle_id, required this.odometer, required this.deploy_on});
+  String odometer;
+  String? deploy_on;
+  TrailerSelectTyreInspection(
+      {required this.regNumber,
+      required this.vehicle_id,
+      required this.deploy_on,
+      required this.odometer});
 
   @override
   _SelectTyreRotationScreenState createState() =>
       _SelectTyreRotationScreenState();
 }
 
-class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
+class _SelectTyreRotationScreenState
+    extends State<TrailerSelectTyreInspection> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   int selectedCard = 0;
@@ -52,8 +55,11 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
   String? max_psi;
   String? recom_psi;
 
-  bool frontLeft = false,
-      frontRight = false,
+  bool frontLeftOut = false,
+      frontLeftIn = false,
+      frontRightIn = false,
+      frontRightOut = false,
+      
       middleLeftOut = false,
       middleLeftIn = false,
       middleRightIn = false,
@@ -71,166 +77,153 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
 
     tyreController.getVehicleStructure(vehicleId: widget.vehicle_id);
 
-  
-
-
-
     // checkData();
-
-
   }
 
-  checkData() {
-    bool exist1LI = false;
-    bool exist1RO = false;
-    bool exist2LO = false;
-    bool exist2LI = false;
-    bool exist2RI = false;
-    bool exist2RO = false;
-    bool exist3LO = false;
-    bool exist3LI = false;
-    bool exist3RI = false;
-    bool exist3RO = false;
+  // checkData() {
+  //   bool exist1LI = false;
+  //   bool exist1RO = false;
+  //   bool exist2LO = false;
+  //   bool exist2LI = false;
+  //   bool exist2RI = false;
+  //   bool exist2RO = false;
+  //   bool exist3LO = false;
+  //   bool exist3LI = false;
+  //   bool exist3RI = false;
+  //   bool exist3RO = false;
 
+  //   if (tyreController.vehicleStructureList.isNotEmpty) {
+  //     tyreController.vehicleStructureList.forEach((element) {
+  //       if (element.tyre_position == "LO" && element.tyre_axel_id == "1") {
+  //         exist1LI = true;
+  //       }
+  //     });
+  //     if (exist1LI) {
+  //       selectedModel = tyreController.vehicleStructureList.firstWhere(
+  //           (element) =>
+  //               element.tyre_axel_id == "1" && element.tyre_position == "LO");
 
-    if(tyreController.vehicleStructureList.isNotEmpty) {
+  //       frontLeft = true;
+  //     }
 
-  tyreController.vehicleStructureList.forEach((element) {
-      if (element.tyre_position == "LO" && element.tyre_axel_id == "1") {
-        exist1LI = true;
-      }
-    });
-    if (exist1LI) {
-      selectedModel = tyreController.vehicleStructureList.firstWhere(
-          (element) =>
-              element.tyre_axel_id == "1" && element.tyre_position == "LO");
+  //     tyreController.vehicleStructureList.forEach((element) {
+  //       if (element.tyre_position == "RO" && element.tyre_axel_id == "1") {
+  //         exist1RO = true;
+  //       }
+  //     });
+  //     if (exist1RO) {
+  //       selectedModel = tyreController.vehicleStructureList.firstWhere(
+  //           (element) =>
+  //               element.tyre_axel_id == "1" && element.tyre_position == "RO");
 
-      frontLeft = true;
-    }
+  //       frontRight = true;
+  //     }
 
-    tyreController.vehicleStructureList.forEach((element) {
-      if (element.tyre_position == "RO" && element.tyre_axel_id == "1") {
-        exist1RO = true;
-      }
-    });
-    if (exist1RO) {
-      selectedModel = tyreController.vehicleStructureList.firstWhere(
-          (element) =>
-              element.tyre_axel_id == "1" && element.tyre_position == "RO");
+  //     tyreController.vehicleStructureList.forEach((element) {
+  //       if (element.tyre_position == "LO" && element.tyre_axel_id == "2") {
+  //         exist2LO = true;
+  //       }
+  //     });
+  //     if (exist2LO) {
+  //       selectedModel = tyreController.vehicleStructureList.firstWhere(
+  //           (element) =>
+  //               element.tyre_axel_id == "2" && element.tyre_position == "LO");
 
-      frontRight = true;
-    }
+  //       middleLeftOut = true;
+  //     }
 
-    tyreController.vehicleStructureList.forEach((element) {
-      if (element.tyre_position == "LO" && element.tyre_axel_id == "2") {
-        exist2LO = true;
-      }
-    });
-    if (exist2LO) {
-      selectedModel = tyreController.vehicleStructureList.firstWhere(
-          (element) =>
-              element.tyre_axel_id == "2" && element.tyre_position == "LO");
+  //     tyreController.vehicleStructureList.forEach((element) {
+  //       if (element.tyre_position == "LI" && element.tyre_axel_id == "2") {
+  //         exist2LI = true;
+  //       }
+  //     });
+  //     if (exist2LI) {
+  //       selectedModel = tyreController.vehicleStructureList.firstWhere(
+  //           (element) =>
+  //               element.tyre_axel_id == "2" && element.tyre_position == "LI");
 
-      middleLeftOut = true;
-    }
+  //       middleLeftIn = true;
+  //     }
 
-    tyreController.vehicleStructureList.forEach((element) {
-      if (element.tyre_position == "LI" && element.tyre_axel_id == "2") {
-        exist2LI = true;
-      }
-    });
-    if (exist2LI) {
-      selectedModel = tyreController.vehicleStructureList.firstWhere(
-          (element) =>
-              element.tyre_axel_id == "2" && element.tyre_position == "LI");
+  //     tyreController.vehicleStructureList.forEach((element) {
+  //       if (element.tyre_position == "RI" && element.tyre_axel_id == "2") {
+  //         exist2RI = true;
+  //       }
+  //     });
+  //     if (exist2RI) {
+  //       selectedModel = tyreController.vehicleStructureList.firstWhere(
+  //           (element) =>
+  //               element.tyre_axel_id == "2" && element.tyre_position == "RI");
 
-      middleLeftIn = true;
-    }
+  //       middleRightIn = true;
+  //     }
 
-    tyreController.vehicleStructureList.forEach((element) {
-      if (element.tyre_position == "RI" && element.tyre_axel_id == "2") {
-        exist2RI = true;
-      }
-    });
-    if (exist2RI) {
-      selectedModel = tyreController.vehicleStructureList.firstWhere(
-          (element) =>
-              element.tyre_axel_id == "2" && element.tyre_position == "RI");
+  //     tyreController.vehicleStructureList.forEach((element) {
+  //       if (element.tyre_position == "RO" && element.tyre_axel_id == "2") {
+  //         exist2RO = true;
+  //       }
+  //     });
+  //     if (exist2RO) {
+  //       selectedModel = tyreController.vehicleStructureList.firstWhere(
+  //           (element) =>
+  //               element.tyre_axel_id == "2" && element.tyre_position == "RO");
 
-      middleRightIn = true;
-    }
+  //       middleRightOut = true;
+  //     }
 
-    tyreController.vehicleStructureList.forEach((element) {
-      if (element.tyre_position == "RO" && element.tyre_axel_id == "2") {
-        exist2RO = true;
-      }
-    });
-    if (exist2RO) {
-      selectedModel = tyreController.vehicleStructureList.firstWhere(
-          (element) =>
-              element.tyre_axel_id == "2" && element.tyre_position == "RO");
+  //     tyreController.vehicleStructureList.forEach((element) {
+  //       if (element.tyre_position == "LO" && element.tyre_axel_id == "3") {
+  //         exist3LO = true;
+  //       }
+  //     });
+  //     if (exist3LO) {
+  //       selectedModel = tyreController.vehicleStructureList.firstWhere(
+  //           (element) =>
+  //               element.tyre_axel_id == "3" && element.tyre_position == "LO");
 
-      middleRightOut = true;
-    }
+  //       backLeftOut = true;
+  //     }
 
-    tyreController.vehicleStructureList.forEach((element) {
-      if (element.tyre_position == "LO" && element.tyre_axel_id == "3") {
-        exist3LO = true;
-      }
-    });
-    if (exist3LO) {
-      selectedModel = tyreController.vehicleStructureList.firstWhere(
-          (element) =>
-              element.tyre_axel_id == "3" && element.tyre_position == "LO");
+  //     tyreController.vehicleStructureList.forEach((element) {
+  //       if (element.tyre_position == "LI" && element.tyre_axel_id == "3") {
+  //         exist3LI = true;
+  //       }
+  //     });
+  //     if (exist3LI) {
+  //       selectedModel = tyreController.vehicleStructureList.firstWhere(
+  //           (element) =>
+  //               element.tyre_axel_id == "3" && element.tyre_position == "LI");
 
-      backLeftOut = true;
-    }
+  //       backLeftIn = true;
+  //     }
 
-    tyreController.vehicleStructureList.forEach((element) {
-      if (element.tyre_position == "LI" && element.tyre_axel_id == "3") {
-        exist3LI = true;
-      }
-    });
-    if (exist3LI) {
-      selectedModel = tyreController.vehicleStructureList.firstWhere(
-          (element) =>
-              element.tyre_axel_id == "3" && element.tyre_position == "LI");
+  //     tyreController.vehicleStructureList.forEach((element) {
+  //       if (element.tyre_position == "RI" && element.tyre_axel_id == "3") {
+  //         exist3RI = true;
+  //       }
+  //     });
+  //     if (exist3RI) {
+  //       selectedModel = tyreController.vehicleStructureList.firstWhere(
+  //           (element) =>
+  //               element.tyre_axel_id == "3" && element.tyre_position == "RI");
 
-      backLeftIn = true;
-    }
+  //       backRightIn = true;
+  //     }
 
-    tyreController.vehicleStructureList.forEach((element) {
-      if (element.tyre_position == "RI" && element.tyre_axel_id == "3") {
-        exist3RI = true;
-      }
-    });
-    if (exist3RI) {
-      selectedModel = tyreController.vehicleStructureList.firstWhere(
-          (element) =>
-              element.tyre_axel_id == "3" && element.tyre_position == "RI");
+  //     tyreController.vehicleStructureList.forEach((element) {
+  //       if (element.tyre_position == "RO" && element.tyre_axel_id == "3") {
+  //         exist3RO = true;
+  //       }
+  //     });
+  //     if (exist3RO) {
+  //       selectedModel = tyreController.vehicleStructureList.firstWhere(
+  //           (element) =>
+  //               element.tyre_axel_id == "3" && element.tyre_position == "RO");
 
-      backRightIn = true;
-    }
-
-    tyreController.vehicleStructureList.forEach((element) {
-      if (element.tyre_position == "RO" && element.tyre_axel_id == "3") {
-        exist3RO = true;
-      }
-    });
-    if (exist3RO) {
-      selectedModel = tyreController.vehicleStructureList.firstWhere(
-          (element) =>
-              element.tyre_axel_id == "3" && element.tyre_position == "RO");
-
-      backRightOut = true;
-
-     
-    }
-
-    }
-
-   
-  }
+  //       backRightOut = true;
+  //     }
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -238,127 +231,117 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: primaryColors,
-      body:
-
-       Obx((() => 
-
-     
-
-       tyreController.isSubmitting.value
-                        ? Align(
-                            alignment: Alignment.center,
-                            child: Platform.isAndroid
-                                ? CircularProgressIndicator()
-                                : CupertinoActivityIndicator())
-                        : 
-
-      
-      
-      
-      
-       SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              height: 100,
-              alignment: Alignment.bottomLeft,
-              padding: EdgeInsets.only(left: 20),
-              child: Row(
+      body: Obx((() => tyreController.isSubmitting.value
+          ? Align(
+              alignment: Alignment.center,
+              child: Platform.isAndroid
+                  ? CircularProgressIndicator()
+                  : CupertinoActivityIndicator())
+          : SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  InkWell(
-                    onTap: () {
-                      Get.back();
-                    },
-                    child: CircleAvatar(
-                      backgroundColor: green,
-                      radius: 18,
-                      child: Icon(
-                        Icons.arrow_back,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 20.0,
-                  ),
-                  Text(
-                    "Select Tyre",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black,
-                        fontSize: 22),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.all(30),
-              child: SingleChildScrollView(
-                physics: NeverScrollableScrollPhysics(),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Text(
-                        "Following Tyres are currently mounted on",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Text(
-                        "Truck # " + widget.regNumber.toString(),
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                          fontSize: 20,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    getTyreViews(),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      // ignore: prefer_const_literals_to_create_immutables
+                  Container(
+                    height: 100,
+                    alignment: Alignment.bottomLeft,
+                    padding: EdgeInsets.only(left: 20),
+                    child: Row(
                       children: [
+                        InkWell(
+                          onTap: () {
+                            Get.back();
+                          },
+                          child: CircleAvatar(
+                            backgroundColor: green,
+                            radius: 18,
+                            child: Icon(
+                              Icons.arrow_back,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 20.0,
+                        ),
                         Text(
-                          "Click on a tyre to view details",
+                          "Select Tyre",
                           style: TextStyle(
                               fontWeight: FontWeight.w500,
                               color: Colors.black,
-                              fontSize: 16),
+                              fontSize: 22),
                         ),
                       ],
                     ),
-                  ],
-                ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(30),
+                    child: SingleChildScrollView(
+                      physics: NeverScrollableScrollPhysics(),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Text(
+                              "Following Tyres are currently mounted on",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Text(
+                              "Trailer # " + widget.regNumber.toString(),
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                                fontSize: 20,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          getTyreViews(),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            // ignore: prefer_const_literals_to_create_immutables
+                            children: [
+                              Text(
+                                "Click on a tyre to view details",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.black,
+                                    fontSize: 16),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                ],
               ),
-            )
-          ],
-        ),
-      ))),
+            ))),
       bottomNavigationBar: Container(
         height: 100,
         alignment: Alignment.center,
         child: InkWell(
           splashColor: Colors.transparent,
           onTap: () async {
-            if (frontLeft ||
-                frontRight ||
+            if (frontLeftOut ||
+                frontLeftIn ||
+                frontRightIn ||
+                frontRightOut ||
                 middleLeftOut ||
                 middleLeftIn ||
                 middleRightIn ||
@@ -367,19 +350,18 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                 backLeftIn ||
                 backRightIn ||
                 backRightOut) {
-
-                        Get.to(SelectedTyreInspection(
-                                    tyre_serial_number:  selectedModel.tyre_serial_number.toString(),
-                                    thread_depth: selectedModel.tread_depth.toString(),
-                                    recorded_psi: selectedModel.tyre_psi.toString(),
-                                     max_psi: selectedModel.max_psi.toString(),
-                                    recom_psi: selectedModel.recom_psi.toString(),
-                                    tyre_id: selectedModel.id.toString(),
-                                    odometer: widget.odometer,
-                                    deploy_on: widget.deploy_on,
-                                    
-                                  ),
-                                transition: Transition.rightToLeft);
+              Get.to(
+                  SelectedTyreInspection(
+                      tyre_serial_number:
+                          selectedModel.tyre_serial_number.toString(),
+                      thread_depth: selectedModel.tread_depth.toString(),
+                      recorded_psi: selectedModel.tyre_psi.toString(),
+                      max_psi: selectedModel.max_psi.toString(),
+                      recom_psi: selectedModel.recom_psi.toString(),
+                      tyre_id: selectedModel.id.toString(),
+                      deploy_on: widget.deploy_on,
+                      odometer: widget.odometer),
+                  transition: Transition.rightToLeft);
               // Get.to(
               //     TyreRotationNewPositionScreen(
               //       tyre_id: selectedModel.id.toString(),
@@ -403,16 +385,18 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                   fontSize: 18),
             ),
             decoration: BoxDecoration(
-                color: (frontLeft ||
-                        frontRight ||
-                        middleLeftOut ||
-                        middleLeftIn ||
-                        middleRightIn ||
-                        middleRightOut ||
-                        backLeftOut ||
-                        backLeftIn ||
-                        backRightIn ||
-                        backRightOut)
+                color: (frontLeftOut ||
+                frontLeftIn ||
+                frontRightIn ||
+                frontRightOut ||
+                middleLeftOut ||
+                middleLeftIn ||
+                middleRightIn ||
+                middleRightOut ||
+                backLeftOut ||
+                backLeftIn ||
+                backRightIn ||
+                backRightOut)
                     ? green
                     : Colors.grey,
                 boxShadow: [
@@ -599,9 +583,7 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                           ],
                         ),
                       ),
-
-
-                            SizedBox(
+                      SizedBox(
                         height: 10,
                       ),
                       Padding(
@@ -636,24 +618,22 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                         child: InkWell(
                           splashColor: Colors.transparent,
                           onTap: () async {
-
-
-                                  Get.to(SelectedTyreInspection(
-                                    tyre_serial_number:  selectedModel.tyre_serial_number.toString(),
-                                    thread_depth: selectedModel.tread_depth.toString(),
-                                    recorded_psi: selectedModel.tyre_psi.toString(),
+                            Get.to(
+                                SelectedTyreInspection(
+                                    tyre_serial_number: selectedModel
+                                        .tyre_serial_number
+                                        .toString(),
+                                    thread_depth:
+                                        selectedModel.tread_depth.toString(),
+                                    recorded_psi:
+                                        selectedModel.tyre_psi.toString(),
                                     max_psi: selectedModel.max_psi.toString(),
-                                    recom_psi: selectedModel.recom_psi.toString(),
+                                    recom_psi:
+                                        selectedModel.recom_psi.toString(),
                                     tyre_id: selectedModel.id.toString(),
-                                    odometer: widget.odometer,
                                     deploy_on: widget.deploy_on,
-                                    
-                                  ),
+                                    odometer: widget.odometer),
                                 transition: Transition.rightToLeft);
-
-
-
-
 
                             // if (selectedModel.tyre_position.toString() != "" &&
                             //     selectedModel.tyre_axel_id.toString() != "") {
@@ -710,6 +690,12 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
     );
   }
 
+ 
+ 
+ 
+ 
+ 
+ 
   Widget getTyreViews() {
     return Stack(
       fit: StackFit.loose,
@@ -738,10 +724,6 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                         GestureDetector(
                           onTap: () {
                             setState(() {
-                              print("1 Left outer");
-
-                              positionaxle = "1LO";
-
                               bool exist = false;
                               tyreController.vehicleStructureList
                                   .forEach((element) {
@@ -757,7 +739,7 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                                         element.tyre_axel_id == "1" &&
                                         element.tyre_position == "LO");
 
-                                frontLeft = true;
+                               frontLeftOut = true;
 
                                 showBottomSheet(context);
                               } else {
@@ -766,8 +748,10 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                               print("selected model: " +
                                   selectedModel.toString());
 
-                              print(selectedModel.id);
-                              frontRight = false;
+                              
+                              frontLeftIn = false;
+                              frontRightIn = false;
+                              frontRightOut = false;
                               middleLeftOut = false;
                               middleLeftIn = false;
                               middleRightIn = false;
@@ -779,20 +763,72 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                             });
                           },
                           child: Container(
-                            height: frontLeft ? 60 : 40,
-                            width: frontLeft ? 20 : 10,
+                            height: frontLeftOut ? 60 : 40,
+                            width: frontLeftOut ? 20 : 10,
                             decoration: BoxDecoration(
-                                color: frontLeft ? green : Colors.black,
+                                color: frontLeftOut ? green : Colors.black,
                                 borderRadius: BorderRadius.circular(10)),
                           ),
-                        )
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              bool exist = false;
+                              tyreController.vehicleStructureList
+                                  .forEach((element) {
+                                if (element.tyre_position == "LI" &&
+                                    element.tyre_axel_id == "1") {
+                                  exist = true;
+                                }
+                              });
+                              if (exist) {
+                                selectedModel = tyreController
+                                    .vehicleStructureList
+                                    .firstWhere((element) =>
+                                        element.tyre_axel_id == "1" &&
+                                        element.tyre_position == "LI");
+
+                               frontLeftIn = true;
+
+                                showBottomSheet(context);
+                              } else {
+                                Get.snackbar("No Tyre Found!", "");
+                              }
+                              print("selected model: " +
+                                  selectedModel.toString());
+
+                              frontLeftOut = false;
+                              
+                              frontRightIn = false;
+                              frontRightOut = false;
+                              middleLeftOut = false;
+                              middleLeftIn = false;
+                              middleRightIn = false;
+                              middleRightOut = false;
+                              backLeftOut = false;
+                              backLeftIn = false;
+                              backRightIn = false;
+                              backRightOut = false;
+                            });
+                          },
+                          child: Container(
+                            height: frontLeftIn ? 60 : 40,
+                            width: frontLeftIn ? 20 : 10,
+                            decoration: BoxDecoration(
+                                color: frontLeftIn ? green : Colors.black,
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                        ),
                       ],
                       mainAxisAlignment: MainAxisAlignment.end,
                     ),
                   ),
                   Container(
-                    width: 100,
                     margin: EdgeInsets.symmetric(horizontal: 2),
+                    width: 100,
                     child: Divider(
                       color: Colors.black,
                       thickness: 4,
@@ -805,8 +841,58 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                         GestureDetector(
                           onTap: () {
                             setState(() {
-                              positionaxle = "1RO";
+                              bool exist = false;
+                              tyreController.vehicleStructureList
+                                  .forEach((element) {
+                                if (element.tyre_position == "RI" &&
+                                    element.tyre_axel_id == "1") {
+                                  exist = true;
+                                }
+                              });
+                              if (exist) {
+                                selectedModel = tyreController
+                                    .vehicleStructureList
+                                    .firstWhere((element) =>
+                                        element.tyre_axel_id == "1" &&
+                                        element.tyre_position == "RI");
 
+                                frontRightIn = true;
+
+                                showBottomSheet(context);
+                              } else {
+                                Get.snackbar("No Tyre Found!", "");
+                              }
+                              print("selected model: " +
+                                  selectedModel.toString());
+
+                              frontLeftOut = false;
+                              frontLeftIn = false;
+                              
+                              frontRightOut = false;
+                              middleLeftOut = false;
+                              middleLeftIn = false;
+                              middleRightIn = false;
+                              middleRightOut = false;
+                              backLeftOut = false;
+                              backLeftIn = false;
+                              backRightIn = false;
+                              backRightOut = false;
+                            });
+                          },
+                          child: Container(
+                            height: frontRightIn ? 60 : 40,
+                            width: frontRightIn ? 20 : 10,
+                            decoration: BoxDecoration(
+                                color: frontRightIn ? green : Colors.black,
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
                               bool exist = false;
                               tyreController.vehicleStructureList
                                   .forEach((element) {
@@ -822,7 +908,7 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                                         element.tyre_axel_id == "1" &&
                                         element.tyre_position == "RO");
 
-                                frontRight = true;
+                                 frontRightOut = true;
 
                                 showBottomSheet(context);
                               } else {
@@ -831,8 +917,10 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                               print("selected model: " +
                                   selectedModel.toString());
 
-                              frontLeft = false;
-
+                              frontLeftOut = false;
+                              frontLeftIn = false;
+                              frontRightIn = false;
+                             
                               middleLeftOut = false;
                               middleLeftIn = false;
                               middleRightIn = false;
@@ -844,16 +932,16 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                             });
                           },
                           child: Container(
-                            height: frontRight ? 60 : 40, //60
-                            width: frontRight ? 20 : 10, //20
+                            height: frontRightOut ? 60 : 40,
+                            width: frontRightOut ? 20 : 10,
                             decoration: BoxDecoration(
-                                color: frontRight ? green : Colors.black,
+                                color: frontRightOut ? green : Colors.black,
                                 borderRadius: BorderRadius.circular(10)),
                           ),
-                        )
+                        ),
                       ],
                     ),
-                  ),
+                  )
                 ],
               ),
             ),
@@ -895,9 +983,11 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                               print("selected model: " +
                                   selectedModel.toString());
 
-                              frontLeft = false;
-                              frontRight = false;
-
+                               frontLeftOut = false;
+                              frontLeftIn = false;
+                              frontRightIn = false;
+                              frontRightOut = false;
+                           
                               middleLeftIn = false;
                               middleRightIn = false;
                               middleRightOut = false;
@@ -945,8 +1035,10 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                               print("selected model: " +
                                   selectedModel.toString());
 
-                              frontLeft = false;
-                              frontRight = false;
+                                frontLeftOut = false;
+                              frontLeftIn = false;
+                              frontRightIn = false;
+                              frontRightOut = false;
                               middleLeftOut = false;
 
                               middleRightIn = false;
@@ -1008,8 +1100,10 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                               print("selected model: " +
                                   selectedModel.toString());
 
-                              frontLeft = false;
-                              frontRight = false;
+                                frontLeftOut = false;
+                              frontLeftIn = false;
+                              frontRightIn = false;
+                              frontRightOut = false;
                               middleLeftOut = false;
                               middleLeftIn = false;
 
@@ -1058,8 +1152,10 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                               print("selected model: " +
                                   selectedModel.toString());
 
-                              frontLeft = false;
-                              frontRight = false;
+                             frontLeftOut = false;
+                              frontLeftIn = false;
+                              frontRightIn = false;
+                              frontRightOut = false;
                               middleLeftOut = false;
                               middleLeftIn = false;
                               middleRightIn = false;
@@ -1122,8 +1218,10 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                               print("selected model: " +
                                   selectedModel.toString());
 
-                              frontLeft = false;
-                              frontRight = false;
+                              frontLeftOut = false;
+                              frontLeftIn = false;
+                              frontRightIn = false;
+                              frontRightOut = false;
                               middleLeftOut = false;
                               middleLeftIn = false;
                               middleRightIn = false;
@@ -1172,8 +1270,10 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                               print("selected model: " +
                                   selectedModel.toString());
 
-                              frontLeft = false;
-                              frontRight = false;
+                          frontLeftOut = false;
+                              frontLeftIn = false;
+                              frontRightIn = false;
+                              frontRightOut = false;
                               middleLeftOut = false;
                               middleLeftIn = false;
                               middleRightIn = false;
@@ -1235,8 +1335,10 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                               print("selected model: " +
                                   selectedModel.toString());
 
-                              frontLeft = false;
-                              frontRight = false;
+                               frontLeftOut = false;
+                              frontLeftIn = false;
+                              frontRightIn = false;
+                              frontRightOut = false;
                               middleLeftOut = false;
                               middleLeftIn = false;
                               middleRightIn = false;
@@ -1285,8 +1387,10 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                               print("selected model: " +
                                   selectedModel.toString());
 
-                              frontLeft = false;
-                              frontRight = false;
+                               frontLeftOut = false;
+                              frontLeftIn = false;
+                              frontRightIn = false;
+                              frontRightOut = false;
                               middleLeftOut = false;
                               middleLeftIn = false;
                               middleRightIn = false;
@@ -1316,6 +1420,10 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
     );
   }
 
+ 
+ 
+ 
+ 
   showBottomSheet(BuildContext context) {
     showModalBottomSheet(
         context: context,

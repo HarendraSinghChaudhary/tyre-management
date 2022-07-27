@@ -9,18 +9,18 @@ class RetiringReasonModel {
 
   });
 
-  int? id;
+  String? id;
   String? reason;
 
 
   factory RetiringReasonModel.fromJson(Map<String, dynamic> json) => RetiringReasonModel(
-    id: json["id"],
+    id: json["id"].toString(),
    reason: json["reason"],
    
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
+    "id": id.toString(),
     "reason": reason,
   
   };

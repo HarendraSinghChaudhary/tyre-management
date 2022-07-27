@@ -10,7 +10,8 @@ import '../../fuel_master/fuel_master_widgets/searchable_dropdown.dart';
 import 'inspection_select_tyre.dart';
 
 class ShopInspectionScreen extends StatefulWidget {
-  const ShopInspectionScreen({Key? key}) : super(key: key);
+  String? deploy_on;
+ ShopInspectionScreen({Key? key, required this.deploy_on}) : super(key: key);
 
   @override
   _ShopInspectionSAcreenState createState() => _ShopInspectionSAcreenState();
@@ -134,13 +135,14 @@ class _ShopInspectionSAcreenState extends State<ShopInspectionScreen> {
           splashColor: Colors.transparent,
           onTap: () async {
 
-            if (storeCode.toString() != "0"  && odometerController.text.isNotEmpty) {
+            if (storeCode.toString() != "0") {
 
 
            Get.to(RegistrationNumberByShop(
 
              id: storeCode.toString(),
              odometer: "",
+             deploy_on: widget.deploy_on,
            ), transition: Transition.rightToLeft);
 
             } else {

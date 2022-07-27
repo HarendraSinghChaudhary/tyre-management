@@ -17,6 +17,7 @@ class SelectedTyreInspection extends StatefulWidget {
  String? max_psi;
  String? recom_psi;
  String? odometer;
+ String? deploy_on;
   SelectedTyreInspection ({required this.tyre_serial_number,
    required this.thread_depth,
    required this.recorded_psi,
@@ -24,6 +25,7 @@ class SelectedTyreInspection extends StatefulWidget {
    required this.tyre_id, 
    required this.recom_psi,
    required this.odometer,
+   required this.deploy_on,
    });
 
   @override
@@ -155,13 +157,15 @@ class _SelectedTyreInspectionState extends State<SelectedTyreInspection> {
                 type: value.toString(),
                 tyre_id: widget.tyre_id,
                 odometer: widget.odometer,
+                deploy_on: widget.deploy_on,
               ), transition: Transition.rightToLeft);
             }else if(value==1){
               Get.to(DetailedInspectionScreen(
                 tyre_id: widget.tyre_id.toString(),
                 tyre_serial_number: widget.tyre_serial_number.toString(),
                 tread_depth: widget.thread_depth.toString(),
-                odometer:widget.odometer.toString()
+                odometer:widget.odometer.toString(),
+                deploy_on: widget.deploy_on.toString(),
               ), transition: Transition.rightToLeft);
             }
           },

@@ -11,7 +11,9 @@ import '../../../utils/colors.dart';
 import '../../../utils/screen_size.dart';
 
 class SelectTruckRegistrationScreen extends StatefulWidget {
-  const SelectTruckRegistrationScreen({Key? key}) : super(key: key);
+
+  String deploy_on, value;
+   SelectTruckRegistrationScreen({Key? key, required this.deploy_on, required this.value}) : super(key: key);
 
   @override
   _SelectTruckRegistrationScreenState createState() => _SelectTruckRegistrationScreenState();
@@ -30,7 +32,13 @@ class _SelectTruckRegistrationScreenState extends State<SelectTruckRegistrationS
   TyreController tyreController = Get.find();
 
   String? reason;
+   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
 
+    tyreController.getVehicles(widget.value.toString());
+  }
  
   String _1LO = "1LO";
 
@@ -40,7 +48,11 @@ class _SelectTruckRegistrationScreenState extends State<SelectTruckRegistrationS
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: primaryColors,
-      body: SingleChildScrollView(
+      body: 
+
+      Obx((() => 
+      
+        SingleChildScrollView(
         physics: BouncingScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -126,7 +138,15 @@ class _SelectTruckRegistrationScreenState extends State<SelectTruckRegistrationS
             )
           ],
         ),
-      ),
+      )
+     
+     
+
+      )),
+      
+      
+    
+     
       bottomNavigationBar: Container(
         height: 100,
         alignment: Alignment.center,
@@ -136,7 +156,7 @@ class _SelectTruckRegistrationScreenState extends State<SelectTruckRegistrationS
 
             if (regNumber.toString() != "") {
 
-               Get.to(SelectTyreRotationScreen(regNumber: regNumber.toString(), vehicle_id: vehicleId,), transition: Transition.rightToLeft);
+               Get.to(SelectTyreRotationScreen(regNumber: regNumber.toString(), vehicle_id: vehicleId, deploy_on: widget.deploy_on,), transition: Transition.rightToLeft);
 
             }else {
 

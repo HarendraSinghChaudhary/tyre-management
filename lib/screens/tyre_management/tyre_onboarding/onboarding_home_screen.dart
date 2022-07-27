@@ -249,7 +249,7 @@ class _OnboardingHomeScreenState extends State<OnboardingHomeScreen> {
                       controller: maxPsiController,
                       onChanged: (value) {
                         data.remove("max_psi");
-                        data.putIfAbsent('max_psi', () => tyreWidthController.text);
+                        data.putIfAbsent('max_psi', () => maxPsiController.text);
                       },
                     ),
 
@@ -263,7 +263,7 @@ class _OnboardingHomeScreenState extends State<OnboardingHomeScreen> {
                       controller: recommendedPsiController,
                       onChanged: (value) {
                         data.remove("recom_psi");
-                        data.putIfAbsent('recom_psi', () => tyreWidthController.text);
+                        data.putIfAbsent('recom_psi', () => recommendedPsiController.text);
                       },
                     ),
                     SizedBox(
@@ -576,6 +576,17 @@ class _OnboardingHomeScreenState extends State<OnboardingHomeScreen> {
                                 BorderRadius.circular(ScreenSize.width * 0.1)),
                       ),
                     ),
+                   
+                   
+                   
+                   
+                   
+                   
+                   
+                   
+                   
+                   
+                   
                     SizedBox(
                       height: 5,
                     ),

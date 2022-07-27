@@ -15,6 +15,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import '../../../controllers/fuel/fuel_controller.dart';
 import '../../../utils/colors.dart';
 import '../../../utils/screen_size.dart';
@@ -23,7 +24,7 @@ import '../../fuel_master/fuel_master_widgets/searchable_dropdown.dart';
 class MountHomeScreen extends StatefulWidget {
   final int? tyreId;
   final String? serialNumber;
- 
+
   const MountHomeScreen({Key? key, this.tyreId, this.serialNumber})
       : super(key: key);
 
@@ -32,34 +33,38 @@ class MountHomeScreen extends StatefulWidget {
 }
 
 class _MountHomeScreenState extends State<MountHomeScreen> {
+  VehecleStructure selectedModel = VehecleStructure();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController pressureController = TextEditingController();
   final TextEditingController serialNumberController = TextEditingController();
   final TextEditingController odometerController = TextEditingController();
+  TextEditingController odometer = TextEditingController();
   int value = 0;
   List deployOn = ["Truck", "Trailer"];
   List images = [truck, trailer];
 
   final SharedAxisTransitionType _transitionType =
       SharedAxisTransitionType.horizontal;
-   String? tyre_psi;
-   String? tread_depth;
-   String? regNumber;
-   String? axle;
-   String? positionaxle;
-   String? totalUnit;
-   String? max_psi;
-   String? recom_psi;
+  String? tyre_psi;
+  String? tread_depth;
+  String? regNumber;
+  String? axle;
+  String? positionaxle;
+  String? totalUnit;
+  String? max_psi;
+  String? recom_psi;
 
-   String? id ;
+  String? id;
 
   late bool _isFirstCompleted;
   late bool _isSecondCompleted;
   late bool _isThirdCompleted;
   late bool _isFourthCompleted;
 
-  bool frontLeft = false,
-      frontRight = false,
+  bool frontLeftOut = false,
+      frontLeftIn = false,
+      frontRightIn = false,
+      frontRightOut = false,
       middleLeftOut = false,
       middleLeftIn = false,
       middleRightIn = false,
@@ -106,7 +111,6 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
   String storeCodeSerialNumber = "";
   String recordedPsi = "";
 
-  
   //FuelController fuelController=Get.find();
   TyreController tyreController = Get.find();
 
@@ -116,12 +120,12 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
   void initState() {
     tyreController.getTyreSerialNumberApi();
     tyreController.tyreSerialNumberList;
+
     // TODO: implement initState
     super.initState();
     // TODO: implement initState
 
-    serialNumberController.text =
-        widget.serialNumber.toString();
+    serialNumberController.text = widget.serialNumber.toString();
 
     super.initState();
     _isFirstCompleted = false;
@@ -134,24 +138,13 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
 
     // if(widget.serialNumber.toString().trim() != "null") {
 
-
-
-
-
     // }
-
-
-
-
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {
     print("serial numner mount:" + widget.serialNumber.toString());
-    print("tyre id:" +tyreController.tyreId.toString());
+    print("tyre id:" + tyreController.tyreId.toString());
     return PageTransitionSwitcher(
       duration: const Duration(milliseconds: 300),
       reverse: !_isFirstCompleted,
@@ -178,7 +171,7 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
   }
 
   firstStep() {
-     print("serial number mount:" + widget.serialNumber.toString());
+    print("serial number mount:" + widget.serialNumber.toString());
     return Scaffold(
       backgroundColor: primaryColors,
       key: _scaffoldKey,
@@ -273,36 +266,6 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      //      ObxValue((RxList list) {
-                      //   return SearchableDropdown(
-                      //     withIcon: false,
-                      //     enabled: true,
-                      //     hintText: "Select Size",
-                      //     listItems: tyreController.tyreSizeList
-                      //         .map((e) => "${e.sizeName}")
-                      //         .toList(),
-                      //     onChanged: (value) {
-                      //       tyreSize = tyreController.tyreSizeList.firstWhere((element) => value == element.sizeName).id??0;
-                      //       print("tyreSize onChanged $tyreSize");
-                      //       data.remove("size");
-                      //       data.putIfAbsent('size', () => tyreSize);
-                      //     },
-                      //     searchFieldProps: TextFieldProps(
-                      //       decoration: InputDecoration(
-                      //         suffixIcon: Icon(
-                      //           Icons.keyboard_arrow_down,
-                      //           color: Colors.black,
-                      //         ),
-                      //         hintText: "Search",
-                      //         border: InputBorder.none,
-                      //       ),
-                      //     ),
-                      //   );
-                      // }, tyreController.tyreSizeList),
-                      // SizedBox(
-                      //   height: 10,
-                      // ),
-
                       SearchableDropdown(
                         enabled: true,
                         hintText: "Select Rim (Optional)",
@@ -339,102 +302,117 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                         height: 10,
                       ),
 
-                     widget.serialNumber.toString().trim() == "null" ? 
-                      Container(
-                        padding: EdgeInsets.all(0),
-                        child: SingleChildScrollView(
-                          physics: NeverScrollableScrollPhysics(),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ObxValue((RxList list) {
-                                return SearchableDropdown(
-                                  withIcon: false,
-                                  enabled: true,
-                                  hintText: "Select serial number",
-                                  listItems: tyreController.tyreSerialNumberList
-                                      .map((e) => "${e.tyre_serial_number}")
-                                      .toList(),
-                                  onChanged: (value) {
-
-                                    id = tyreController
+                      widget.serialNumber.toString().trim() == "null"
+                          ? Container(
+                              padding: EdgeInsets.all(0),
+                              child: SingleChildScrollView(
+                                physics: NeverScrollableScrollPhysics(),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    ObxValue((RxList list) {
+                                      return SearchableDropdown(
+                                        withIcon: false,
+                                        enabled: true,
+                                        hintText: "Select serial number",
+                                        listItems: tyreController
                                             .tyreSerialNumberList
-                                            .firstWhere((element) =>
-                                                value ==
-                                                element.tyre_serial_number.toString()).id.toString();
+                                            .map((e) =>
+                                                "${e.tyre_serial_number}")
+                                            .toList(),
+                                        onChanged: (value) {
+                                          id = tyreController
+                                              .tyreSerialNumberList
+                                              .firstWhere((element) =>
+                                                  value ==
+                                                  element.tyre_serial_number
+                                                      .toString())
+                                              .id
+                                              .toString();
 
+                                          storeCodeSerialNumber = tyreController
+                                              .tyreSerialNumberList
+                                              .firstWhere((element) =>
+                                                  value ==
+                                                  element.tyre_serial_number
+                                                      .toString())
+                                              .tyre_serial_number
+                                              .toString();
 
-                                    storeCodeSerialNumber = tyreController
-                                            .tyreSerialNumberList
-                                            .firstWhere((element) =>
-                                                value ==
-                                                element.tyre_serial_number.toString()).tyre_serial_number.toString();
+                                          tyre_psi = tyreController
+                                              .tyreSerialNumberList
+                                              .firstWhere((element) =>
+                                                  value ==
+                                                  element.tyre_serial_number)
+                                              .tyre_psi
+                                              .toString();
 
-                                     tyre_psi =  tyreController
-                                            .tyreSerialNumberList
-                                            .firstWhere((element) =>
-                                                value ==
-                                                element.tyre_serial_number).tyre_psi.toString();  
+                                          tread_depth = tyreController
+                                              .tyreSerialNumberList
+                                              .firstWhere((element) =>
+                                                  value ==
+                                                  element.tyre_serial_number)
+                                              .tread_depth
+                                              .toString();
 
+                                          max_psi = tyreController
+                                              .tyreSerialNumberList
+                                              .firstWhere((element) =>
+                                                  value ==
+                                                  element.tyre_serial_number)
+                                              .max_psi
+                                              .toString();
 
-                                     tread_depth =  tyreController
-                                            .tyreSerialNumberList
-                                            .firstWhere((element) =>
-                                                value ==
-                                                element.tyre_serial_number).tread_depth.toString();  
+                                          recom_psi = tyreController
+                                              .tyreSerialNumberList
+                                              .firstWhere((element) =>
+                                                  value ==
+                                                  element.tyre_serial_number)
+                                              .recom_psi
+                                              .toString();
 
-                                     max_psi =  tyreController
-                                            .tyreSerialNumberList
-                                            .firstWhere((element) =>
-                                                value ==
-                                                element.tyre_serial_number).max_psi.toString();  
+                                          print("tyrePsi: " +
+                                              tyre_psi.toString());
+                                          print("tread depth: " +
+                                              tread_depth.toString());
+                                          print("tyre id: " + id.toString());
 
-                                      recom_psi =  tyreController
-                                            .tyreSerialNumberList
-                                            .firstWhere((element) =>
-                                                value ==
-                                                element.tyre_serial_number).recom_psi.toString();                                 
-
-
-                                     print("tyrePsi: "+tyre_psi.toString());  
-                                     print("tread depth: "+tread_depth.toString());  
-                                     print("tyre id: "+id.toString());                 
-                                          
-                                    // widget.data.remove('store');
-                                    // widget.data.putIfAbsent('store', () => storeCodeSerialNumber);
-                                  },
-                                  searchFieldProps: TextFieldProps(
-                                    decoration: InputDecoration(
-                                      suffixIcon: Icon(
-                                        Icons.keyboard_arrow_down,
-                                        color: Colors.black,
-                                      ),
-                                      hintText: "Search",
-                                      border: InputBorder.none,
-                                    ),
-                                  ),
-                                );
-                              }, tyreController.tyreSerialNumberList),
-                            ],
-                          ),
-                        ),
-                      ): Container(),
+                                          // widget.data.remove('store');
+                                          // widget.data.putIfAbsent('store', () => storeCodeSerialNumber);
+                                        },
+                                        searchFieldProps: TextFieldProps(
+                                          decoration: InputDecoration(
+                                            suffixIcon: Icon(
+                                              Icons.keyboard_arrow_down,
+                                              color: Colors.black,
+                                            ),
+                                            hintText: "Search",
+                                            border: InputBorder.none,
+                                          ),
+                                        ),
+                                      );
+                                    }, tyreController.tyreSerialNumberList),
+                                  ],
+                                ),
+                              ),
+                            )
+                          : Container(),
                       // : Container() ,
 
                       // ignore: unrelated_type_equality_checks
-                      widget.serialNumber.toString().trim() != "null"?
-
-                      ShadowTextField(
-                        enabled: false,
-                         maxLine: 1,
-                        keyboardType: TextInputType.number,
-                        controller: serialNumberController,
-                        hintText: "Tyre Serial Number",
-                        onChanged: (value) {
-                          // data.remove('tyre_psi');
-                          // data.putIfAbsent('tyre_psi', () => pressureController.text);
-                        },
-                      ): Container(),
+                      widget.serialNumber.toString().trim() != "null"
+                          ? ShadowTextField(
+                              enabled: false,
+                              maxLine: 1,
+                              keyboardType: TextInputType.number,
+                              controller: serialNumberController,
+                              hintText: "Tyre Serial Number",
+                              onChanged: (value) {
+                                // data.remove('tyre_psi');
+                                // data.putIfAbsent('tyre_psi', () => pressureController.text);
+                              },
+                            )
+                          : Container(),
                       // : Container(),
                       SizedBox(
                         height: 30,
@@ -468,7 +446,7 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                                         setState(
                                           () {
                                             value = int.parse(index.toString());
-                                            print("value: "+value.toString());
+                                            print("value: " + value.toString());
                                           },
                                         );
                                       },
@@ -499,6 +477,7 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
         child: InkWell(
           splashColor: Colors.transparent,
           onTap: () async {
+            tyreController.getVehicles(value.toString());
 
             recordedPsi = pressureController.text.toString();
             data.remove('deploy_on');
@@ -652,12 +631,12 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                                     .id ??
                                 0;
 
+                            regNumber = tyreController.companyVehicles
+                                .firstWhere(
+                                    (element) => value == element.regNumber)
+                                .regNumber
+                                .toString();
 
-
-                             regNumber =  tyreController.companyVehicles
-                                    .firstWhere(
-                                        (element) => value == element.regNumber).regNumber.toString();
-                                    
                             print("regNumber onChanged $vehicleId");
                             print("regNumber  $regNumber");
                             data.remove('vehicle_id');
@@ -679,14 +658,14 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                         height: 10,
                       ),
                       ShadowTextField(
-                         maxLine: 1,
+                        maxLine: 1,
                         keyboardType: TextInputType.number,
                         controller: odometerController,
                         hintText: "Odometer Reading",
                         onChanged: (value) {
-                          data.remove('odometer');
-                          data.putIfAbsent(
-                              'odometer', () => odometerController.text);
+                          // data.remove('odometer');
+                          // data.putIfAbsent(
+                          //     'odometer', () => odometerController.text);
                         },
                       ),
                       SizedBox(
@@ -706,8 +685,10 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
         child: InkWell(
           splashColor: Colors.transparent,
           onTap: () async {
-            print("press here!");
+            print("press here!" + odometerController.text.toString());
+            print("!" + vehicleId.toString());
             //  _toggleSecond();
+
             if (odometerController.text.isNotEmpty && vehicleId != 0) {
               print("press here1!");
               await tyreController
@@ -852,7 +833,7 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                       SizedBox(
                         height: 20,
                       ),
-                      getTyreViews(),
+                      value == 0 ? getTyreViews() : getTrailerTyreViews(),
                       SizedBox(
                         height: 10,
                       ),
@@ -882,8 +863,10 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
         child: InkWell(
           splashColor: Colors.transparent,
           onTap: () async {
-            if (frontLeft ||
-                frontRight ||
+            if (frontLeftOut ||
+                frontLeftIn ||
+                frontRightIn ||
+                frontRightOut ||
                 middleLeftOut ||
                 middleLeftIn ||
                 middleRightIn ||
@@ -907,8 +890,10 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                   fontSize: 18),
             ),
             decoration: BoxDecoration(
-              color: (frontLeft ||
-                      frontRight ||
+              color: (frontLeftOut ||
+                      frontLeftIn ||
+                      frontRightIn ||
+                      frontRightOut ||
                       middleLeftOut ||
                       middleLeftIn ||
                       middleRightIn ||
@@ -1050,59 +1035,68 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                         height: 10,
                       ),
 
-                                        Center(
+                      Center(
                         child: Text.rich(
-                          
-                   
-
                           // ignore: prefer_const_literals_to_create_immutables
-                          TextSpan(
-                            
-                            children: [
-                              
-
-                        
-
-
-                           TextSpan(
-                            text: "you want to deploy Tyre #",
-                            style:  TextStyle(color: Colors.black, fontSize: 18, ),
-                           
-                          ),
-
-                          TextSpan(
-                            text:  widget.serialNumber.toString().trim() == "null" ?  storeCodeSerialNumber.toString() : widget.serialNumber.toString(),
-                                 
-                           style:  TextStyle(color: Colors.black, fontSize: 18),
-                          ),
-
-                          TextSpan(
-                            text:  " to Vehicle "+
-                                 regNumber.toString() + " to postion ",
-                           style:  TextStyle(color: Colors.black, fontSize: 18),
-                          ),
-
-
-                           TextSpan(
-                            text:  totalUnit.toString() == "1LO" ? "1 Left Outer" : 
-                          totalUnit.toString() == "1RO" ? "1 Right Outer" :
-                          totalUnit.toString() == "2LO" ? "2 Left Outer" :
-                          totalUnit.toString() == "2LI" ? "2 Left Inner" :
-                          totalUnit.toString() == "2RO" ? "2 Right Outer" :
-                          totalUnit.toString() == "2RI" ? "2 Right Inner" :
-                          totalUnit.toString() == "3LO" ? "3 Left Outer" :
-                          totalUnit.toString() == "3LI" ? "3 Left Inner" :
-                          totalUnit.toString() == "3RO" ? "3 Right Outer" :
-                          totalUnit.toString() == "3RI" ? "3 Right Inner" : "" ,
-                           style:  TextStyle(color: Colors.black, fontSize: 18),
-                          )
-
-
-
-
+                          TextSpan(children: [
+                            TextSpan(
+                              text: "you want to deploy Tyre #",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 18,
+                              ),
+                            ),
+                            TextSpan(
+                              text: widget.serialNumber.toString().trim() ==
+                                      "null"
+                                  ? storeCodeSerialNumber.toString()
+                                  : widget.serialNumber.toString(),
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 18),
+                            ),
+                            TextSpan(
+                              text: " to Vehicle " +
+                                  regNumber.toString() +
+                                  " to postion ",
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 18),
+                            ),
+                            TextSpan(
+                              text: totalUnit.toString() == "1LO"
+                                  ? "1 Left Outer"
+                                  : totalUnit.toString() == "1LI"
+                                      ? "1 Left Inner"
+                                      : totalUnit.toString() == "1RI"
+                                          ? "1 Right Inner"
+                                          : totalUnit.toString() == "1RO"
+                                              ? "1 Right Outer"
+                                              : totalUnit.toString() == "2LO"
+                                                  ? "2 Left Outer"
+                                                  : totalUnit.toString() ==
+                                                          "2LI"
+                                                      ? "2 Left Inner"
+                                                      : totalUnit.toString() ==
+                                                              "2RO"
+                                                          ? "2 Right Outer"
+                                                          : totalUnit.toString() ==
+                                                                  "2RI"
+                                                              ? "2 Right Inner"
+                                                              : totalUnit.toString() ==
+                                                                      "3LO"
+                                                                  ? "3 Left Outer"
+                                                                  : totalUnit.toString() ==
+                                                                          "3LI"
+                                                                      ? "3 Left Inner"
+                                                                      : totalUnit.toString() ==
+                                                                              "3RO"
+                                                                          ? "3 Right Outer"
+                                                                          : totalUnit.toString() == "3RI"
+                                                                              ? "3 Right Inner"
+                                                                              : "",
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 18),
+                            )
                           ]),
-
-
                         ),
                       ),
                       // Container(
@@ -1110,7 +1104,7 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                       //   child: Column(
                       //     children: [
                       //       Container(
-                            
+
                       //         child: Row(
                       //           children: [
                       //             Text(
@@ -1121,7 +1115,7 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                       //             ),
 
                       //               Text(
-                                    
+
                       //               widget.serialNumber.toString().trim() == "null" ?  storeCodeSerialNumber.toString() : widget.serialNumber.toString() +" to Vehicle "+
                       //                regNumber.toString() + " to postion "
 
@@ -1134,8 +1128,8 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                       //       ),
 
                       //               Text(
-                              
-                      //         totalUnit.toString() == "1LO" ? "1 Left Outer" : 
+
+                      //         totalUnit.toString() == "1LO" ? "1 Left Outer" :
                       //         totalUnit.toString() == "1RO" ? "1 Right Outer" :
                       //         totalUnit.toString() == "2LO" ? "2 Left Outer" :
                       //         totalUnit.toString() == "2LI" ? "2 Left Inner" :
@@ -1166,66 +1160,64 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            tyreController.isSubmitting.value
+                ? Align(
+                    alignment: Alignment.center,
+                    child: Platform.isAndroid
+                        ? CircularProgressIndicator()
+                        : CupertinoActivityIndicator())
+                : Container(
+                    alignment: Alignment.center,
+                    child: InkWell(
+                      splashColor: Colors.transparent,
+                      onTap: () async {
+                        // _toggleFourth();
+                        tyreController.tyreMount(
+                            id: widget.serialNumber.toString().trim() == "null"
+                                ? id.toString()
+                                : tyreController.tyreId.toString(),
+                            deploy_on: value.toString(),
+                            vehicle_id: regNumber.toString(),
+                            odometer: odometerController.text.toString().trim(),
+                            vehicle_axcel: axle.toString(),
+                            tyre_position: positionaxle.toString(),
+                            tyre_status: "2");
 
-           tyreController.isSubmitting.value
-                  ? Align(
-                      alignment: Alignment.center,
-                      child: Platform.isAndroid
-                          ? CircularProgressIndicator()
-                          : CupertinoActivityIndicator())
-                  :
-
-
-            Container(
-              alignment: Alignment.center,
-              child: InkWell(
-                splashColor: Colors.transparent,
-                onTap: () async {
-                  // _toggleFourth();
-                    tyreController.tyreMount(
-                    id: widget.serialNumber.toString().trim() == "null" ? id.toString() : tyreController.tyreId.toString(), 
-                    deploy_on: value.toString(), 
-                    vehicle_id: regNumber.toString(), 
-                    odometer: odometerController.text.toString().trim(), 
-                    vehicle_axcel: axle.toString(), 
-                    tyre_position: positionaxle.toString(), 
-                    tyre_status: "2");
-                
-                  // if (_isFirstCompleted &&
-                  //     _isSecondCompleted &&
-                  //     _isThirdCompleted) {
-                  //   Get.offAll(TyreHomeScreen(),
-                  //       transition: Transition.leftToRight);
-                  // }
-                },
-                child: Container(
-                  alignment: Alignment.center,
-                  width: ScreenSize.width * 0.82,
-                  height: ScreenSize.height * 0.065,
-                  child: Text(
-                    "Yes",
-                    style: TextStyle(
-                        fontWeight: FontWeight.normal,
-                        color: Colors.white,
-                        fontSize: 18),
-                  ),
-                  decoration: BoxDecoration(
-                    color: green,
-                    boxShadow: [
-                      BoxShadow(
-                        blurRadius: 3,
-                        spreadRadius: 1.2,
-                        offset: Offset(0, 3),
-                        color: Colors.black.withOpacity(0.3),
-                      )
-                    ],
-                    borderRadius: BorderRadius.circular(
-                      ScreenSize.width * 0.1,
+                        // if (_isFirstCompleted &&
+                        //     _isSecondCompleted &&
+                        //     _isThirdCompleted) {
+                        //   Get.offAll(TyreHomeScreen(),
+                        //       transition: Transition.leftToRight);
+                        // }
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: ScreenSize.width * 0.82,
+                        height: ScreenSize.height * 0.065,
+                        child: Text(
+                          "Yes",
+                          style: TextStyle(
+                              fontWeight: FontWeight.normal,
+                              color: Colors.white,
+                              fontSize: 18),
+                        ),
+                        decoration: BoxDecoration(
+                          color: green,
+                          boxShadow: [
+                            BoxShadow(
+                              blurRadius: 3,
+                              spreadRadius: 1.2,
+                              offset: Offset(0, 3),
+                              color: Colors.black.withOpacity(0.3),
+                            )
+                          ],
+                          borderRadius: BorderRadius.circular(
+                            ScreenSize.width * 0.1,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
-            ),
             SizedBox(
               height: 20,
             ),
@@ -1323,9 +1315,10 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                             color: Colors.white,
                             fontSize: 18),
                       ),
-
-                         Text(
-                         widget.serialNumber.toString().trim() == "null" ?  storeCodeSerialNumber.toString() : widget.serialNumber.toString(),
+                      Text(
+                        widget.serialNumber.toString().trim() == "null"
+                            ? storeCodeSerialNumber.toString()
+                            : widget.serialNumber.toString(),
                         style: TextStyle(
                             fontWeight: FontWeight.normal,
                             color: Colors.white,
@@ -1371,7 +1364,9 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                             ),
                             Text(
                               //"123",
-                             widget.serialNumber.toString().trim() == "null" ?  tread_depth.toString() : tyreController.thread_depth.toString(),
+                              widget.serialNumber.toString().trim() == "null"
+                                  ? tread_depth.toString()
+                                  : tyreController.thread_depth.toString(),
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,
@@ -1429,7 +1424,9 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                             Text(
                               // "123",
                               // tyre_psi.toString(),
-                               widget.serialNumber.toString().trim() == "null" ?  max_psi.toString() : tyreController.maximum_psi.toString(),
+                              widget.serialNumber.toString().trim() == "null"
+                                  ? max_psi.toString()
+                                  : tyreController.maximum_psi.toString(),
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,
@@ -1439,8 +1436,7 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                           ],
                         ),
                       ),
-
-                        SizedBox(
+                      SizedBox(
                         height: 10,
                       ),
                       Padding(
@@ -1458,7 +1454,7 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                             ),
                             Text(
                               // "123",
-                             recom_psi.toString(),
+                              recom_psi.toString(),
                               //  widget.serialNumber.toString().trim() == "null" ?  tyre_psi.toString() : tyreController.maximum_psi.toString(),
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
@@ -1517,7 +1513,7 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
     );
   }
 
-  Widget getTyreViews() {
+  Widget getTrailerTyreViews() {
     return Stack(
       fit: StackFit.loose,
       children: [
@@ -1545,9 +1541,72 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                         GestureDetector(
                           onTap: () {
                             setState(() {
-                              frontLeft = true;
+                              bool exist = false;
+                              tyreController.vehicleStructureList
+                                  .forEach((element) {
+                                if (element.tyre_position == "LO" &&
+                                    element.tyre_axel_id == "1") {
+                                  exist = true;
+                                }
+                              });
+                              if (exist) {
+                                selectedModel = tyreController
+                                    .vehicleStructureList
+                                    .firstWhere((element) =>
+                                        element.tyre_axel_id == "1" &&
+                                        element.tyre_position == "LO");
 
-                              frontRight = false;
+                                Get.snackbar("Tyre already exist!", "");
+                              } else {
+                                frontLeftOut = true;
+
+                                axle = "1";
+
+                                positionaxle = "LO";
+
+                                totalUnit =
+                                    axle.toString() + positionaxle.toString();
+
+                                showBottomSheet(context);
+                              }
+                              print("selected model: " +
+                                  selectedModel.toString());
+
+                              // frontLeftOut = true;
+                              frontLeftIn = false;
+                              frontRightIn = false;
+
+                              frontRightOut = false;
+                              middleLeftOut = false;
+                              middleLeftIn = false;
+                              middleRightIn = false;
+                              middleRightOut = false;
+                              backLeftOut = false;
+                              backLeftIn = false;
+                              backRightIn = false;
+                              backRightOut = false;
+                            });
+                            // showBottomSheet(context);
+                          },
+                          child: Container(
+                            height: frontLeftOut ? 60 : 40,
+                            width: frontLeftOut ? 20 : 10,
+                            decoration: BoxDecoration(
+                                color: frontLeftOut ? green : Colors.black,
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              frontLeftOut = false;
+                              frontLeftIn = true;
+                              frontRightIn = false;
+
+                              frontRightOut = false;
                               middleLeftOut = false;
                               middleLeftIn = false;
                               middleRightIn = false;
@@ -1559,33 +1618,28 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
 
                               axle = "1";
 
-                               positionaxle = "LO";
+                              positionaxle = "LI";
 
-                               totalUnit = axle.toString() + positionaxle.toString();
-
-
-
-
-
-
+                              totalUnit =
+                                  axle.toString() + positionaxle.toString();
                             });
                             showBottomSheet(context);
                           },
                           child: Container(
-                            height: frontLeft ? 60 : 40,
-                            width: frontLeft ? 20 : 10,
+                            height: frontLeftIn ? 60 : 40,
+                            width: frontLeftIn ? 20 : 10,
                             decoration: BoxDecoration(
-                                color: frontLeft ? green : Colors.black,
+                                color: frontLeftIn ? green : Colors.black,
                                 borderRadius: BorderRadius.circular(10)),
                           ),
-                        )
+                        ),
                       ],
                       mainAxisAlignment: MainAxisAlignment.end,
                     ),
                   ),
                   Container(
-                    width: 100,
                     margin: EdgeInsets.symmetric(horizontal: 2),
+                    width: 100,
                     child: Divider(
                       color: Colors.black,
                       thickness: 4,
@@ -1598,8 +1652,11 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                         GestureDetector(
                           onTap: () {
                             setState(() {
-                              frontLeft = false;
-                              frontRight = true;
+                              frontLeftOut = false;
+                              frontLeftIn = false;
+                              frontRightIn = true;
+
+                              frontRightOut = false;
                               middleLeftOut = false;
                               middleLeftIn = false;
                               middleRightIn = false;
@@ -1609,26 +1666,63 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                               backRightIn = false;
                               backRightOut = false;
 
-                                axle = "1";
+                              axle = "1";
 
-                               positionaxle = "RO";
+                              positionaxle = "RI";
 
-                                totalUnit = axle.toString() + positionaxle.toString();
+                              totalUnit =
+                                  axle.toString() + positionaxle.toString();
                             });
-
                             showBottomSheet(context);
                           },
                           child: Container(
-                            height: frontRight ? 60 : 40, //60
-                            width: frontRight ? 20 : 10, //20
+                            height: frontRightIn ? 60 : 40,
+                            width: frontRightIn ? 20 : 10,
                             decoration: BoxDecoration(
-                                color: frontRight ? green : Colors.black,
+                                color: frontRightIn ? green : Colors.black,
                                 borderRadius: BorderRadius.circular(10)),
                           ),
-                        )
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              frontLeftOut = false;
+                              frontLeftIn = false;
+                              frontRightIn = false;
+
+                              frontRightOut = true;
+                              middleLeftOut = false;
+                              middleLeftIn = false;
+                              middleRightIn = false;
+                              middleRightOut = false;
+                              backLeftOut = false;
+                              backLeftIn = false;
+                              backRightIn = false;
+                              backRightOut = false;
+
+                              axle = "1";
+
+                              positionaxle = "RO";
+
+                              totalUnit =
+                                  axle.toString() + positionaxle.toString();
+                            });
+                            showBottomSheet(context);
+                          },
+                          child: Container(
+                            height: frontRightOut ? 60 : 40,
+                            width: frontRightOut ? 20 : 10,
+                            decoration: BoxDecoration(
+                                color: frontRightOut ? green : Colors.black,
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                        ),
                       ],
                     ),
-                  ),
+                  )
                 ],
               ),
             ),
@@ -1646,8 +1740,11 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                         GestureDetector(
                           onTap: () {
                             setState(() {
-                              frontLeft = false;
-                              frontRight = false;
+                              frontLeftOut = false;
+                              frontLeftIn = false;
+                              frontRightIn = false;
+
+                              frontRightOut = false;
                               middleLeftOut = true;
                               middleLeftIn = false;
                               middleRightIn = false;
@@ -1657,12 +1754,12 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                               backRightIn = false;
                               backRightOut = false;
 
-                                axle = "2";
+                              axle = "2";
 
-                               positionaxle = "LO";
+                              positionaxle = "LO";
 
-                                totalUnit = axle.toString() + positionaxle.toString();
-
+                              totalUnit =
+                                  axle.toString() + positionaxle.toString();
                             });
                             showBottomSheet(context);
                           },
@@ -1680,8 +1777,11 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                         GestureDetector(
                           onTap: () {
                             setState(() {
-                              frontLeft = false;
-                              frontRight = false;
+                              frontLeftOut = false;
+                              frontLeftIn = false;
+                              frontRightIn = false;
+
+                              frontRightOut = false;
                               middleLeftOut = false;
                               middleLeftIn = true;
                               middleRightIn = false;
@@ -1691,11 +1791,12 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                               backRightIn = false;
                               backRightOut = false;
 
-                                axle = "2";
+                              axle = "2";
 
-                               positionaxle = "LI";
+                              positionaxle = "LI";
 
-                                totalUnit = axle.toString() + positionaxle.toString();
+                              totalUnit =
+                                  axle.toString() + positionaxle.toString();
                             });
                             showBottomSheet(context);
                           },
@@ -1726,8 +1827,11 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                         GestureDetector(
                           onTap: () {
                             setState(() {
-                              frontLeft = false;
-                              frontRight = false;
+                              frontLeftOut = false;
+                              frontLeftIn = false;
+                              frontRightIn = false;
+
+                              frontRightOut = false;
                               middleLeftOut = false;
                               middleLeftIn = false;
                               middleRightIn = true;
@@ -1737,13 +1841,12 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                               backRightIn = false;
                               backRightOut = false;
 
-                                axle = "2";
+                              axle = "2";
 
-                               positionaxle = "RI";
+                              positionaxle = "RI";
 
-                                totalUnit = axle.toString() + positionaxle.toString();
-
-
+                              totalUnit =
+                                  axle.toString() + positionaxle.toString();
                             });
                             showBottomSheet(context);
                           },
@@ -1761,8 +1864,11 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                         GestureDetector(
                           onTap: () {
                             setState(() {
-                              frontLeft = false;
-                              frontRight = false;
+                              frontLeftOut = false;
+                              frontLeftIn = false;
+                              frontRightIn = false;
+
+                              frontRightOut = false;
                               middleLeftOut = false;
                               middleLeftIn = false;
                               middleRightIn = false;
@@ -1772,11 +1878,12 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                               backRightIn = false;
                               backRightOut = false;
 
-                                axle = "2";
+                              axle = "2";
 
-                               positionaxle = "RO";
+                              positionaxle = "RO";
 
-                                totalUnit = axle.toString() + positionaxle.toString();
+                              totalUnit =
+                                  axle.toString() + positionaxle.toString();
                             });
                             showBottomSheet(context);
                           },
@@ -1808,8 +1915,11 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                         GestureDetector(
                           onTap: () {
                             setState(() {
-                              frontLeft = false;
-                              frontRight = false;
+                              frontLeftOut = false;
+                              frontLeftIn = false;
+                              frontRightIn = false;
+
+                              frontRightOut = false;
                               middleLeftOut = false;
                               middleLeftIn = false;
                               middleRightIn = false;
@@ -1818,11 +1928,13 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                               backLeftIn = false;
                               backRightIn = false;
                               backRightOut = false;
-                                axle = "3";
+
+                              axle = "3";
 
                               positionaxle = "LO";
 
-                               totalUnit = axle.toString() + positionaxle.toString();
+                              totalUnit =
+                                  axle.toString() + positionaxle.toString();
                             });
                             showBottomSheet(context);
                           },
@@ -1840,8 +1952,11 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                         GestureDetector(
                           onTap: () {
                             setState(() {
-                              frontLeft = false;
-                              frontRight = false;
+                              frontLeftOut = false;
+                              frontLeftIn = false;
+                              frontRightIn = false;
+
+                              frontRightOut = false;
                               middleLeftOut = false;
                               middleLeftIn = false;
                               middleRightIn = false;
@@ -1851,11 +1966,12 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                               backRightIn = false;
                               backRightOut = false;
 
-                                axle = "3";
+                              axle = "3";
 
-                               positionaxle = "LI";
+                              positionaxle = "LI";
 
-                                totalUnit = axle.toString() + positionaxle.toString();
+                              totalUnit =
+                                  axle.toString() + positionaxle.toString();
                             });
                             showBottomSheet(context);
                           },
@@ -1886,8 +2002,11 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                         GestureDetector(
                           onTap: () {
                             setState(() {
-                              frontLeft = false;
-                              frontRight = false;
+                              frontLeftOut = false;
+                              frontLeftIn = false;
+                              frontRightIn = false;
+
+                              frontRightOut = false;
                               middleLeftOut = false;
                               middleLeftIn = false;
                               middleRightIn = false;
@@ -1897,11 +2016,12 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                               backRightIn = true;
                               backRightOut = false;
 
-                                axle = "3";
+                              axle = "3";
 
-                               positionaxle = "RI";
+                              positionaxle = "RI";
 
-                                totalUnit = axle.toString() + positionaxle.toString();
+                              totalUnit =
+                                  axle.toString() + positionaxle.toString();
                             });
                             showBottomSheet(context);
                           },
@@ -1919,8 +2039,11 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                         GestureDetector(
                           onTap: () {
                             setState(() {
-                              frontLeft = false;
-                              frontRight = false;
+                              frontLeftOut = false;
+                              frontLeftIn = false;
+                              frontRightIn = false;
+
+                              frontRightOut = false;
                               middleLeftOut = false;
                               middleLeftIn = false;
                               middleRightIn = false;
@@ -1930,13 +2053,1231 @@ class _MountHomeScreenState extends State<MountHomeScreen> {
                               backRightIn = false;
                               backRightOut = true;
 
-                                axle = "3";
+                              axle = "3";
 
                               positionaxle = "RO";
 
-                               totalUnit = axle.toString() + positionaxle.toString();
+                              totalUnit =
+                                  axle.toString() + positionaxle.toString();
                             });
                             showBottomSheet(context);
+                          },
+                          child: Container(
+                            height: backRightOut ? 60 : 40,
+                            width: backRightOut ? 20 : 10,
+                            decoration: BoxDecoration(
+                                color: backRightOut ? green : Colors.black,
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget getTyreViews() {
+    return Stack(
+      fit: StackFit.loose,
+      children: [
+        Positioned(
+          top: 0,
+          bottom: 0,
+          left: ScreenSize.width * 0.5 - 40,
+          child: VerticalDivider(
+            color: Colors.black,
+            thickness: 4,
+            indent: 40,
+            endIndent: 40,
+          ),
+        ),
+        Column(
+          children: [
+            Container(
+              height: ScreenSize.height * 0.1,
+              color: Colors.grey.withOpacity(0.1),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              bool exist = false;
+                              tyreController.vehicleStructureList
+                                  .forEach((element) {
+                                if (element.tyre_position == "LO" &&
+                                    element.tyre_axel_id == "1") {
+                                  exist = true;
+                                }
+                              });
+                              if (exist) {
+                                selectedModel = tyreController
+                                    .vehicleStructureList
+                                    .firstWhere((element) =>
+                                        element.tyre_axel_id == "1" &&
+                                        element.tyre_position == "LO");
+
+                                // Get.snackbar("Tyre already exist!", "");
+
+                                Get.defaultDialog(
+                                    contentPadding: EdgeInsets.all(10),
+                                    title: "",
+
+                                    // titleStyle: TextStyle(color: Colors.black, fontSize: 17),
+
+                                    content: Column(
+                                      children: [
+                                        Lottie.asset(
+                                          "assets/images/loading.json",
+                                          width: 200,
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                            "Tyre already exist on this position!",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w500)),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        SizedBox(
+                                          width: 140,
+                                          height: 40,
+                                          child: FlatButton(
+                                            color: Colors.amber,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            onPressed: () {
+                                              Get.back();
+                                            },
+                                            child: Text(
+                                              "Ok",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ));
+                              } else {
+                                frontLeftOut = true;
+
+                                axle = "1";
+
+                                positionaxle = "LO";
+
+                                totalUnit =
+                                    axle.toString() + positionaxle.toString();
+
+                                showBottomSheet(context);
+                              }
+                              print("selected model: " +
+                                  selectedModel.toString());
+
+                       
+                              frontLeftIn = false;
+                              frontRightIn = false;
+
+                              frontRightOut = false;
+                              middleLeftOut = false;
+                              middleLeftIn = false;
+                              middleRightIn = false;
+                              middleRightOut = false;
+                              backLeftOut = false;
+                              backLeftIn = false;
+                              backRightIn = false;
+                              backRightOut = false;
+
+                            });
+                          },
+                          child: Container(
+                            height: frontLeftOut ? 60 : 40,
+                            width: frontLeftOut ? 20 : 10,
+                            decoration: BoxDecoration(
+                                color: frontLeftOut ? green : Colors.black,
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                        )
+                      ],
+                      mainAxisAlignment: MainAxisAlignment.end,
+                    ),
+                  ),
+                  Container(
+                    width: 100,
+                    margin: EdgeInsets.symmetric(horizontal: 2),
+                    child: Divider(
+                      color: Colors.black,
+                      thickness: 4,
+                    ),
+                  ),
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              bool exist = false;
+                              tyreController.vehicleStructureList
+                                  .forEach((element) {
+                                if (element.tyre_position == "RO" &&
+                                    element.tyre_axel_id == "1") {
+                                  exist = true;
+                                }
+                              });
+                              if (exist) {
+                                selectedModel = tyreController
+                                    .vehicleStructureList
+                                    .firstWhere((element) =>
+                                        element.tyre_axel_id == "1" &&
+                                        element.tyre_position == "RO");
+
+                                // Get.snackbar("Tyre already exist!", "");
+
+                                Get.defaultDialog(
+                                    contentPadding: EdgeInsets.all(10),
+                                    title: "",
+
+                                    // titleStyle: TextStyle(color: Colors.black, fontSize: 17),
+
+                                    content: Column(
+                                      children: [
+                                        Lottie.asset(
+                                          "assets/images/loading.json",
+                                          width: 200,
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                            "Tyre already exist on this position!",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w500)),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        SizedBox(
+                                          width: 140,
+                                          height: 40,
+                                          child: FlatButton(
+                                            color: Colors.amber,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            onPressed: () {
+                                              Get.back();
+                                            },
+                                            child: Text(
+                                              "Ok",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ));
+                              } else {
+                                frontRightOut = true;
+
+                                axle = "1";
+
+                                positionaxle = "RO";
+
+                                totalUnit =
+                                    axle.toString() + positionaxle.toString();
+
+                                showBottomSheet(context);
+                              }
+                              print("selected model: " +
+                                  selectedModel.toString());
+
+                              frontLeftOut = false;
+
+                              
+                              middleLeftOut = false;
+                              middleLeftIn = false;
+                              middleRightIn = false;
+                              middleRightOut = false;
+                              backLeftOut = false;
+                              backLeftIn = false;
+                              backRightIn = false;
+                              backRightOut = false;
+                            });
+                          },
+                          child: Container(
+                            height: frontRightOut ? 60 : 40, //60
+                            width: frontRightOut ? 20 : 10, //20
+                            decoration: BoxDecoration(
+                                color: frontRightOut ? green : Colors.black,
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 100,
+            ),
+            Container(
+              height: ScreenSize.height * 0.1,
+              color: Colors.grey.withOpacity(0.1),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              bool exist = false;
+                              tyreController.vehicleStructureList
+                                  .forEach((element) {
+                                if (element.tyre_position == "LO" &&
+                                    element.tyre_axel_id == "2") {
+                                  exist = true;
+                                }
+                              });
+                              if (exist) {
+                                selectedModel = tyreController
+                                    .vehicleStructureList
+                                    .firstWhere((element) =>
+                                        element.tyre_axel_id == "2" &&
+                                        element.tyre_position == "LO");
+
+                                // Get.snackbar("Tyre already exist!", "");
+
+                                Get.defaultDialog(
+                                    contentPadding: EdgeInsets.all(10),
+                                    title: "",
+
+                                    // titleStyle: TextStyle(color: Colors.black, fontSize: 17),
+
+                                    content: Column(
+                                      children: [
+                                        Lottie.asset(
+                                          "assets/images/loading.json",
+                                          width: 200,
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                            "Tyre already exist on this position!",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w500)),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        SizedBox(
+                                          width: 140,
+                                          height: 40,
+                                          child: FlatButton(
+                                            color: Colors.amber,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            onPressed: () {
+                                              Get.back();
+                                            },
+                                            child: Text(
+                                              "Ok",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ));
+                              } else {
+                                middleLeftOut = true;
+
+                                axle = "2";
+
+                                positionaxle = "LO";
+
+                                totalUnit =
+                                    axle.toString() + positionaxle.toString();
+
+                                showBottomSheet(context);
+                              }
+                              print("selected model: " +
+                                  selectedModel.toString());
+
+                              frontLeftOut = false;
+                             
+
+                              frontRightOut = false;
+                              
+                              middleLeftIn = false;
+                              middleRightIn = false;
+                              middleRightOut = false;
+                              backLeftOut = false;
+                              backLeftIn = false;
+                              backRightIn = false;
+                              backRightOut = false;
+
+                        
+                            });
+                      
+                          },
+                          child: Container(
+                            height: middleLeftOut ? 60 : 40,
+                            width: middleLeftOut ? 20 : 10,
+                            decoration: BoxDecoration(
+                                color: middleLeftOut ? green : Colors.black,
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              bool exist = false;
+                              tyreController.vehicleStructureList
+                                  .forEach((element) {
+                                if (element.tyre_position == "LI" &&
+                                    element.tyre_axel_id == "2") {
+                                  exist = true;
+                                }
+                              });
+                              if (exist) {
+                                selectedModel = tyreController
+                                    .vehicleStructureList
+                                    .firstWhere((element) =>
+                                        element.tyre_axel_id == "2" &&
+                                        element.tyre_position == "LI");
+
+                                // Get.snackbar("Tyre already exist!", "");
+
+                                Get.defaultDialog(
+                                    contentPadding: EdgeInsets.all(10),
+                                    title: "",
+
+                                    // titleStyle: TextStyle(color: Colors.black, fontSize: 17),
+
+                                    content: Column(
+                                      children: [
+                                        Lottie.asset(
+                                          "assets/images/loading.json",
+                                          width: 200,
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                            "Tyre already exist on this position!",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w500)),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        SizedBox(
+                                          width: 140,
+                                          height: 40,
+                                          child: FlatButton(
+                                            color: Colors.amber,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            onPressed: () {
+                                              Get.back();
+                                            },
+                                            child: Text(
+                                              "Ok",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ));
+                              } else {
+                                 middleLeftIn = true;
+
+                                axle = "2";
+
+                                positionaxle = "LI";
+
+                                totalUnit =
+                                    axle.toString() + positionaxle.toString();
+
+                                showBottomSheet(context);
+                              }
+                              print("selected model: " +
+                                  selectedModel.toString());
+
+                              frontLeftOut = false;
+                           
+
+                              frontRightOut = false;
+                              middleLeftOut = false;
+                             
+                              middleRightIn = false;
+                              middleRightOut = false;
+                              backLeftOut = false;
+                              backLeftIn = false;
+                              backRightIn = false;
+                              backRightOut = false;
+
+                           
+                            });
+                         
+                          },
+                          child: Container(
+                            height: middleLeftIn ? 60 : 40,
+                            width: middleLeftIn ? 20 : 10,
+                            decoration: BoxDecoration(
+                                color: middleLeftIn ? green : Colors.black,
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                        ),
+                      ],
+                      mainAxisAlignment: MainAxisAlignment.end,
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 2),
+                    width: 100,
+                    child: Divider(
+                      color: Colors.black,
+                      thickness: 4,
+                    ),
+                  ),
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              bool exist = false;
+                              tyreController.vehicleStructureList
+                                  .forEach((element) {
+                                if (element.tyre_position == "RI" &&
+                                    element.tyre_axel_id == "2") {
+                                  exist = true;
+                                }
+                              });
+                              if (exist) {
+                                selectedModel = tyreController
+                                    .vehicleStructureList
+                                    .firstWhere((element) =>
+                                        element.tyre_axel_id == "2" &&
+                                        element.tyre_position == "RI");
+
+                                // Get.snackbar("Tyre already exist!", "");
+
+                                Get.defaultDialog(
+                                    contentPadding: EdgeInsets.all(10),
+                                    title: "",
+
+                                    // titleStyle: TextStyle(color: Colors.black, fontSize: 17),
+
+                                    content: Column(
+                                      children: [
+                                        Lottie.asset(
+                                          "assets/images/loading.json",
+                                          width: 200,
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                            "Tyre already exist on this position!",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w500)),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        SizedBox(
+                                          width: 140,
+                                          height: 40,
+                                          child: FlatButton(
+                                            color: Colors.amber,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            onPressed: () {
+                                              Get.back();
+                                            },
+                                            child: Text(
+                                              "Ok",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ));
+                              } else {
+                                middleRightIn = true;
+
+                                axle = "2";
+
+                                positionaxle = "RI";
+
+                                totalUnit =
+                                    axle.toString() + positionaxle.toString();
+
+                                showBottomSheet(context);
+                              }
+                              print("selected model: " +
+                                  selectedModel.toString());
+
+                              frontLeftOut = false;
+                         
+
+                              frontRightOut = false;
+                              middleLeftOut = false;
+                              middleLeftIn = false;
+                            
+                              middleRightOut = false;
+                              backLeftOut = false;
+                              backLeftIn = false;
+                              backRightIn = false;
+                              backRightOut = false;
+
+                         
+                            });
+                        
+                          },
+                          child: Container(
+                            height: middleRightIn ? 60 : 40,
+                            width: middleRightIn ? 20 : 10,
+                            decoration: BoxDecoration(
+                                color: middleRightIn ? green : Colors.black,
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              bool exist = false;
+                              tyreController.vehicleStructureList
+                                  .forEach((element) {
+                                if (element.tyre_position == "RO" &&
+                                    element.tyre_axel_id == "2") {
+                                  exist = true;
+                                }
+                              });
+                              if (exist) {
+                                selectedModel = tyreController
+                                    .vehicleStructureList
+                                    .firstWhere((element) =>
+                                        element.tyre_axel_id == "2" &&
+                                        element.tyre_position == "RO");
+
+                                // Get.snackbar("Tyre already exist!", "");
+
+                                Get.defaultDialog(
+                                    contentPadding: EdgeInsets.all(10),
+                                    title: "",
+
+                                    // titleStyle: TextStyle(color: Colors.black, fontSize: 17),
+
+                                    content: Column(
+                                      children: [
+                                        Lottie.asset(
+                                          "assets/images/loading.json",
+                                          width: 200,
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                            "Tyre already exist on this position!",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w500)),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        SizedBox(
+                                          width: 140,
+                                          height: 40,
+                                          child: FlatButton(
+                                            color: Colors.amber,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            onPressed: () {
+                                              Get.back();
+                                            },
+                                            child: Text(
+                                              "Ok",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ));
+                              } else {
+                                middleRightOut = true;
+
+                                axle = "2";
+
+                                positionaxle = "RO";
+
+                                totalUnit =
+                                    axle.toString() + positionaxle.toString();
+
+                                showBottomSheet(context);
+                              }
+                              print("selected model: " +
+                                  selectedModel.toString());
+
+                              frontLeftOut = false;
+                              frontLeftIn = false;
+                              frontRightIn = false;
+
+                              frontRightOut = false;
+                              middleLeftOut = false;
+                              middleLeftIn = false;
+                              middleRightIn = false;
+                             
+                              backLeftOut = false;
+                              backLeftIn = false;
+                              backRightIn = false;
+                              backRightOut = false;
+
+                             
+                            });
+                           
+                          },
+                          child: Container(
+                            height: middleRightOut ? 60 : 40,
+                            width: middleRightOut ? 20 : 10,
+                            decoration: BoxDecoration(
+                                color: middleRightOut ? green : Colors.black,
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              height: ScreenSize.height * 0.1,
+              color: Colors.grey.withOpacity(0.1),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              bool exist = false;
+                              tyreController.vehicleStructureList
+                                  .forEach((element) {
+                                if (element.tyre_position == "LO" &&
+                                    element.tyre_axel_id == "3") {
+                                  exist = true;
+                                }
+                              });
+                              if (exist) {
+                                selectedModel = tyreController
+                                    .vehicleStructureList
+                                    .firstWhere((element) =>
+                                        element.tyre_axel_id == "3" &&
+                                        element.tyre_position == "LO");
+
+                                
+
+                                Get.defaultDialog(
+                                    contentPadding: EdgeInsets.all(10),
+                                    title: "",
+
+
+                                    content: Column(
+                                      children: [
+                                        Lottie.asset(
+                                          "assets/images/loading.json",
+                                          width: 200,
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                            "Tyre already exist on this position!",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w500)),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        SizedBox(
+                                          width: 140,
+                                          height: 40,
+                                          child: FlatButton(
+                                            color: Colors.amber,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            onPressed: () {
+                                              Get.back();
+                                            },
+                                            child: Text(
+                                              "Ok",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ));
+                              } else {
+                                 backLeftOut = true;
+
+                                axle = "3";
+
+                                positionaxle = "LO";
+
+                                totalUnit =
+                                    axle.toString() + positionaxle.toString();
+
+                                showBottomSheet(context);
+                              }
+                              print("selected model: " +
+                                  selectedModel.toString());
+
+                              frontLeftOut = false;
+                              frontLeftIn = false;
+                              frontRightIn = false;
+
+                              frontRightOut = false;
+                              middleLeftOut = false;
+                              middleLeftIn = false;
+                              middleRightIn = false;
+                              middleRightOut = false;
+                             
+                              backLeftIn = false;
+                              backRightIn = false;
+                              backRightOut = false;
+                      
+                            });
+                       
+                          },
+                          child: Container(
+                            height: backLeftOut ? 60 : 40,
+                            width: backLeftOut ? 20 : 10,
+                            decoration: BoxDecoration(
+                                color: backLeftOut ? green : Colors.black,
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              bool exist = false;
+                              tyreController.vehicleStructureList
+                                  .forEach((element) {
+                                if (element.tyre_position == "LI" &&
+                                    element.tyre_axel_id == "3") {
+                                  exist = true;
+                                }
+                              });
+                              if (exist) {
+                                selectedModel = tyreController
+                                    .vehicleStructureList
+                                    .firstWhere((element) =>
+                                        element.tyre_axel_id == "3" &&
+                                        element.tyre_position == "LI");
+
+                             
+
+                                Get.defaultDialog(
+                                    contentPadding: EdgeInsets.all(10),
+                                    title: "",
+
+                                    // titleStyle: TextStyle(color: Colors.black, fontSize: 17),
+
+                                    content: Column(
+                                      children: [
+                                        Lottie.asset(
+                                          "assets/images/loading.json",
+                                          width: 200,
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                            "Tyre already exist on this position!",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w500)),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        SizedBox(
+                                          width: 140,
+                                          height: 40,
+                                          child: FlatButton(
+                                            color: Colors.amber,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            onPressed: () {
+                                              Get.back();
+                                            },
+                                            child: Text(
+                                              "Ok",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ));
+                              } else {
+                                backLeftIn = true;
+
+                                axle = "3";
+
+                                positionaxle = "LI";
+
+                                totalUnit =
+                                    axle.toString() + positionaxle.toString();
+
+                                showBottomSheet(context);
+                              }
+                              print("selected model: " +
+                                  selectedModel.toString());
+
+                              frontLeftOut = false;
+                              frontLeftIn = false;
+                              frontRightIn = false;
+
+                              frontRightOut = false;
+                              middleLeftOut = false;
+                              middleLeftIn = false;
+                              middleRightIn = false;
+                              middleRightOut = false;
+                              backLeftOut = false;
+                             
+                              backRightIn = false;
+                              backRightOut = false;
+
+                            });
+                          
+                          },
+                          child: Container(
+                            height: backLeftIn ? 60 : 40,
+                            width: backLeftIn ? 20 : 10,
+                            decoration: BoxDecoration(
+                                color: backLeftIn ? green : Colors.black,
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                        ),
+                      ],
+                      mainAxisAlignment: MainAxisAlignment.end,
+                    ),
+                  ),
+                  Container(
+                    width: 100,
+                    margin: EdgeInsets.symmetric(horizontal: 2),
+                    child: Divider(
+                      color: Colors.black,
+                      thickness: 4,
+                    ),
+                  ),
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              bool exist = false;
+                              tyreController.vehicleStructureList
+                                  .forEach((element) {
+                                if (element.tyre_position == "RI" &&
+                                    element.tyre_axel_id == "3") {
+                                  exist = true;
+                                }
+                              });
+                              if (exist) {
+                                selectedModel = tyreController
+                                    .vehicleStructureList
+                                    .firstWhere((element) =>
+                                        element.tyre_axel_id == "3" &&
+                                        element.tyre_position == "RI");
+
+                                Get.defaultDialog(
+                                    contentPadding: EdgeInsets.all(10),
+                                    title: "",
+                                    content: Column(
+                                      children: [
+                                        Lottie.asset(
+                                          "assets/images/loading.json",
+                                          width: 200,
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                            "Tyre already exist on this position!",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w500)),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        SizedBox(
+                                          width: 140,
+                                          height: 40,
+                                          child: FlatButton(
+                                            color: Colors.amber,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            onPressed: () {
+                                              Get.back();
+                                            },
+                                            child: Text(
+                                              "Ok",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ));
+                              } else {
+                               backRightIn = true;
+
+                                axle = "3";
+
+                                positionaxle = "RI";
+
+                                totalUnit =
+                                    axle.toString() + positionaxle.toString();
+
+                                showBottomSheet(context);
+                              }
+                              print("selected model: " +
+                                  selectedModel.toString());
+
+                              frontLeftOut = false;
+                              frontLeftIn = false;
+                              frontRightIn = false;
+
+                              frontRightOut = false;
+                              middleLeftOut = false;
+                              middleLeftIn = false;
+                              middleRightIn = false;
+                              middleRightOut = false;
+                              backLeftOut = false;
+                              backLeftIn = false;
+                              
+                              backRightOut = false;
+                            });
+                          },
+                          child: Container(
+                            height: backRightIn ? 60 : 40,
+                            width: backRightIn ? 20 : 10,
+                            decoration: BoxDecoration(
+                                color: backRightIn ? green : Colors.black,
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              bool exist = false;
+                              tyreController.vehicleStructureList
+                                  .forEach((element) {
+                                if (element.tyre_position == "RO" &&
+                                    element.tyre_axel_id == "3") {
+                                  exist = true;
+                                }
+                              });
+                              if (exist) {
+                                selectedModel = tyreController
+                                    .vehicleStructureList
+                                    .firstWhere((element) =>
+                                        element.tyre_axel_id == "3" &&
+                                        element.tyre_position == "RO");
+
+                              
+
+                                Get.defaultDialog(
+                                    contentPadding: EdgeInsets.all(10),
+                                    title: "",
+
+                               
+
+                                    content: Column(
+                                      children: [
+                                        Lottie.asset(
+                                          "assets/images/loading.json",
+                                          width: 200,
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                            "Tyre already exist on this position!",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w500)),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        SizedBox(
+                                          width: 140,
+                                          height: 40,
+                                          child: FlatButton(
+                                            color: Colors.amber,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            onPressed: () {
+                                              Get.back();
+                                            },
+                                            child: Text(
+                                              "Ok",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ));
+                              } else {
+                                backRightOut = true;
+
+                                axle = "3";
+
+                                positionaxle = "RO";
+
+                                totalUnit =
+                                    axle.toString() + positionaxle.toString();
+
+                                showBottomSheet(context);
+                              }
+                              print("selected model: " +
+                                  selectedModel.toString());
+
+                              frontLeftOut = false;
+                              frontLeftIn = false;
+                              frontRightIn = false;
+
+                              frontRightOut = false;
+                              middleLeftOut = false;
+                              middleLeftIn = false;
+                              middleRightIn = false;
+                              middleRightOut = false;
+                              backLeftOut = false;
+                              backLeftIn = false;
+                              backRightIn = false;
+                             
+                            });
                           },
                           child: Container(
                             height: backRightOut ? 60 : 40,

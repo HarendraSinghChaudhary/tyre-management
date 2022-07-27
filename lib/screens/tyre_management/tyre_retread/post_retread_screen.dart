@@ -189,7 +189,7 @@ class _PostRetreadScreenState extends State<PostRetreadScreen> {
                         hintText: "Year",
                           maxLine: 1,
                       keyboardType: TextInputType.number,
-                      maxLength: 2,
+                      maxLength: 4,
                         controller: yearController,
                         onChanged: (value) {},
                       ),
