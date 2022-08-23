@@ -1,10 +1,13 @@
 // ignore_for_file: prefer_const_constructors, unrelated_type_equality_checks
 
+import 'dart:io';
+
 import 'package:PrimeMetrics/controllers/tyre/tyre_controller.dart';
 import 'package:PrimeMetrics/screens/fuel_master/fuel_master_widgets/searchable_dropdown.dart';
 import 'package:PrimeMetrics/screens/tyre_management/tyre_inspection/pressure_check/pressure_below_screen.dart';
 import 'package:PrimeMetrics/screens/tyre_management/tyre_inspection/pressure_check/pressure_verified.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -121,7 +124,11 @@ class _PressureCheckHomeScreenState extends State<PressureCheckHomeScreen> {
                 
 
                   SizedBox(height: Get.height * 0.02,),
-                ElevatedButton(
+
+
+              
+
+                     ElevatedButton(
                     style: ElevatedButton.styleFrom(
                         primary: green,
                         fixedSize: Size(
@@ -142,13 +149,40 @@ class _PressureCheckHomeScreenState extends State<PressureCheckHomeScreen> {
                       }
                      
                     },
-                    child: const Text(
+                    child: 
+
+                    Obx((() =>
+
+                     tyreController.isSubmitting.value
+                        ? Align(
+                            alignment: Alignment.center,
+                            child: Platform.isAndroid
+                                ? CircularProgressIndicator(color: Colors.white, strokeWidth: 1,)
+                                : CupertinoActivityIndicator())
+                        :
+
+
+                         Text(
                       "Check Pressure",
                       style: TextStyle(
                           fontWeight: FontWeight.normal,
                           color: Colors.white,
                           fontSize: 14),
-                    )),
+                    )
+                    
+                    
+                     ))
+
+                    
+                    
+                
+                    ),
+               
+                  
+            
+            
+             
+               
                 SizedBox(
                   height: Get.height * 0.04,
                 ),
@@ -314,13 +348,34 @@ class _PressureCheckHomeScreenState extends State<PressureCheckHomeScreen> {
             alignment: Alignment.center,
             width: ScreenSize.width * 0.82,
             height: ScreenSize.height * 0.065,
-            child: Text(
+            child: 
+
+
+            Obx((() => 
+
+
+             tyreController.isInspectionLoading.value
+                        ? Align(
+                            alignment: Alignment.center,
+                            child: Platform.isAndroid
+                                ? CircularProgressIndicator(color: Colors.white, strokeWidth: 1,)
+                                : CupertinoActivityIndicator())
+                        :
+
+                          Text(
               "Submit",
               style: TextStyle(
                   fontWeight: FontWeight.normal,
                   color: Colors.white,
                   fontSize: 18),
-            ),
+            )
+            
+            
+            )),
+            
+            
+            
+          
             decoration: BoxDecoration(
                 color: green,
                 boxShadow: [

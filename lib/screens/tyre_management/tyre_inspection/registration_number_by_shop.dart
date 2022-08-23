@@ -1,10 +1,13 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:io';
+
 import 'package:PrimeMetrics/controllers/tyre/tyre_controller.dart';
 import 'package:PrimeMetrics/screens/fuel_master/fuel_master_widgets/shadow_textfield.dart';
 import 'package:PrimeMetrics/screens/tyre_management/tyre_inspection/inspection_select_tyre.dart';
 import 'package:PrimeMetrics/screens/tyre_management/tyre_inspection/selected_tyre_inspection.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -65,6 +68,14 @@ class _InspectionStoreCodeState extends State<RegistrationNumberByShop> {
       key: _scaffoldKey,
       backgroundColor: primaryColors,
       body:  Obx((() => 
+
+           tyreController.isSubmitting.value
+                        ? Align(
+                            alignment: Alignment.center,
+                            child: Platform.isAndroid
+                                ? CircularProgressIndicator()
+                                : CupertinoActivityIndicator())
+                        :
 
     
 

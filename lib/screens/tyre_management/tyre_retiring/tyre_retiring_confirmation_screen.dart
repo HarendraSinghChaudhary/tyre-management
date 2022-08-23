@@ -1,7 +1,11 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:PrimeMetrics/controllers/tyre/tyre_controller.dart';
 import 'package:PrimeMetrics/screens/tyre_management/tyre_retiring/tyre_retiring_form.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -152,7 +156,19 @@ class _TyreRetiringConfirmationScreenState
                         alignment: Alignment.center,
                         width: ScreenSize.width * 0.82,
                         height: ScreenSize.height * 0.065,
-                        child: const Text(
+                        child:
+
+                        Obx((() =>
+                        
+                        tyreController.isRetiringLoading.value
+                        ? Align(
+                            alignment: Alignment.center,
+                            child: Platform.isAndroid
+                                ? CircularProgressIndicator(color: Colors.white, strokeWidth: 1,)
+                                : CupertinoActivityIndicator())
+                        :
+                        
+                          Text(
                           "Yes",
                           style: TextStyle(
                             fontWeight: FontWeight.normal,
@@ -160,7 +176,12 @@ class _TyreRetiringConfirmationScreenState
                             fontSize: 18,
                             decoration: TextDecoration.none,
                           ),
-                        ),
+                        )
+                       
+                        )),
+                        
+                        
+                       
                         decoration: BoxDecoration(
                             color: green,
                             boxShadow: [
@@ -220,7 +241,7 @@ class _TyreRetiringConfirmationScreenState
   Widget tyreDetailView(int index) {
     return Container(
       width: ScreenSize.width * 0.9,
-      height: ScreenSize.height * 0.3,
+      height: ScreenSize.height * 0.34,
       margin: EdgeInsets.symmetric(vertical: 20),
       decoration: BoxDecoration(
         boxShadow: [
@@ -368,6 +389,8 @@ class _TyreRetiringConfirmationScreenState
                         ),
                       ],
                     ),
+
+                         SizedBox(height: 10,),
                     Text(
                             "Reason",
                             style: TextStyle(
@@ -378,15 +401,17 @@ class _TyreRetiringConfirmationScreenState
 
                             SizedBox(height: 5,),
 
-                             Text(
-                          // "123",
-                          widget.data[index].reason.toString(),
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                            fontSize: 18,
-                          ),
-                        ),
+                             Expanded(
+                               child: Text(
+                                                       // "123",
+                                                       widget.data[index].reason.toString(),
+                                                       style: TextStyle(
+                                                         fontWeight: FontWeight.bold,
+                                                         color: Colors.black,
+                                                         fontSize: 18,
+                                                       ),
+                                                     ),
+                             ),
                   ],
                 ),
               ),

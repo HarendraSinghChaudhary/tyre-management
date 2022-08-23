@@ -20,6 +20,7 @@ class PreRetreadScreen extends StatefulWidget {
 
 class _PreRetreadScreenState extends State<PreRetreadScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+    DateTime date = DateTime.now();
 
   TextEditingController tyreWeightController = TextEditingController();
   TextEditingController tyreWidthController = TextEditingController();
@@ -137,40 +138,69 @@ class _PreRetreadScreenState extends State<PreRetreadScreen> {
                         SizedBox(
                           height: 10,
                         ),
-                        Row(children: [
+                         GestureDetector(
+                      onTap: () {
+                        showModalBottomSheet(
+                            context: context,
+                            builder: (ctx) {
+                              return CalendarDatePicker(
+                                  onDateChanged: (value) {
+                                    //date(value);
+                                    print(
+                                        "date.millisecondsSinceEpoch --- ${date.millisecondsSinceEpoch}");
+                                    print("date --- ${date}");
+                                    date = value;
+                                    dayController.text = date.day.toString();
+                                    monthController.text =
+                                        date.month.toString();
+                                    yearController.text = date.year.toString();
+
+                             
+
+                                    Get.back();
+                                  },
+                                  initialDate: date,
+                                  firstDate:  DateTime.now().subtract(const Duration(days: 5000)),
+                                  lastDate:
+                                      DateTime.now());
+                            });
+                      },
+                      child: Row(
+                        children: [
                           ShadowTextField(
                             width: ScreenSize.width * 0.2,
                             hintText: "Day",
-                            maxLine: 1,
-                            maxLength: 2,
-                            keyboardType: TextInputType.number,
                             controller: dayController,
                             onChanged: (value) {},
+                            enabled: false,
                           ),
                           SizedBox(
                             width: 10,
                           ),
                           Expanded(
-                              child: ShadowTextField(
-                            hintText: "Month",
-                            maxLine: 1,
-                            maxLength: 2,
-                            keyboardType: TextInputType.number,
-                            controller: monthController,
-                            onChanged: (value) {},
-                          )),
+                            child: ShadowTextField(
+                              hintText: "Month",
+                              controller: monthController,
+                              onChanged: (value) {},
+                              enabled: false,
+                            ),
+                          ),
                           SizedBox(
                             width: 10,
                           ),
                           ShadowTextField(
                             width: ScreenSize.width * 0.2,
                             hintText: "Year",
-                            maxLength: 4,
-                            keyboardType: TextInputType.number,
                             controller: yearController,
                             onChanged: (value) {},
+                            enabled: false,
                           ),
-                        ]),
+                        ],
+                      ),
+                    ),
+                   
+                   
+                       
                         SizedBox(
                           height: 30,
                         ),

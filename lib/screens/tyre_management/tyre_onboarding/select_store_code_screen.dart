@@ -1,7 +1,10 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:io';
+
 import 'package:PrimeMetrics/controllers/tyre/tyre_controller.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -20,6 +23,9 @@ class SelectStoreCodeScreen extends StatefulWidget {
 }
 
 class _SelectStoreCodeScreenState extends State<SelectStoreCodeScreen> {
+
+
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   TyreController tyreController = Get.find();
   @override
@@ -37,7 +43,25 @@ class _SelectStoreCodeScreenState extends State<SelectStoreCodeScreen> {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: primaryColors,
-      body: SingleChildScrollView(
+      body:
+
+
+      // Obx((() =>
+
+              // tyreController.isSubmitting.value
+              //           ? Align(
+              //               alignment: Alignment.center,
+              //               child: Platform.isAndroid
+              //                   ? CircularProgressIndicator(color: Colors.green, strokeWidth: 1,)
+              //                   : CupertinoActivityIndicator())
+              //           :
+
+
+
+
+
+
+            SingleChildScrollView(
         physics: BouncingScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,7 +106,10 @@ class _SelectStoreCodeScreenState extends State<SelectStoreCodeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ObxValue((RxList list){
-                      return  SearchableDropdown(
+                      return  
+                      
+                      
+                      SearchableDropdown(
                         withIcon: false,
                         enabled: true,
                         hintText: "Store Code",
@@ -111,6 +138,14 @@ class _SelectStoreCodeScreenState extends State<SelectStoreCodeScreen> {
           ],
         ),
       ),
+      
+      
+      
+
+      
+      
+      
+ 
       bottomNavigationBar: Container(
         height: 100,
         alignment: Alignment.center,

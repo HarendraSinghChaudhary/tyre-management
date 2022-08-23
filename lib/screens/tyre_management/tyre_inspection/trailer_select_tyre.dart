@@ -4,6 +4,7 @@ import 'package:PrimeMetrics/screens/tyre_management/tyre_inspection/selected_ty
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../../utils/colors.dart';
 import '../../../utils/screen_size.dart';
@@ -43,7 +44,7 @@ class _SelectTyreRotationScreenState
 
   int selectedCard = 0;
 
-  TyreController tyreController = Get.find();
+  TyreController tyreController = Get.put(TyreController(), permanent: false);
   VehecleStructure selectedModel = VehecleStructure();
   int vehicleId = 0;
   String? tyre_psi;
@@ -73,171 +74,32 @@ class _SelectTyreRotationScreenState
   void initState() {
     super.initState();
 
-    tyreController.vehicleStructureList;
+    tyreController.vehicleStructureList.clear();
 
-    tyreController.getVehicleStructure(vehicleId: widget.vehicle_id);
+   
 
-    // checkData();
+    tyreController.getVehicleStructure(vehicleId: widget.vehicle_id,tyre_vehicle_id : widget.regNumber.toString());
+
+
   }
 
-  // checkData() {
-  //   bool exist1LI = false;
-  //   bool exist1RO = false;
-  //   bool exist2LO = false;
-  //   bool exist2LI = false;
-  //   bool exist2RI = false;
-  //   bool exist2RO = false;
-  //   bool exist3LO = false;
-  //   bool exist3LI = false;
-  //   bool exist3RI = false;
-  //   bool exist3RO = false;
 
-  //   if (tyreController.vehicleStructureList.isNotEmpty) {
-  //     tyreController.vehicleStructureList.forEach((element) {
-  //       if (element.tyre_position == "LO" && element.tyre_axel_id == "1") {
-  //         exist1LI = true;
-  //       }
-  //     });
-  //     if (exist1LI) {
-  //       selectedModel = tyreController.vehicleStructureList.firstWhere(
-  //           (element) =>
-  //               element.tyre_axel_id == "1" && element.tyre_position == "LO");
-
-  //       frontLeft = true;
-  //     }
-
-  //     tyreController.vehicleStructureList.forEach((element) {
-  //       if (element.tyre_position == "RO" && element.tyre_axel_id == "1") {
-  //         exist1RO = true;
-  //       }
-  //     });
-  //     if (exist1RO) {
-  //       selectedModel = tyreController.vehicleStructureList.firstWhere(
-  //           (element) =>
-  //               element.tyre_axel_id == "1" && element.tyre_position == "RO");
-
-  //       frontRight = true;
-  //     }
-
-  //     tyreController.vehicleStructureList.forEach((element) {
-  //       if (element.tyre_position == "LO" && element.tyre_axel_id == "2") {
-  //         exist2LO = true;
-  //       }
-  //     });
-  //     if (exist2LO) {
-  //       selectedModel = tyreController.vehicleStructureList.firstWhere(
-  //           (element) =>
-  //               element.tyre_axel_id == "2" && element.tyre_position == "LO");
-
-  //       middleLeftOut = true;
-  //     }
-
-  //     tyreController.vehicleStructureList.forEach((element) {
-  //       if (element.tyre_position == "LI" && element.tyre_axel_id == "2") {
-  //         exist2LI = true;
-  //       }
-  //     });
-  //     if (exist2LI) {
-  //       selectedModel = tyreController.vehicleStructureList.firstWhere(
-  //           (element) =>
-  //               element.tyre_axel_id == "2" && element.tyre_position == "LI");
-
-  //       middleLeftIn = true;
-  //     }
-
-  //     tyreController.vehicleStructureList.forEach((element) {
-  //       if (element.tyre_position == "RI" && element.tyre_axel_id == "2") {
-  //         exist2RI = true;
-  //       }
-  //     });
-  //     if (exist2RI) {
-  //       selectedModel = tyreController.vehicleStructureList.firstWhere(
-  //           (element) =>
-  //               element.tyre_axel_id == "2" && element.tyre_position == "RI");
-
-  //       middleRightIn = true;
-  //     }
-
-  //     tyreController.vehicleStructureList.forEach((element) {
-  //       if (element.tyre_position == "RO" && element.tyre_axel_id == "2") {
-  //         exist2RO = true;
-  //       }
-  //     });
-  //     if (exist2RO) {
-  //       selectedModel = tyreController.vehicleStructureList.firstWhere(
-  //           (element) =>
-  //               element.tyre_axel_id == "2" && element.tyre_position == "RO");
-
-  //       middleRightOut = true;
-  //     }
-
-  //     tyreController.vehicleStructureList.forEach((element) {
-  //       if (element.tyre_position == "LO" && element.tyre_axel_id == "3") {
-  //         exist3LO = true;
-  //       }
-  //     });
-  //     if (exist3LO) {
-  //       selectedModel = tyreController.vehicleStructureList.firstWhere(
-  //           (element) =>
-  //               element.tyre_axel_id == "3" && element.tyre_position == "LO");
-
-  //       backLeftOut = true;
-  //     }
-
-  //     tyreController.vehicleStructureList.forEach((element) {
-  //       if (element.tyre_position == "LI" && element.tyre_axel_id == "3") {
-  //         exist3LI = true;
-  //       }
-  //     });
-  //     if (exist3LI) {
-  //       selectedModel = tyreController.vehicleStructureList.firstWhere(
-  //           (element) =>
-  //               element.tyre_axel_id == "3" && element.tyre_position == "LI");
-
-  //       backLeftIn = true;
-  //     }
-
-  //     tyreController.vehicleStructureList.forEach((element) {
-  //       if (element.tyre_position == "RI" && element.tyre_axel_id == "3") {
-  //         exist3RI = true;
-  //       }
-  //     });
-  //     if (exist3RI) {
-  //       selectedModel = tyreController.vehicleStructureList.firstWhere(
-  //           (element) =>
-  //               element.tyre_axel_id == "3" && element.tyre_position == "RI");
-
-  //       backRightIn = true;
-  //     }
-
-  //     tyreController.vehicleStructureList.forEach((element) {
-  //       if (element.tyre_position == "RO" && element.tyre_axel_id == "3") {
-  //         exist3RO = true;
-  //       }
-  //     });
-  //     if (exist3RO) {
-  //       selectedModel = tyreController.vehicleStructureList.firstWhere(
-  //           (element) =>
-  //               element.tyre_axel_id == "3" && element.tyre_position == "RO");
-
-  //       backRightOut = true;
-  //     }
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
+    print("tyree: "+  tyreController.vehicleStructureList.toString());
     print("position: " + backLeftOut.toString());
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: primaryColors,
-      body: Obx((() => tyreController.isSubmitting.value
+      body: Obx((() => tyreController.isVehicleStructureLoading.value
           ? Align(
               alignment: Alignment.center,
               child: Platform.isAndroid
                   ? CircularProgressIndicator()
                   : CupertinoActivityIndicator())
-          : SingleChildScrollView(
+          : 
+          SingleChildScrollView(
               physics: BouncingScrollPhysics(),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -635,21 +497,7 @@ class _SelectTyreRotationScreenState
                                     odometer: widget.odometer),
                                 transition: Transition.rightToLeft);
 
-                            // if (selectedModel.tyre_position.toString() != "" &&
-                            //     selectedModel.tyre_axel_id.toString() != "") {
-                            //   Get.to(TyreRotationNewPositionScreen(
-                            //     tyre_id: selectedModel.id.toString(),
-                            //     regNumber: widget.regNumber,
-                            //     axlePosition:
-                            //         selectedModel.tyre_axel_id.toString(),
-                            //     tyre_position:
-                            //         selectedModel.tyre_position.toString(),
-                            //     tyre_size:
-                            //         selectedModel.size_name.toString(),
-                            //   ));
-                            // } else {
-                            //   Get.snackbar("Please select tyre position", "");
-                            // }
+                  
                           },
                           child: Container(
                             alignment: Alignment.center,
@@ -743,7 +591,58 @@ class _SelectTyreRotationScreenState
 
                                 showBottomSheet(context);
                               } else {
-                                Get.snackbar("No Tyre Found!", "");
+                                  Get.defaultDialog(
+                                    contentPadding: EdgeInsets.all(10),
+                                    title: "",
+
+                                    // titleStyle: TextStyle(color: Colors.black, fontSize: 17),
+
+                                    content: Column(
+                                      children: [
+                                        Lottie.asset(
+                                          "assets/images/loading.json",
+                                          width: 200,
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                            "Tyre not found!",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w500)),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        SizedBox(
+                                          width: 140,
+                                          height: 40,
+                                          child: FlatButton(
+                                            color: Colors.amber,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            onPressed: () {
+                                              Get.back();
+                                            },
+                                            child: Text(
+                                              "Ok",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ));
+                             
+                             
                               }
                               print("selected model: " +
                                   selectedModel.toString());
@@ -795,7 +694,58 @@ class _SelectTyreRotationScreenState
 
                                 showBottomSheet(context);
                               } else {
-                                Get.snackbar("No Tyre Found!", "");
+                               Get.defaultDialog(
+                                    contentPadding: EdgeInsets.all(10),
+                                    title: "",
+
+                                    // titleStyle: TextStyle(color: Colors.black, fontSize: 17),
+
+                                    content: Column(
+                                      children: [
+                                        Lottie.asset(
+                                          "assets/images/loading.json",
+                                          width: 200,
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                            "Tyre not found!",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w500)),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        SizedBox(
+                                          width: 140,
+                                          height: 40,
+                                          child: FlatButton(
+                                            color: Colors.amber,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            onPressed: () {
+                                              Get.back();
+                                            },
+                                            child: Text(
+                                              "Ok",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ));
+                             
+                             
                               }
                               print("selected model: " +
                                   selectedModel.toString());
@@ -860,7 +810,58 @@ class _SelectTyreRotationScreenState
 
                                 showBottomSheet(context);
                               } else {
-                                Get.snackbar("No Tyre Found!", "");
+                                  Get.defaultDialog(
+                                    contentPadding: EdgeInsets.all(10),
+                                    title: "",
+
+                                    // titleStyle: TextStyle(color: Colors.black, fontSize: 17),
+
+                                    content: Column(
+                                      children: [
+                                        Lottie.asset(
+                                          "assets/images/loading.json",
+                                          width: 200,
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                            "Tyre not found!",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w500)),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        SizedBox(
+                                          width: 140,
+                                          height: 40,
+                                          child: FlatButton(
+                                            color: Colors.amber,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            onPressed: () {
+                                              Get.back();
+                                            },
+                                            child: Text(
+                                              "Ok",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ));
+                             
+                             
                               }
                               print("selected model: " +
                                   selectedModel.toString());
@@ -912,7 +913,58 @@ class _SelectTyreRotationScreenState
 
                                 showBottomSheet(context);
                               } else {
-                                Get.snackbar("No Tyre Found!", "");
+                                 Get.defaultDialog(
+                                    contentPadding: EdgeInsets.all(10),
+                                    title: "",
+
+                                    // titleStyle: TextStyle(color: Colors.black, fontSize: 17),
+
+                                    content: Column(
+                                      children: [
+                                        Lottie.asset(
+                                          "assets/images/loading.json",
+                                          width: 200,
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                            "Tyre not found!",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w500)),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        SizedBox(
+                                          width: 140,
+                                          height: 40,
+                                          child: FlatButton(
+                                            color: Colors.amber,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            onPressed: () {
+                                              Get.back();
+                                            },
+                                            child: Text(
+                                              "Ok",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ));
+                             
+                             
                               }
                               print("selected model: " +
                                   selectedModel.toString());
@@ -978,7 +1030,58 @@ class _SelectTyreRotationScreenState
 
                                 showBottomSheet(context);
                               } else {
-                                Get.snackbar("No Tyre Found!", "");
+                                Get.defaultDialog(
+                                    contentPadding: EdgeInsets.all(10),
+                                    title: "",
+
+                                    // titleStyle: TextStyle(color: Colors.black, fontSize: 17),
+
+                                    content: Column(
+                                      children: [
+                                        Lottie.asset(
+                                          "assets/images/loading.json",
+                                          width: 200,
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                            "Tyre not found!",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w500)),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        SizedBox(
+                                          width: 140,
+                                          height: 40,
+                                          child: FlatButton(
+                                            color: Colors.amber,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            onPressed: () {
+                                              Get.back();
+                                            },
+                                            child: Text(
+                                              "Ok",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ));
+                             
+                             
                               }
                               print("selected model: " +
                                   selectedModel.toString());
@@ -1030,7 +1133,58 @@ class _SelectTyreRotationScreenState
 
                                 showBottomSheet(context);
                               } else {
-                                Get.snackbar("No Tyre Found!", "");
+                                  Get.defaultDialog(
+                                    contentPadding: EdgeInsets.all(10),
+                                    title: "",
+
+                                    // titleStyle: TextStyle(color: Colors.black, fontSize: 17),
+
+                                    content: Column(
+                                      children: [
+                                        Lottie.asset(
+                                          "assets/images/loading.json",
+                                          width: 200,
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                            "Tyre not found!",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w500)),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        SizedBox(
+                                          width: 140,
+                                          height: 40,
+                                          child: FlatButton(
+                                            color: Colors.amber,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            onPressed: () {
+                                              Get.back();
+                                            },
+                                            child: Text(
+                                              "Ok",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ));
+                             
+                             
                               }
                               print("selected model: " +
                                   selectedModel.toString());
@@ -1095,7 +1249,58 @@ class _SelectTyreRotationScreenState
 
                                 showBottomSheet(context);
                               } else {
-                                Get.snackbar("No Tyre Found!", "");
+                             Get.defaultDialog(
+                                    contentPadding: EdgeInsets.all(10),
+                                    title: "",
+
+                                    // titleStyle: TextStyle(color: Colors.black, fontSize: 17),
+
+                                    content: Column(
+                                      children: [
+                                        Lottie.asset(
+                                          "assets/images/loading.json",
+                                          width: 200,
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                            "Tyre not found!",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w500)),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        SizedBox(
+                                          width: 140,
+                                          height: 40,
+                                          child: FlatButton(
+                                            color: Colors.amber,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            onPressed: () {
+                                              Get.back();
+                                            },
+                                            child: Text(
+                                              "Ok",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ));
+                             
+                             
                               }
                               print("selected model: " +
                                   selectedModel.toString());
@@ -1147,7 +1352,58 @@ class _SelectTyreRotationScreenState
 
                                 showBottomSheet(context);
                               } else {
-                                Get.snackbar("No Tyre Found!", "");
+                                 Get.defaultDialog(
+                                    contentPadding: EdgeInsets.all(10),
+                                    title: "",
+
+                                    // titleStyle: TextStyle(color: Colors.black, fontSize: 17),
+
+                                    content: Column(
+                                      children: [
+                                        Lottie.asset(
+                                          "assets/images/loading.json",
+                                          width: 200,
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                            "Tyre not found!",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w500)),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        SizedBox(
+                                          width: 140,
+                                          height: 40,
+                                          child: FlatButton(
+                                            color: Colors.amber,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            onPressed: () {
+                                              Get.back();
+                                            },
+                                            child: Text(
+                                              "Ok",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ));
+                             
+                             
                               }
                               print("selected model: " +
                                   selectedModel.toString());
@@ -1213,7 +1469,58 @@ class _SelectTyreRotationScreenState
 
                                 showBottomSheet(context);
                               } else {
-                                Get.snackbar("No Tyre Found!", "");
+                                   Get.defaultDialog(
+                                    contentPadding: EdgeInsets.all(10),
+                                    title: "",
+
+                                    // titleStyle: TextStyle(color: Colors.black, fontSize: 17),
+
+                                    content: Column(
+                                      children: [
+                                        Lottie.asset(
+                                          "assets/images/loading.json",
+                                          width: 200,
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                            "Tyre not found!",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w500)),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        SizedBox(
+                                          width: 140,
+                                          height: 40,
+                                          child: FlatButton(
+                                            color: Colors.amber,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            onPressed: () {
+                                              Get.back();
+                                            },
+                                            child: Text(
+                                              "Ok",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ));
+                             
+                             
                               }
                               print("selected model: " +
                                   selectedModel.toString());
@@ -1265,7 +1572,60 @@ class _SelectTyreRotationScreenState
 
                                 showBottomSheet(context);
                               } else {
-                                Get.snackbar("No Tyre Found!", "");
+
+                                
+                               Get.defaultDialog(
+                                    contentPadding: EdgeInsets.all(10),
+                                    title: "",
+
+                                    // titleStyle: TextStyle(color: Colors.black, fontSize: 17),
+
+                                    content: Column(
+                                      children: [
+                                        Lottie.asset(
+                                          "assets/images/loading.json",
+                                          width: 200,
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                            "Tyre not found!",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w500)),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        SizedBox(
+                                          width: 140,
+                                          height: 40,
+                                          child: FlatButton(
+                                            color: Colors.amber,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            onPressed: () {
+                                              Get.back();
+                                            },
+                                            child: Text(
+                                              "Ok",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ));
+                             
+                             
                               }
                               print("selected model: " +
                                   selectedModel.toString());
@@ -1330,7 +1690,58 @@ class _SelectTyreRotationScreenState
 
                                 showBottomSheet(context);
                               } else {
-                                Get.snackbar("No Tyre Found!", "");
+                                 Get.defaultDialog(
+                                    contentPadding: EdgeInsets.all(10),
+                                    title: "",
+
+                                    // titleStyle: TextStyle(color: Colors.black, fontSize: 17),
+
+                                    content: Column(
+                                      children: [
+                                        Lottie.asset(
+                                          "assets/images/loading.json",
+                                          width: 200,
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                            "Tyre not found!",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w500)),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        SizedBox(
+                                          width: 140,
+                                          height: 40,
+                                          child: FlatButton(
+                                            color: Colors.amber,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            onPressed: () {
+                                              Get.back();
+                                            },
+                                            child: Text(
+                                              "Ok",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ));
+                             
+                             
                               }
                               print("selected model: " +
                                   selectedModel.toString());
@@ -1382,7 +1793,58 @@ class _SelectTyreRotationScreenState
 
                                 showBottomSheet(context);
                               } else {
-                                Get.snackbar("No Tyre Found!", "");
+                                   Get.defaultDialog(
+                                    contentPadding: EdgeInsets.all(10),
+                                    title: "",
+
+                                    // titleStyle: TextStyle(color: Colors.black, fontSize: 17),
+
+                                    content: Column(
+                                      children: [
+                                        Lottie.asset(
+                                          "assets/images/loading.json",
+                                          width: 200,
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                            "Tyre not found!",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w500)),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        SizedBox(
+                                          width: 140,
+                                          height: 40,
+                                          child: FlatButton(
+                                            color: Colors.amber,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            onPressed: () {
+                                              Get.back();
+                                            },
+                                            child: Text(
+                                              "Ok",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ));
+                             
+                             
                               }
                               print("selected model: " +
                                   selectedModel.toString());

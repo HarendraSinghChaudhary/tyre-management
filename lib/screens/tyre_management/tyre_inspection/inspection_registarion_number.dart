@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:PrimeMetrics/controllers/tyre/tyre_controller.dart';
 import 'package:PrimeMetrics/screens/fuel_master/fuel_master_widgets/shadow_textfield.dart';
 import 'package:PrimeMetrics/screens/tyre_management/tyre_inspection/inspection_select_tyre.dart';
 import 'package:PrimeMetrics/screens/tyre_management/tyre_inspection/trailer_select_tyre.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -52,6 +55,14 @@ class _InspectionStoreCodeState extends State<InspectionRegistrationCode> {
       body: 
 
       Obx((() => 
+
+         tyreController.isSubmitting.value
+                        ? Align(
+                            alignment: Alignment.center,
+                            child: Platform.isAndroid
+                                ? CircularProgressIndicator()
+                                : CupertinoActivityIndicator())
+                        :
 
           SingleChildScrollView(
         physics: BouncingScrollPhysics(),
@@ -178,6 +189,10 @@ class _InspectionStoreCodeState extends State<InspectionRegistrationCode> {
         child: InkWell(
           splashColor: Colors.transparent,
           onTap: () async {
+
+            tyreController.vehicleStructureList.clear();
+
+
             switch (widget.value) {
               case 0:
                 {

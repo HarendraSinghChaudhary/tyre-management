@@ -18,6 +18,9 @@ class TyreRetiringForm extends StatefulWidget {
 
 class _TyreRetiringFormState extends State<TyreRetiringForm> {
 
+    int? id;
+  String? defect_type;
+
 
 TyreRetiringFormModel tyreRetiringFormModel = TyreRetiringFormModel();
 
@@ -29,7 +32,7 @@ TyreRetiringFormModel tyreRetiringFormModel = TyreRetiringFormModel();
     super.initState();
     tyreRetiringFormModel = widget.datamodel;
 
-    tyreController.getTyreSerialNumberApi();
+    tyreController.getTyreForRetiringApi();
     tyreController.retiringReasonApi();
   }
 
@@ -44,23 +47,26 @@ TyreRetiringFormModel tyreRetiringFormModel = TyreRetiringFormModel();
     Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SearchableDropdown(
-          enabled: true,
-          hintText: "Select Tyre",
-          listItems: ['Tyre 1', 'Tyre 2'].map((e) => "${e}").toList(),
-          onChanged: (value) {},
-          searchFieldProps: TextFieldProps(
-            decoration: InputDecoration(
-              suffixIcon: Icon(
-                Icons.keyboard_arrow_down,
-                color: Colors.black,
-              ),
-              hintText: "Search",
-              border: InputBorder.none,
-            ),
-          ),
-          withIcon: false,
-        ),
+        // SearchableDropdown(
+        //   enabled: true,
+        //   hintText: "Select Tyre",
+        //   listItems: ['Tyre 1', 'Tyre 2'].map((e) => "${e}").toList(),
+        //   onChanged: (value) {},
+        //   searchFieldProps: TextFieldProps(
+        //     decoration: InputDecoration(
+        //       suffixIcon: Icon(
+        //         Icons.keyboard_arrow_down,
+        //         color: Colors.black,
+        //       ),
+        //       hintText: "Search",
+        //       border: InputBorder.none,
+        //     ),
+        //   ),
+        //   withIcon: false,
+        // ),
+       
+       
+       
         SizedBox(
           height: 10,
         ),
@@ -68,38 +74,38 @@ TyreRetiringFormModel tyreRetiringFormModel = TyreRetiringFormModel();
           withIcon: false,
           enabled: true,
           hintText: "Select serial number",
-          listItems: tyreController.tyreSerialNumberList
+          listItems: tyreController.getTyreForRetireList
               .map((e) => "${e.tyre_serial_number}")
               .toList(),
           onChanged: (value) {
-           tyreRetiringFormModel.id = tyreController.tyreSerialNumberList
+           tyreRetiringFormModel.id = tyreController.getTyreForRetireList
                 .firstWhere(
                     (element) => value == element.tyre_serial_number.toString())
                 .id
                 .toString();
 
-            tyreRetiringFormModel.storeCodeSerialNumber = tyreController.tyreSerialNumberList
+            tyreRetiringFormModel.storeCodeSerialNumber = tyreController.getTyreForRetireList
                 .firstWhere(
                     (element) => value == element.tyre_serial_number.toString())
                 .tyre_serial_number
                 .toString();
 
-            tyreRetiringFormModel.tyre_psi = tyreController.tyreSerialNumberList
+            tyreRetiringFormModel.tyre_psi = tyreController.getTyreForRetireList
                 .firstWhere((element) => value == element.tyre_serial_number)
                 .tyre_psi
                 .toString();
 
-           tyreRetiringFormModel. tread_depth = tyreController.tyreSerialNumberList
+           tyreRetiringFormModel. tread_depth = tyreController.getTyreForRetireList
                 .firstWhere((element) => value == element.tyre_serial_number)
                 .tread_depth
                 .toString();
 
-            tyreRetiringFormModel.max_psi = tyreController.tyreSerialNumberList
+            tyreRetiringFormModel.max_psi = tyreController.getTyreForRetireList
                 .firstWhere((element) => value == element.tyre_serial_number)
                 .max_psi
                 .toString();
 
-           tyreRetiringFormModel. recom_psi = tyreController.tyreSerialNumberList
+           tyreRetiringFormModel. recom_psi = tyreController.getTyreForRetireList
                 .firstWhere((element) => value == element.tyre_serial_number)
                 .recom_psi
                 .toString();
@@ -142,39 +148,87 @@ TyreRetiringFormModel tyreRetiringFormModel = TyreRetiringFormModel();
         SizedBox(
           height: 20,
         ),
-        SearchableDropdown(
-          withIcon: false,
-          enabled: true,
-          hintText: "Reason for Retiring",
-          listItems: tyreController.retiringReasonList
-              .map((e) => "${e.reason}")
-              .toList(),
-          onChanged: (value) {
-            tyreRetiringFormModel.reason = tyreController.retiringReasonList
-                .firstWhere(
-                    (element) => value == element.reason.toString())
-                .reason
-                .toString();
 
-            print("tyrePsi: " + tyreRetiringFormModel.reason.toString());
-            //  print("tread depth: "+tread_depth.toString());
-            //  print("tyre id: "+id.toString());
 
-            // widget.data.remove('store');
-            // widget.data.putIfAbsent('store', () => storeCodeSerialNumber);
-          },
-          searchFieldProps: TextFieldProps(
-            decoration: InputDecoration(
-              suffixIcon: Icon(
-                Icons.keyboard_arrow_down,
-                color: Colors.black,
-              ),
-              hintText: "Search",
-              border: InputBorder.none,
-            ),
-          ),
-        ),
+           SearchableDropdown(
+                                                 withIcon: false,
+                                                 enabled: true,
+                                                 hintText: "Reason for Retiring",
+                                                 listItems: tyreController.defectList
+                              .map((e) => "${e.defect_type}")
+                              .toList(),
+                                                 onChanged: (value) {
+                            id = tyreController.defectList
+                                    .firstWhere(
+                                        (element) => value == element.defect_type)
+                                    .id ??
+                                0;
+                         
+                           tyreRetiringFormModel.reason  = tyreController.defectList
+                                .firstWhere(
+                                    (element) => value == element.defect_type)
+                                .defect_type
+                                .toString();
+                         
+                            print("regNumber onChanged $id");
+                            print("regNumber  $defect_type");
+                            // data.remove('vehicle_id');
+                            // data.putIfAbsent('vehicle_id', () => vehicleId);
+                                                 },
+                                                 searchFieldProps: TextFieldProps(
+                            decoration: InputDecoration(
+                              suffixIcon: Icon(
+                                Icons.keyboard_arrow_down,
+                                color: Colors.black,
+                              ),
+                              hintText: "Search",
+                              border: InputBorder.none,
+                            ),
+                                                 ),
+                                               ),
+                      
+                      
+                      
+
+
+
+
+
+        // SearchableDropdown(
+        //   withIcon: false,
+        //   enabled: true,
+        //   hintText: "Reason for Retiring",
+        //   listItems: tyreController.retiringReasonList
+        //       .map((e) => "${e.reason}")
+        //       .toList(),
+        //   onChanged: (value) {
+        //     tyreRetiringFormModel.reason = tyreController.retiringReasonList
+        //         .firstWhere(
+        //             (element) => value == element.reason.toString())
+        //         .reason
+        //         .toString();
+
+        //     print("tyrePsi: " + tyreRetiringFormModel.reason.toString());
+        //     //  print("tread depth: "+tread_depth.toString());
+        //     //  print("tyre id: "+id.toString());
+
+        //     // widget.data.remove('store');
+        //     // widget.data.putIfAbsent('store', () => storeCodeSerialNumber);
+        //   },
+        //   searchFieldProps: TextFieldProps(
+        //     decoration: InputDecoration(
+        //       suffixIcon: Icon(
+        //         Icons.keyboard_arrow_down,
+        //         color: Colors.black,
+        //       ),
+        //       hintText: "Search",
+        //       border: InputBorder.none,
+        //     ),
+        //   ),
+        // ),
     
+       
+       
         SizedBox(
           height: 20,
         ),

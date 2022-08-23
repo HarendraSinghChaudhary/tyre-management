@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:PrimeMetrics/models/SocialLogin.dart';
 import 'package:PrimeMetrics/models/user_info.dart';
@@ -50,6 +51,8 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+
+AuthController authController = Get.find();
   loadDialog(List<SocialLogin>? social) {
     Get.dialog(
       Container(
@@ -218,7 +221,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: ScreenSize.height * 0.07,
                           padding: EdgeInsets.symmetric(
                               horizontal: ScreenSize.width * 0.04),
-                          child: Text(
+                          child: 
+
+
+                          
+                          
+                          
+                          Text(
                             "Log In",
                             style: TextStyle(
                                 fontWeight: FontWeight.w500,
@@ -358,7 +367,20 @@ class _LoginScreenState extends State<LoginScreen> {
                                       color: Colors.white,
                                     ));
                               }
-                              return Text(
+                              return 
+
+                                authController.sendingEmail.value
+                        ? Align(
+                            alignment: Alignment.center,
+                            child: Platform.isAndroid
+                                ? CircularProgressIndicator(color: Colors.white, strokeWidth: 1,)
+                                : CupertinoActivityIndicator())
+                        :
+                              
+                              
+                              
+                              
+                              Text(
                                 "Login",
                                 style: TextStyle(
                                     fontWeight: FontWeight.normal,

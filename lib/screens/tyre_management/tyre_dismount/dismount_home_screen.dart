@@ -54,7 +54,7 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
       SharedAxisTransitionType.horizontal;
 
   final TextEditingController odometerController = TextEditingController();
-  TyreController tyreController = Get.find();
+  TyreController tyreController = Get.put(TyreController(), permanent: false);
   int value = 0;
   List deployOn = ["Truck", "Trailer"];
   List images = [truck, trailer];
@@ -88,18 +88,18 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
   bool isCheckboxSelected = false;
   int selectedCard = 0;
 
-  bool frontLeftOut = false,
-      frontLeftIn = false,
-      frontRightIn = false,
-      frontRightOut = false,
-      middleLeftOut = false,
-      middleLeftIn = false,
-      middleRightIn = false,
-      middleRightOut = false,
-      backLeftOut = false,
-      backLeftIn = false,
-      backRightIn = false,
-      backRightOut = false;
+  RxBool frontLeftOut = false.obs,
+      frontLeftIn = false.obs,
+      frontRightIn = false.obs,
+      frontRightOut = false.obs,
+      middleLeftOut = false.obs,
+      middleLeftIn = false.obs,
+      middleRightIn = false.obs,
+      middleRightOut = false.obs,
+      backLeftOut = false.obs,
+      backLeftIn = false.obs,
+      backRightIn = false.obs,
+      backRightOut = false.obs;
 
   @override
   void initState() {
@@ -149,7 +149,24 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
     return Scaffold(
       backgroundColor: primaryColors,
       key: _scaffoldKey,
-      body: SingleChildScrollView(
+      body: 
+
+
+
+      Obx((() => 
+
+
+           tyreController.isSubmitting.value
+                        ? Align(
+                            alignment: Alignment.center,
+                            child: Platform.isAndroid
+                                ? CircularProgressIndicator()
+                                : CupertinoActivityIndicator())
+                        :
+
+
+                            
+      SingleChildScrollView(
         physics: BouncingScrollPhysics(),
         child: Container(
           color: primaryColors,
@@ -353,7 +370,19 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
             ],
           ),
         ),
-      ),
+      )
+      
+      
+      
+      
+      
+      )),
+      
+      
+      
+      
+  
+      
       bottomNavigationBar: Container(
         height: 100,
         alignment: Alignment.center,
@@ -365,7 +394,7 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
             if (odometerController.text.isNotEmpty && vehicleId != 0) {
               print("press here1!");
               await tyreController
-                  .getVehicleStructure(vehicleId: vehicleId)
+                  .getVehicleStructure(vehicleId: vehicleId, tyre_vehicle_id : regNumber.toString())
                   .then((value) {
                 print("press here2");
                 if (value) {
@@ -382,13 +411,27 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
             alignment: Alignment.center,
             width: ScreenSize.width * 0.82,
             height: ScreenSize.height * 0.065,
-            child: Text(
+            child:       Obx((() => 
+
+                    tyreController.isVehicleStructureLoading.value
+                        ? Align(
+                            alignment: Alignment.center,
+                            child: Platform.isAndroid
+                                ? CircularProgressIndicator(color: Colors.white, strokeWidth: 1,)
+                                : CupertinoActivityIndicator())
+                        :
+                             
+             
+            Text(
               "Next",
               style: TextStyle(
                   fontWeight: FontWeight.normal,
                   color: Colors.white,
                   fontSize: 18),
-            ),
+            )
+           
+           
+            )),
             decoration: BoxDecoration(
               color: green,
               boxShadow: [
@@ -414,7 +457,23 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
     return Scaffold(
       backgroundColor: primaryColors,
       key: _scaffoldKey,
-      body: SingleChildScrollView(
+      body: 
+
+
+      Obx((() => 
+
+
+
+        tyreController.isVehicleStructureLoading.value
+                        ? Align(
+                            alignment: Alignment.center,
+                            child: Platform.isAndroid
+                                ? CircularProgressIndicator()
+                                : CupertinoActivityIndicator())
+                        :
+
+
+                           SingleChildScrollView(
         physics: BouncingScrollPhysics(),
         child: Container(
           color: primaryColors,
@@ -430,7 +489,31 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                     InkWell(
                       onTap: () {
                         // Get.back();
-                        _toggleFirst();
+
+
+                        
+                      
+
+                  frontLeftOut.value = false;
+      frontLeftIn.value = false;
+      frontRightIn.value = false;
+      frontRightOut.value = false;
+      middleLeftOut.value = false;
+      middleLeftIn.value = false;
+      middleRightIn.value = false;
+      middleRightOut.value = false;
+      backLeftOut.value = false;
+      backLeftIn.value = false;
+      backRightIn.value = false;
+      backRightOut.value = false;
+                        
+                         tyreController.vehicleStructureList.clear();
+                        
+                _toggleFirst();
+                         setState(() {
+                           
+                         });
+                        
                       },
                       child: CircleAvatar(
                         backgroundColor: green,
@@ -532,23 +615,37 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
             ],
           ),
         ),
-      ),
+      )
+     
+     
+      
+      
+      
+      
+      )),
+      
+      
+      
+   
+     
       bottomNavigationBar: Container(
         height: 100,
         alignment: Alignment.center,
         child: InkWell(
           splashColor: Colors.transparent,
           onTap: () async {
-            if (frontLeftOut || frontLeftIn || frontRightIn ||
-                      frontRightOut ||
-                middleLeftOut ||
-                middleLeftIn ||
-                middleRightIn ||
-                middleRightOut ||
-                backLeftOut ||
-                backLeftIn ||
-                backRightIn ||
-                backRightOut) {
+            if (frontLeftOut.value || 
+            frontLeftIn.value || 
+            frontRightIn.value ||
+            frontRightOut.value ||
+                middleLeftOut.value ||
+                middleLeftIn.value ||
+                middleRightIn.value ||
+                middleRightOut.value ||
+                backLeftOut.value ||
+                backLeftIn.value ||
+                backRightIn.value ||
+                backRightOut.value) {
               _toggleSecond();
             }
           },
@@ -564,16 +661,16 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                   fontSize: 18),
             ),
             decoration: BoxDecoration(
-              color: (frontLeftOut || frontLeftIn || frontRightIn ||
-                      frontRightOut ||
-                      middleLeftOut ||
-                      middleLeftIn ||
-                      middleRightIn ||
-                      middleRightOut ||
-                      backLeftOut ||
-                      backLeftIn ||
-                      backRightIn ||
-                      backRightOut)
+              color: (frontLeftOut.value || frontLeftIn .value|| frontRightIn.value ||
+                      frontRightOut .value||
+                      middleLeftOut .value||
+                      middleLeftIn.value ||
+                      middleRightIn .value||
+                      middleRightOut.value ||
+                      backLeftOut.value ||
+                      backLeftIn.value ||
+                      backRightIn.value ||
+                      backRightOut.value)
                   ? green
                   : Colors.grey,
               boxShadow: [
@@ -598,7 +695,23 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
     return Scaffold(
       backgroundColor: primaryColors,
       key: _scaffoldKey,
-      body: SingleChildScrollView(
+      body: 
+
+
+         tyreController.isDismountReason.value
+                        ? Align(
+                            alignment: Alignment.center,
+                            child: Platform.isAndroid
+                                ? CircularProgressIndicator()
+                                : CupertinoActivityIndicator())
+                        :
+
+      
+      
+      
+      
+      
+      SingleChildScrollView(
         physics: BouncingScrollPhysics(),
         child: Container(
           color: primaryColors,
@@ -690,25 +803,24 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ObxValue((RxList list) {
-                        return SearchableDropdown(
+                         SearchableDropdown(
                           withIcon: false,
                           enabled: true,
                           hintText: "Reason to Dismount",
                           listItems: tyreController.dismountReasonList
-                              .map((e) => "${e.dismountResion}")
+                              .map((e) => "${e.dismount_reason}")
                               .toList(),
                           onChanged: (value) {
                             id = tyreController.dismountReasonList
                                 .firstWhere((element) =>
-                                    value == element.dismountResion.toString())
+                                    value == element.dismount_reason.toString())
                                 .id
                                 .toString();
 
                             reason = tyreController.dismountReasonList
                                 .firstWhere((element) =>
-                                    value == element.dismountResion.toString())
-                                .dismountResion
+                                    value == element.dismount_reason.toString())
+                                .dismount_reason
                                 .toString();
 
                             print("id: " + id.toString());
@@ -727,8 +839,7 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                               border: InputBorder.none,
                             ),
                           ),
-                        );
-                      }, tyreController.dismountReasonList),
+                        ),
 
                       // SearchableDropdown(
                       //   withIcon: false,
@@ -809,16 +920,16 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                   fontSize: 18),
             ),
             decoration: BoxDecoration(
-              color: (frontLeftOut || frontLeftIn || frontRightIn ||
-                      frontRightOut ||
-                      middleLeftOut ||
-                      middleLeftIn ||
-                      middleRightIn ||
-                      middleRightOut ||
-                      backLeftOut ||
-                      backLeftIn ||
-                      backRightIn ||
-                      backRightOut)
+              color: (frontLeftOut.value || frontLeftIn.value || frontRightIn.value ||
+                      frontRightOut.value ||
+                      middleLeftOut.value ||
+                      middleLeftIn.value ||
+                      middleRightIn.value ||
+                      middleRightOut.value ||
+                      backLeftOut.value ||
+                      backLeftIn .value||
+                      backRightIn .value||
+                      backRightOut.value)
                   ? green
                   : Colors.grey,
               boxShadow: [
@@ -1018,13 +1129,29 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                         alignment: Alignment.center,
                         width: ScreenSize.width * 0.82,
                         height: ScreenSize.height * 0.065,
-                        child: Text(
+                        child: 
+
+                         Obx((() => 
+
+
+                           tyreController.isSubmitting.value
+                        ? Align(
+                            alignment: Alignment.center,
+                            child: Platform.isAndroid
+                                ? CircularProgressIndicator(color: Colors.white, strokeWidth: 1,)
+                                : CupertinoActivityIndicator())
+                        :
+
+                        
+                        
+                        
+                        Text(
                           "DISMOUNT",
                           style: TextStyle(
                               fontWeight: FontWeight.normal,
                               color: Colors.white,
                               fontSize: 18),
-                        ),
+                        ))),
                         decoration: BoxDecoration(
                           color: green,
                           boxShadow: [
@@ -1384,7 +1511,7 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                                         element.tyre_axel_id == "1" &&
                                         element.tyre_position == "LO");
 
-                                        frontLeftOut = true;
+                                        frontLeftOut = true.obs;
 
                                 showBottomSheet(context);
                               } else {
@@ -1396,24 +1523,24 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                               
 
                               print(selectedModel.id);
-                              frontLeftIn = false;
-                              frontRightIn = false;
-                              frontRightOut = false;
-                              middleLeftOut = false;
-                              middleLeftIn = false;
-                              middleRightIn = false;
-                              middleRightOut = false;
-                              backLeftOut = false;
-                              backLeftIn = false;
-                              backRightIn = false;
-                              backRightOut = false;
+                              frontLeftIn = false.obs;
+                              frontRightIn = false.obs;
+                              frontRightOut = false.obs;
+                              middleLeftOut = false.obs;
+                              middleLeftIn = false.obs;
+                              middleRightIn = false.obs;
+                              middleRightOut = false.obs;
+                              backLeftOut = false.obs;
+                              backLeftIn = false.obs;
+                              backRightIn = false.obs;
+                              backRightOut = false.obs;
                             });
                           },
                           child: Container(
-                            height: frontLeftOut ? 60 : 40,
-                            width: frontLeftOut ? 20 : 10,
+                            height: frontLeftOut.value ? 60 : 40,
+                            width: frontLeftOut.value ? 20 : 10,
                             decoration: BoxDecoration(
-                                color: frontLeftOut ? green : Colors.black,
+                                color: frontLeftOut.value ? green : Colors.black,
                                 borderRadius: BorderRadius.circular(10)),
                           ),
                         )
@@ -1453,7 +1580,7 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                                         element.tyre_axel_id == "1" &&
                                         element.tyre_position == "RO");
 
-                                         frontRightOut = true;
+                                         frontRightOut = true.obs;
 
                                 showBottomSheet(context);
                               } else {
@@ -1462,25 +1589,25 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                               print("selected model: " +
                                   selectedModel.toString());
 
-                              frontLeftOut = false;
+                              frontLeftOut = false.obs;
                              
-                              middleLeftOut = false;
-                              middleLeftIn = false;
-                              middleRightIn = false;
-                              middleRightOut = false;
-                              backLeftOut = false;
-                              backLeftIn = false;
-                              backRightIn = false;
-                              backRightOut = false;
+                              middleLeftOut = false.obs;
+                              middleLeftIn = false.obs;
+                              middleRightIn = false.obs;
+                              middleRightOut = false.obs;
+                              backLeftOut = false.obs;
+                              backLeftIn = false.obs;
+                              backRightIn = false.obs;
+                              backRightOut = false.obs;
                             });
 
                   
                           },
                           child: Container(
-                            height: frontRightOut ? 60 : 40, //60
-                            width: frontRightOut ? 20 : 10, //20
+                            height: frontRightOut.value ? 60 : 40, //60
+                            width: frontRightOut.value ? 20 : 10, //20
                             decoration: BoxDecoration(
-                                color: frontRightOut ? green : Colors.black,
+                                color: frontRightOut.value ? green : Colors.black,
                                 borderRadius: BorderRadius.circular(10)),
                           ),
                         )
@@ -1519,7 +1646,7 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                                         element.tyre_axel_id == "2" &&
                                         element.tyre_position == "LO");
 
-                                         middleLeftOut = true;
+                                         middleLeftOut = true.obs;
 
                                 showBottomSheet(context);
                               } else {
@@ -1528,24 +1655,24 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                               print("selected model: " +
                                   selectedModel.toString());
 
-                              frontLeftOut = false;
-                              frontRightOut = false;
+                              frontLeftOut = false.obs;
+                              frontRightOut = false.obs;
                              
-                              middleLeftIn = false;
-                              middleRightIn = false;
-                              middleRightOut = false;
-                              backLeftOut = false;
-                              backLeftIn = false;
-                              backRightIn = false;
-                              backRightOut = false;
+                              middleLeftIn = false.obs;
+                              middleRightIn = false.obs;
+                              middleRightOut = false.obs;
+                              backLeftOut = false.obs;
+                              backLeftIn = false.obs;
+                              backRightIn = false.obs;
+                              backRightOut = false.obs;
                             });
                         
                           },
                           child: Container(
-                            height: middleLeftOut ? 60 : 40,
-                            width: middleLeftOut ? 20 : 10,
+                            height: middleLeftOut.value ? 60 : 40,
+                            width: middleLeftOut.value ? 20 : 10,
                             decoration: BoxDecoration(
-                                color: middleLeftOut ? green : Colors.black,
+                                color: middleLeftOut.value ? green : Colors.black,
                                 borderRadius: BorderRadius.circular(10)),
                           ),
                         ),
@@ -1570,7 +1697,7 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                                         element.tyre_axel_id == "2" &&
                                         element.tyre_position == "LI");
 
-                                           middleLeftIn = true;
+                                           middleLeftIn = true.obs;
 
                                 showBottomSheet(context);
                               } else {
@@ -1579,24 +1706,24 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                               print("selected model: " +
                                   selectedModel.toString());
 
-                              frontLeftOut = false;
-                              frontRightOut = false;
-                              middleLeftOut = false;
+                              frontLeftOut = false.obs;
+                              frontRightOut = false.obs;
+                              middleLeftOut = false.obs;
                            
-                              middleRightIn = false;
-                              middleRightOut = false;
-                              backLeftOut = false;
-                              backLeftIn = false;
-                              backRightIn = false;
-                              backRightOut = false;
+                              middleRightIn = false.obs;
+                              middleRightOut = false.obs;
+                              backLeftOut = false.obs;
+                              backLeftIn = false.obs;
+                              backRightIn = false.obs;
+                              backRightOut = false.obs;
                             });
                 
                           },
                           child: Container(
-                            height: middleLeftIn ? 60 : 40,
-                            width: middleLeftIn ? 20 : 10,
+                            height: middleLeftIn.value ? 60 : 40,
+                            width: middleLeftIn.value ? 20 : 10,
                             decoration: BoxDecoration(
-                                color: middleLeftIn ? green : Colors.black,
+                                color: middleLeftIn.value ? green : Colors.black,
                                 borderRadius: BorderRadius.circular(10)),
                           ),
                         ),
@@ -1634,7 +1761,7 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                                         element.tyre_axel_id == "2" &&
                                         element.tyre_position == "RI");
 
-                                          middleRightIn = true;
+                                          middleRightIn = true.obs;
 
                                 showBottomSheet(context);
                               } else {
@@ -1643,24 +1770,24 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                               print("selected model: " +
                                   selectedModel.toString());
 
-                              frontLeftOut = false;
-                              frontRightOut = false;
-                              middleLeftOut = false;
-                              middleLeftIn = false;
+                              frontLeftOut = false.obs;
+                              frontRightOut = false.obs;
+                              middleLeftOut = false.obs;
+                              middleLeftIn = false.obs;
                             
-                              middleRightOut = false;
-                              backLeftOut = false;
-                              backLeftIn = false;
-                              backRightIn = false;
-                              backRightOut = false;
+                              middleRightOut = false.obs;
+                              backLeftOut = false.obs;
+                              backLeftIn = false.obs;
+                              backRightIn = false.obs;
+                              backRightOut = false.obs;
                             });
                       
                           },
                           child: Container(
-                            height: middleRightIn ? 60 : 40,
-                            width: middleRightIn ? 20 : 10,
+                            height: middleRightIn.value ? 60 : 40,
+                            width: middleRightIn.value ? 20 : 10,
                             decoration: BoxDecoration(
-                                color: middleRightIn ? green : Colors.black,
+                                color: middleRightIn.value ? green : Colors.black,
                                 borderRadius: BorderRadius.circular(10)),
                           ),
                         ),
@@ -1685,7 +1812,7 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                                         element.tyre_axel_id == "2" &&
                                         element.tyre_position == "RO");
 
-                                          middleRightOut = true;
+                                          middleRightOut = true.obs;
 
                                 showBottomSheet(context);
                               } else {
@@ -1694,24 +1821,24 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                               print("selected model: " +
                                   selectedModel.toString());
 
-                              frontLeftOut = false;
-                              frontRightOut = false;
-                              middleLeftOut = false;
-                              middleLeftIn = false;
-                              middleRightIn = false;
+                              frontLeftOut = false.obs;
+                              frontRightOut = false.obs;
+                              middleLeftOut = false.obs;
+                              middleLeftIn = false.obs;
+                              middleRightIn = false.obs;
                             
-                              backLeftOut = false;
-                              backLeftIn = false;
-                              backRightIn = false;
-                              backRightOut = false;
+                              backLeftOut = false.obs;
+                              backLeftIn = false.obs;
+                              backRightIn = false.obs;
+                              backRightOut = false.obs;
                             });
                 
                           },
                           child: Container(
-                            height: middleRightOut ? 60 : 40,
-                            width: middleRightOut ? 20 : 10,
+                            height: middleRightOut.value ? 60 : 40,
+                            width: middleRightOut.value ? 20 : 10,
                             decoration: BoxDecoration(
-                                color: middleRightOut ? green : Colors.black,
+                                color: middleRightOut.value ? green : Colors.black,
                                 borderRadius: BorderRadius.circular(10)),
                           ),
                         ),
@@ -1750,7 +1877,7 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                                         element.tyre_axel_id == "3" &&
                                         element.tyre_position == "LO");
 
-                                           backLeftOut = true;
+                                           backLeftOut = true.obs;
 
                                 showBottomSheet(context);
                               } else {
@@ -1759,24 +1886,24 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                               print("selected model: " +
                                   selectedModel.toString());
 
-                              frontLeftOut = false;
-                              frontRightOut = false;
-                              middleLeftOut = false;
-                              middleLeftIn = false;
-                              middleRightIn = false;
-                              middleRightOut = false;
+                              frontLeftOut = false.obs;
+                              frontRightOut = false.obs;
+                              middleLeftOut = false.obs;
+                              middleLeftIn = false.obs;
+                              middleRightIn = false.obs;
+                              middleRightOut = false.obs;
                            
-                              backLeftIn = false;
-                              backRightIn = false;
-                              backRightOut = false;
+                              backLeftIn = false.obs;
+                              backRightIn = false.obs;
+                              backRightOut = false.obs;
                             });
                    
                           },
                           child: Container(
-                            height: backLeftOut ? 60 : 40,
-                            width: backLeftOut ? 20 : 10,
+                            height: backLeftOut.value ? 60 : 40,
+                            width: backLeftOut.value ? 20 : 10,
                             decoration: BoxDecoration(
-                                color: backLeftOut ? green : Colors.black,
+                                color: backLeftOut.value ? green : Colors.black,
                                 borderRadius: BorderRadius.circular(10)),
                           ),
                         ),
@@ -1801,7 +1928,7 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                                         element.tyre_axel_id == "3" &&
                                         element.tyre_position == "LI");
 
-                                          backLeftIn = true;
+                                          backLeftIn = true.obs;
 
                                 showBottomSheet(context);
                               } else {
@@ -1815,24 +1942,24 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                                   .firstWhere((element) =>
                                       element.tyre_axel_id == "3" &&
                                       element.tyre_position == "LI");
-                              frontLeftOut = false;
-                              frontRightOut = false;
-                              middleLeftOut = false;
-                              middleLeftIn = false;
-                              middleRightIn = false;
-                              middleRightOut = false;
-                              backLeftOut = false;
+                              frontLeftOut = false.obs;
+                              frontRightOut = false.obs;
+                              middleLeftOut = false.obs;
+                              middleLeftIn = false.obs;
+                              middleRightIn = false.obs;
+                              middleRightOut = false.obs;
+                              backLeftOut = false.obs;
                             
-                              backRightIn = false;
-                              backRightOut = false;
+                              backRightIn = false.obs;
+                              backRightOut = false.obs;
                             });
                        
                           },
                           child: Container(
-                            height: backLeftIn ? 60 : 40,
-                            width: backLeftIn ? 20 : 10,
+                            height: backLeftIn.value ? 60 : 40,
+                            width: backLeftIn.value ? 20 : 10,
                             decoration: BoxDecoration(
-                                color: backLeftIn ? green : Colors.black,
+                                color: backLeftIn.value ? green : Colors.black,
                                 borderRadius: BorderRadius.circular(10)),
                           ),
                         ),
@@ -1870,7 +1997,7 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                                         element.tyre_axel_id == "3" &&
                                         element.tyre_position == "RI");
 
-                                          backRightIn = true;
+                                          backRightIn = true.obs;
 
                                 showBottomSheet(context);
                               } else {
@@ -1880,24 +2007,24 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                                   selectedModel.toString());
 
                           
-                              frontLeftOut = false;
-                              frontRightOut = false;
-                              middleLeftOut = false;
-                              middleLeftIn = false;
-                              middleRightIn = false;
-                              middleRightOut = false;
-                              backLeftOut = false;
-                              backLeftIn = false;
+                              frontLeftOut = false.obs;
+                              frontRightOut = false.obs;
+                              middleLeftOut = false.obs;
+                              middleLeftIn = false.obs;
+                              middleRightIn = false.obs;
+                              middleRightOut = false.obs;
+                              backLeftOut = false.obs;
+                              backLeftIn = false.obs;
                             
-                              backRightOut = false;
+                              backRightOut = false.obs;
                             });
                          
                           },
                           child: Container(
-                            height: backRightIn ? 60 : 40,
-                            width: backRightIn ? 20 : 10,
+                            height: backRightIn.value ? 60 : 40,
+                            width: backRightIn.value ? 20 : 10,
                             decoration: BoxDecoration(
-                                color: backRightIn ? green : Colors.black,
+                                color: backRightIn.value ? green : Colors.black,
                                 borderRadius: BorderRadius.circular(10)),
                           ),
                         ),
@@ -1922,7 +2049,7 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                                         element.tyre_axel_id == "3" &&
                                         element.tyre_position == "RO");
 
-                                         backRightOut = true;
+                                         backRightOut = true.obs;
 
                                 showBottomSheet(context);
                               } else {
@@ -1931,24 +2058,24 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                               print("selected model: " +
                                   selectedModel.toString());
 
-                              frontLeftOut = false;
-                              frontRightOut = false;
-                              middleLeftOut = false;
-                              middleLeftIn = false;
-                              middleRightIn = false;
-                              middleRightOut = false;
-                              backLeftOut = false;
-                              backLeftIn = false;
-                              backRightIn = false;
+                              frontLeftOut = false.obs;
+                              frontRightOut = false.obs;
+                              middleLeftOut = false.obs;
+                              middleLeftIn = false.obs;
+                              middleRightIn = false.obs;
+                              middleRightOut = false.obs;
+                              backLeftOut = false.obs;
+                              backLeftIn = false.obs;
+                              backRightIn = false.obs;
                              
                             });
                           
                           },
                           child: Container(
-                            height: backRightOut ? 60 : 40,
-                            width: backRightOut ? 20 : 10,
+                            height: backRightOut.value ? 60 : 40,
+                            width: backRightOut.value ? 20 : 10,
                             decoration: BoxDecoration(
-                                color: backRightOut ? green : Colors.black,
+                                color: backRightOut.value ? green : Colors.black,
                                 borderRadius: BorderRadius.circular(10)),
                           ),
                         ),
@@ -2008,7 +2135,7 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                                         element.tyre_axel_id == "1" &&
                                         element.tyre_position == "LO");
 
-                               frontLeftOut = true;
+                               frontLeftOut = true.obs;
 
                                 showBottomSheet(context);
                               } else {
@@ -2018,24 +2145,24 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                                   selectedModel.toString());
 
                               
-                              frontLeftIn = false;
-                              frontRightIn = false;
-                              frontRightOut = false;
-                              middleLeftOut = false;
-                              middleLeftIn = false;
-                              middleRightIn = false;
-                              middleRightOut = false;
-                              backLeftOut = false;
-                              backLeftIn = false;
-                              backRightIn = false;
-                              backRightOut = false;
+                              frontLeftIn = false.obs;
+                              frontRightIn = false.obs;
+                              frontRightOut = false.obs;
+                              middleLeftOut = false.obs;
+                              middleLeftIn = false.obs;
+                              middleRightIn = false.obs;
+                              middleRightOut = false.obs;
+                              backLeftOut = false.obs;
+                              backLeftIn = false.obs;
+                              backRightIn = false.obs;
+                              backRightOut = false.obs;
                             });
                           },
                           child: Container(
-                            height: frontLeftOut ? 60 : 40,
-                            width: frontLeftOut ? 20 : 10,
+                            height: frontLeftOut.value ? 60 : 40,
+                            width: frontLeftOut.value ? 20 : 10,
                             decoration: BoxDecoration(
-                                color: frontLeftOut ? green : Colors.black,
+                                color: frontLeftOut.value ? green : Colors.black,
                                 borderRadius: BorderRadius.circular(10)),
                           ),
                         ),
@@ -2060,7 +2187,7 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                                         element.tyre_axel_id == "1" &&
                                         element.tyre_position == "LI");
 
-                               frontLeftIn = true;
+                               frontLeftIn = true.obs;
 
                                 showBottomSheet(context);
                               } else {
@@ -2069,25 +2196,25 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                               print("selected model: " +
                                   selectedModel.toString());
 
-                              frontLeftOut = false;
+                              frontLeftOut = false.obs;
                               
-                              frontRightIn = false;
-                              frontRightOut = false;
-                              middleLeftOut = false;
-                              middleLeftIn = false;
-                              middleRightIn = false;
-                              middleRightOut = false;
-                              backLeftOut = false;
-                              backLeftIn = false;
-                              backRightIn = false;
-                              backRightOut = false;
+                              frontRightIn = false.obs;
+                              frontRightOut = false.obs;
+                              middleLeftOut = false.obs;
+                              middleLeftIn = false.obs;
+                              middleRightIn = false.obs;
+                              middleRightOut = false.obs;
+                              backLeftOut = false.obs;
+                              backLeftIn = false.obs;
+                              backRightIn = false.obs;
+                              backRightOut = false.obs;
                             });
                           },
                           child: Container(
-                            height: frontLeftIn ? 60 : 40,
-                            width: frontLeftIn ? 20 : 10,
+                            height: frontLeftIn.value ? 60 : 40,
+                            width: frontLeftIn.value ? 20 : 10,
                             decoration: BoxDecoration(
-                                color: frontLeftIn ? green : Colors.black,
+                                color: frontLeftIn.value ? green : Colors.black,
                                 borderRadius: BorderRadius.circular(10)),
                           ),
                         ),
@@ -2125,7 +2252,7 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                                         element.tyre_axel_id == "1" &&
                                         element.tyre_position == "RI");
 
-                                frontRightIn = true;
+                                frontRightIn = true.obs;
 
                                 showBottomSheet(context);
                               } else {
@@ -2134,25 +2261,25 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                               print("selected model: " +
                                   selectedModel.toString());
 
-                              frontLeftOut = false;
-                              frontLeftIn = false;
+                              frontLeftOut = false.obs;
+                              frontLeftIn = false.obs;
                               
-                              frontRightOut = false;
-                              middleLeftOut = false;
-                              middleLeftIn = false;
-                              middleRightIn = false;
-                              middleRightOut = false;
-                              backLeftOut = false;
-                              backLeftIn = false;
-                              backRightIn = false;
-                              backRightOut = false;
+                              frontRightOut = false.obs;
+                              middleLeftOut = false.obs;
+                              middleLeftIn = false.obs;
+                              middleRightIn = false.obs;
+                              middleRightOut = false.obs;
+                              backLeftOut = false.obs;
+                              backLeftIn = false.obs;
+                              backRightIn = false.obs;
+                              backRightOut = false.obs;
                             });
                           },
                           child: Container(
-                            height: frontRightIn ? 60 : 40,
-                            width: frontRightIn ? 20 : 10,
+                            height: frontRightIn.value ? 60 : 40,
+                            width: frontRightIn.value ? 20 : 10,
                             decoration: BoxDecoration(
-                                color: frontRightIn ? green : Colors.black,
+                                color: frontRightIn.value ? green : Colors.black,
                                 borderRadius: BorderRadius.circular(10)),
                           ),
                         ),
@@ -2177,7 +2304,7 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                                         element.tyre_axel_id == "1" &&
                                         element.tyre_position == "RO");
 
-                                 frontRightOut = true;
+                                 frontRightOut = true.obs;
 
                                 showBottomSheet(context);
                               } else {
@@ -2186,25 +2313,25 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                               print("selected model: " +
                                   selectedModel.toString());
 
-                              frontLeftOut = false;
-                              frontLeftIn = false;
-                              frontRightIn = false;
+                              frontLeftOut = false.obs;
+                              frontLeftIn = false.obs;
+                              frontRightIn = false.obs;
                              
-                              middleLeftOut = false;
-                              middleLeftIn = false;
-                              middleRightIn = false;
-                              middleRightOut = false;
-                              backLeftOut = false;
-                              backLeftIn = false;
-                              backRightIn = false;
-                              backRightOut = false;
+                              middleLeftOut = false.obs;
+                              middleLeftIn = false.obs;
+                              middleRightIn = false.obs;
+                              middleRightOut = false.obs;
+                              backLeftOut = false.obs;
+                              backLeftIn = false.obs;
+                              backRightIn = false.obs;
+                              backRightOut = false.obs;
                             });
                           },
                           child: Container(
-                            height: frontRightOut ? 60 : 40,
-                            width: frontRightOut ? 20 : 10,
+                            height: frontRightOut.value ? 60 : 40,
+                            width: frontRightOut.value ? 20 : 10,
                             decoration: BoxDecoration(
-                                color: frontRightOut ? green : Colors.black,
+                                color: frontRightOut.value ? green : Colors.black,
                                 borderRadius: BorderRadius.circular(10)),
                           ),
                         ),
@@ -2243,7 +2370,7 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                                         element.tyre_axel_id == "2" &&
                                         element.tyre_position == "LO");
 
-                                middleLeftOut = true;
+                                middleLeftOut = true.obs;
 
                                 showBottomSheet(context);
                               } else {
@@ -2252,25 +2379,25 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                               print("selected model: " +
                                   selectedModel.toString());
 
-                               frontLeftOut = false;
-                              frontLeftIn = false;
-                              frontRightIn = false;
-                              frontRightOut = false;
+                               frontLeftOut = false.obs;
+                              frontLeftIn = false.obs;
+                              frontRightIn = false.obs;
+                              frontRightOut = false.obs;
                            
-                              middleLeftIn = false;
-                              middleRightIn = false;
-                              middleRightOut = false;
-                              backLeftOut = false;
-                              backLeftIn = false;
-                              backRightIn = false;
-                              backRightOut = false;
+                              middleLeftIn = false.obs;
+                              middleRightIn = false.obs;
+                              middleRightOut = false.obs;
+                              backLeftOut = false.obs;
+                              backLeftIn = false.obs;
+                              backRightIn = false.obs;
+                              backRightOut = false.obs;
                             });
                           },
                           child: Container(
-                            height: middleLeftOut ? 60 : 40,
-                            width: middleLeftOut ? 20 : 10,
+                            height: middleLeftOut.value ? 60 : 40,
+                            width: middleLeftOut.value ? 20 : 10,
                             decoration: BoxDecoration(
-                                color: middleLeftOut ? green : Colors.black,
+                                color: middleLeftOut.value ? green : Colors.black,
                                 borderRadius: BorderRadius.circular(10)),
                           ),
                         ),
@@ -2295,7 +2422,7 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                                         element.tyre_axel_id == "2" &&
                                         element.tyre_position == "LI");
 
-                                middleLeftIn = true;
+                                middleLeftIn = true.obs;
 
                                 showBottomSheet(context);
                               } else {
@@ -2304,25 +2431,25 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                               print("selected model: " +
                                   selectedModel.toString());
 
-                                frontLeftOut = false;
-                              frontLeftIn = false;
-                              frontRightIn = false;
-                              frontRightOut = false;
-                              middleLeftOut = false;
+                                frontLeftOut = false.obs;
+                              frontLeftIn = false.obs;
+                              frontRightIn = false.obs;
+                              frontRightOut = false.obs;
+                              middleLeftOut = false.obs;
 
-                              middleRightIn = false;
-                              middleRightOut = false;
-                              backLeftOut = false;
-                              backLeftIn = false;
-                              backRightIn = false;
-                              backRightOut = false;
+                              middleRightIn = false.obs;
+                              middleRightOut = false.obs;
+                              backLeftOut = false.obs;
+                              backLeftIn = false.obs;
+                              backRightIn = false.obs;
+                              backRightOut = false.obs;
                             });
                           },
                           child: Container(
-                            height: middleLeftIn ? 60 : 40,
-                            width: middleLeftIn ? 20 : 10,
+                            height: middleLeftIn.value ? 60 : 40,
+                            width: middleLeftIn.value ? 20 : 10,
                             decoration: BoxDecoration(
-                                color: middleLeftIn ? green : Colors.black,
+                                color: middleLeftIn.value ? green : Colors.black,
                                 borderRadius: BorderRadius.circular(10)),
                           ),
                         ),
@@ -2360,7 +2487,7 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                                         element.tyre_axel_id == "2" &&
                                         element.tyre_position == "RI");
 
-                                middleRightIn = true;
+                                middleRightIn = true.obs;
 
                                 showBottomSheet(context);
                               } else {
@@ -2369,25 +2496,25 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                               print("selected model: " +
                                   selectedModel.toString());
 
-                                frontLeftOut = false;
-                              frontLeftIn = false;
-                              frontRightIn = false;
-                              frontRightOut = false;
-                              middleLeftOut = false;
-                              middleLeftIn = false;
+                                frontLeftOut = false.obs;
+                              frontLeftIn = false.obs;
+                              frontRightIn = false.obs;
+                              frontRightOut = false.obs;
+                              middleLeftOut = false.obs;
+                              middleLeftIn = false.obs;
 
-                              middleRightOut = false;
-                              backLeftOut = false;
-                              backLeftIn = false;
-                              backRightIn = false;
-                              backRightOut = false;
+                              middleRightOut = false.obs;
+                              backLeftOut = false.obs;
+                              backLeftIn = false.obs;
+                              backRightIn = false.obs;
+                              backRightOut = false.obs;
                             });
                           },
                           child: Container(
-                            height: middleRightIn ? 60 : 40,
-                            width: middleRightIn ? 20 : 10,
+                            height: middleRightIn.value ? 60 : 40,
+                            width: middleRightIn.value ? 20 : 10,
                             decoration: BoxDecoration(
-                                color: middleRightIn ? green : Colors.black,
+                                color: middleRightIn.value ? green : Colors.black,
                                 borderRadius: BorderRadius.circular(10)),
                           ),
                         ),
@@ -2412,7 +2539,7 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                                         element.tyre_axel_id == "2" &&
                                         element.tyre_position == "RO");
 
-                                middleRightOut = true;
+                                middleRightOut = true.obs;
 
                                 showBottomSheet(context);
                               } else {
@@ -2421,25 +2548,25 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                               print("selected model: " +
                                   selectedModel.toString());
 
-                             frontLeftOut = false;
-                              frontLeftIn = false;
-                              frontRightIn = false;
-                              frontRightOut = false;
-                              middleLeftOut = false;
-                              middleLeftIn = false;
-                              middleRightIn = false;
+                             frontLeftOut = false.obs;
+                              frontLeftIn = false.obs;
+                              frontRightIn = false.obs;
+                              frontRightOut = false.obs;
+                              middleLeftOut = false.obs;
+                              middleLeftIn = false.obs;
+                              middleRightIn = false.obs;
 
-                              backLeftOut = false;
-                              backLeftIn = false;
-                              backRightIn = false;
-                              backRightOut = false;
+                              backLeftOut = false.obs;
+                              backLeftIn = false.obs;
+                              backRightIn = false.obs;
+                              backRightOut = false.obs;
                             });
                           },
                           child: Container(
-                            height: middleRightOut ? 60 : 40,
-                            width: middleRightOut ? 20 : 10,
+                            height: middleRightOut.value ? 60 : 40,
+                            width: middleRightOut.value ? 20 : 10,
                             decoration: BoxDecoration(
-                                color: middleRightOut ? green : Colors.black,
+                                color: middleRightOut.value ? green : Colors.black,
                                 borderRadius: BorderRadius.circular(10)),
                           ),
                         ),
@@ -2478,7 +2605,7 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                                         element.tyre_axel_id == "3" &&
                                         element.tyre_position == "LO");
 
-                                backLeftOut = true;
+                                backLeftOut = true.obs;
 
                                 showBottomSheet(context);
                               } else {
@@ -2487,25 +2614,25 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                               print("selected model: " +
                                   selectedModel.toString());
 
-                              frontLeftOut = false;
-                              frontLeftIn = false;
-                              frontRightIn = false;
-                              frontRightOut = false;
-                              middleLeftOut = false;
-                              middleLeftIn = false;
-                              middleRightIn = false;
-                              middleRightOut = false;
+                              frontLeftOut = false.obs;
+                              frontLeftIn = false.obs;
+                              frontRightIn = false.obs;
+                              frontRightOut = false.obs;
+                              middleLeftOut = false.obs;
+                              middleLeftIn = false.obs;
+                              middleRightIn = false.obs;
+                              middleRightOut = false.obs;
 
-                              backLeftIn = false;
-                              backRightIn = false;
-                              backRightOut = false;
+                              backLeftIn = false.obs;
+                              backRightIn = false.obs;
+                              backRightOut = false.obs;
                             });
                           },
                           child: Container(
-                            height: backLeftOut ? 60 : 40,
-                            width: backLeftOut ? 20 : 10,
+                            height: backLeftOut.value ? 60 : 40,
+                            width: backLeftOut.value ? 20 : 10,
                             decoration: BoxDecoration(
-                                color: backLeftOut ? green : Colors.black,
+                                color: backLeftOut.value ? green : Colors.black,
                                 borderRadius: BorderRadius.circular(10)),
                           ),
                         ),
@@ -2530,7 +2657,7 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                                         element.tyre_axel_id == "3" &&
                                         element.tyre_position == "LI");
 
-                                backLeftIn = true;
+                                backLeftIn = true.obs;
 
                                 showBottomSheet(context);
                               } else {
@@ -2539,25 +2666,25 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                               print("selected model: " +
                                   selectedModel.toString());
 
-                          frontLeftOut = false;
-                              frontLeftIn = false;
-                              frontRightIn = false;
-                              frontRightOut = false;
-                              middleLeftOut = false;
-                              middleLeftIn = false;
-                              middleRightIn = false;
-                              middleRightOut = false;
-                              backLeftOut = false;
+                          frontLeftOut = false.obs;
+                              frontLeftIn = false.obs;
+                              frontRightIn = false.obs;
+                              frontRightOut = false.obs;
+                              middleLeftOut = false.obs;
+                              middleLeftIn = false.obs;
+                              middleRightIn = false.obs;
+                              middleRightOut = false.obs;
+                              backLeftOut = false.obs;
 
-                              backRightIn = false;
-                              backRightOut = false;
+                              backRightIn = false.obs;
+                              backRightOut = false.obs;
                             });
                           },
                           child: Container(
-                            height: backLeftIn ? 60 : 40,
-                            width: backLeftIn ? 20 : 10,
+                            height: backLeftIn.value ? 60 : 40,
+                            width: backLeftIn.value ? 20 : 10,
                             decoration: BoxDecoration(
-                                color: backLeftIn ? green : Colors.black,
+                                color: backLeftIn.value ? green : Colors.black,
                                 borderRadius: BorderRadius.circular(10)),
                           ),
                         ),
@@ -2595,7 +2722,7 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                                         element.tyre_axel_id == "3" &&
                                         element.tyre_position == "RI");
 
-                                backRightIn = true;
+                                backRightIn = true.obs;
 
                                 showBottomSheet(context);
                               } else {
@@ -2604,25 +2731,25 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                               print("selected model: " +
                                   selectedModel.toString());
 
-                               frontLeftOut = false;
-                              frontLeftIn = false;
-                              frontRightIn = false;
-                              frontRightOut = false;
-                              middleLeftOut = false;
-                              middleLeftIn = false;
-                              middleRightIn = false;
-                              middleRightOut = false;
-                              backLeftOut = false;
-                              backLeftIn = false;
+                               frontLeftOut = false.obs;
+                              frontLeftIn = false.obs;
+                              frontRightIn = false.obs;
+                              frontRightOut = false.obs;
+                              middleLeftOut = false.obs;
+                              middleLeftIn = false.obs;
+                              middleRightIn = false.obs;
+                              middleRightOut = false.obs;
+                              backLeftOut = false.obs;
+                              backLeftIn = false.obs;
 
-                              backRightOut = false;
+                              backRightOut = false.obs;
                             });
                           },
                           child: Container(
-                            height: backRightIn ? 60 : 40,
-                            width: backRightIn ? 20 : 10,
+                            height: backRightIn.value ? 60 : 40,
+                            width: backRightIn.value ? 20 : 10,
                             decoration: BoxDecoration(
-                                color: backRightIn ? green : Colors.black,
+                                color: backRightIn.value ? green : Colors.black,
                                 borderRadius: BorderRadius.circular(10)),
                           ),
                         ),
@@ -2647,7 +2774,7 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                                         element.tyre_axel_id == "3" &&
                                         element.tyre_position == "RO");
 
-                                backRightOut = true;
+                                backRightOut = true.obs;
 
                                 showBottomSheet(context);
                               } else {
@@ -2656,24 +2783,24 @@ class _DismountHomeScreenState extends State<DismountHomeScreen> {
                               print("selected model: " +
                                   selectedModel.toString());
 
-                               frontLeftOut = false;
-                              frontLeftIn = false;
-                              frontRightIn = false;
-                              frontRightOut = false;
-                              middleLeftOut = false;
-                              middleLeftIn = false;
-                              middleRightIn = false;
-                              middleRightOut = false;
-                              backLeftOut = false;
-                              backLeftIn = false;
-                              backRightIn = false;
+                               frontLeftOut = false.obs;
+                              frontLeftIn = false.obs;
+                              frontRightIn = false.obs;
+                              frontRightOut = false.obs;
+                              middleLeftOut = false.obs;
+                              middleLeftIn = false.obs;
+                              middleRightIn = false.obs;
+                              middleRightOut = false.obs;
+                              backLeftOut = false.obs;
+                              backLeftIn = false.obs;
+                              backRightIn = false.obs;
                             });
                           },
                           child: Container(
-                            height: backRightOut ? 60 : 40,
-                            width: backRightOut ? 20 : 10,
+                            height: backRightOut.value ? 60 : 40,
+                            width: backRightOut.value ? 20 : 10,
                             decoration: BoxDecoration(
-                                color: backRightOut ? green : Colors.black,
+                                color: backRightOut.value ? green : Colors.black,
                                 borderRadius: BorderRadius.circular(10)),
                           ),
                         ),

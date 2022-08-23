@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:PrimeMetrics/controllers/tyre/tyre_controller.dart';
 import 'package:PrimeMetrics/screens/tyre_management/tyre_retread/post_retread_screen.dart';
 import 'package:PrimeMetrics/screens/tyre_management/tyre_retread/pre_retread_screen.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -54,6 +57,14 @@ class _RetreadScreenState extends State<RetreadScreen> {
       key: _scaffoldKey,
       backgroundColor: primaryColors,
       body:  Obx((() => 
+
+           tyreController.isRetreadLoading.value
+                        ? Align(
+                            alignment: Alignment.center,
+                            child: Platform.isAndroid
+                                ? CircularProgressIndicator()
+                                : CupertinoActivityIndicator())
+                        :
 
       SingleChildScrollView(
         physics: BouncingScrollPhysics(),

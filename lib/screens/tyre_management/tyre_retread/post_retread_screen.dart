@@ -1,7 +1,10 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:io';
+
 import 'package:PrimeMetrics/controllers/tyre/tyre_controller.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -23,6 +26,7 @@ class PostRetreadScreen extends StatefulWidget {
 
 class _PostRetreadScreenState extends State<PostRetreadScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  DateTime date = DateTime.now();
 
   TextEditingController tyreWeightController = TextEditingController();
   TextEditingController tyreWidthController = TextEditingController();
@@ -159,41 +163,68 @@ class _PostRetreadScreenState extends State<PostRetreadScreen> {
                     SizedBox(
                       height: 10,
                     ),
-                    Row(children: [
-                      ShadowTextField(
-                        width: ScreenSize.width * 0.2,
-                        hintText: "Day",
-                        maxLine: 1,
-                      keyboardType: TextInputType.number,
-                      maxLength: 2,
-                        controller: dayController,
-                        onChanged: (value) {},
+                    GestureDetector(
+                      onTap: () {
+                        showModalBottomSheet(
+                            context: context,
+                            builder: (ctx) {
+                              return CalendarDatePicker(
+                                  onDateChanged: (value) {
+                                    //date(value);
+                                    print(
+                                        "date.millisecondsSinceEpoch --- ${date.millisecondsSinceEpoch}");
+                                    print("date --- ${date}");
+                                    date = value;
+                                    dayController.text = date.day.toString();
+                                    monthController.text =
+                                        date.month.toString();
+                                    yearController.text = date.year.toString();
+
+                             
+
+                                    Get.back();
+                                  },
+                                  initialDate: date,
+                                  firstDate:  DateTime.now().subtract(const Duration(days: 5000)),
+                                  lastDate:
+                                      DateTime.now());
+                            });
+                      },
+                      child: Row(
+                        children: [
+                          ShadowTextField(
+                            width: ScreenSize.width * 0.2,
+                            hintText: "Day",
+                            controller: dayController,
+                            onChanged: (value) {},
+                            enabled: false,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: ShadowTextField(
+                              hintText: "Month",
+                              controller: monthController,
+                              onChanged: (value) {},
+                              enabled: false,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          ShadowTextField(
+                            width: ScreenSize.width * 0.2,
+                            hintText: "Year",
+                            controller: yearController,
+                            onChanged: (value) {},
+                            enabled: false,
+                          ),
+                        ],
                       ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                          child: ShadowTextField(
-                        hintText: "Month",
-                          maxLine: 1,
-                      keyboardType: TextInputType.number,
-                      maxLength: 2,
-                        controller: monthController,
-                        onChanged: (value) {},
-                      )),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      ShadowTextField(
-                        width: ScreenSize.width * 0.2,
-                        hintText: "Year",
-                          maxLine: 1,
-                      keyboardType: TextInputType.number,
-                      maxLength: 4,
-                        controller: yearController,
-                        onChanged: (value) {},
-                      ),
-                    ]),
+                    ),
+                   
+                   
                     SizedBox(
                       height: 30,
                     ),
@@ -409,7 +440,23 @@ class _PostRetreadScreenState extends State<PostRetreadScreen> {
                       child: Container(
                         alignment: Alignment.center,
                         height: ScreenSize.height * 0.065,
-                        child: const Text(
+                        child: 
+
+
+                      Obx((() => 
+
+                               tyreController.isSubmitting.value
+                        ? Align(
+                            alignment: Alignment.center,
+                            child: Platform.isAndroid
+                                ? CircularProgressIndicator(color: Colors.white, strokeWidth: 1,)
+                                : CupertinoActivityIndicator())
+                        :
+                        
+                        
+                        
+                        
+                         Text(
                           "Done",
                           style: TextStyle(
                             fontWeight: FontWeight.normal,
@@ -417,7 +464,7 @@ class _PostRetreadScreenState extends State<PostRetreadScreen> {
                             fontSize: 18,
                             decoration: TextDecoration.none,
                           ),
-                        ),
+                        ))),
                         decoration: BoxDecoration(
                             color: green,
                             boxShadow: [

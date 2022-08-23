@@ -4,23 +4,23 @@
 class DismountReason {
   DismountReason({
     this.id,
-    this.dismountResion,
+    this.dismount_reason,
 
   });
 
   String? id;
-  String? dismountResion;
+  String? dismount_reason;
 
 
   factory DismountReason.fromJson(Map<String, dynamic> json) => DismountReason(
-    id: json["id"],
-    dismountResion: json["dismountResion"],
+    id: json["id"].toString(),
+    dismount_reason: json["dismount_reason"].toString(),
   
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "dismountResion": dismountResion,
+    "dismount_reason": dismount_reason,
  
   };
 }

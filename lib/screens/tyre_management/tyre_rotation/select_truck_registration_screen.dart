@@ -1,9 +1,12 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:io';
+
 import 'package:PrimeMetrics/controllers/tyre/tyre_controller.dart';
 import 'package:PrimeMetrics/screens/fuel_master/fuel_master_widgets/searchable_dropdown.dart';
 import 'package:PrimeMetrics/screens/tyre_management/tyre_rotation/select_tyre_rotation_screen.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -51,6 +54,14 @@ class _SelectTruckRegistrationScreenState extends State<SelectTruckRegistrationS
       body: 
 
       Obx((() => 
+
+        tyreController.isSubmitting.value
+                        ? Align(
+                            alignment: Alignment.center,
+                            child: Platform.isAndroid
+                                ? CircularProgressIndicator()
+                                : CupertinoActivityIndicator())
+                        :
       
         SingleChildScrollView(
         physics: BouncingScrollPhysics(),

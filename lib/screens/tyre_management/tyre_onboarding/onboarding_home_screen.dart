@@ -472,6 +472,9 @@ class _OnboardingHomeScreenState extends State<OnboardingHomeScreen> {
                         ],
                       ),
                     ),
+                   
+                   
+                   
                     SizedBox(
                       height: 30,
                     ),

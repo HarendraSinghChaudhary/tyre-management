@@ -29,7 +29,7 @@ class _SelectTyreRotationScreenState extends State<SelectTyreRotationScreen> {
 
   int selectedCard = 0;
 
-  TyreController tyreController = Get.find();
+  TyreController tyreController = Get.put(TyreController(), permanent: false);
   VehecleStructure selectedModel = VehecleStructure();
   int vehicleId = 0;
   String? tyre_psi;
@@ -57,168 +57,18 @@ class _SelectTyreRotationScreenState extends State<SelectTyreRotationScreen> {
 
     tyreController.vehicleStructureList;
 
-    tyreController.getVehicleStructure(vehicleId: widget.vehicle_id);
+    tyreController.getVehicleStructure(vehicleId: widget.vehicle_id, tyre_vehicle_id: widget.regNumber);
 
   
 
 
 
-    // checkData();
+
 
 
   }
 
-  // checkData() {
-  //   bool exist1LI = false;
-  //   bool exist1RO = false;
-  //   bool exist2LO = false;
-  //   bool exist2LI = false;
-  //   bool exist2RI = false;
-  //   bool exist2RO = false;
-  //   bool exist3LO = false;
-  //   bool exist3LI = false;
-  //   bool exist3RI = false;
-  //   bool exist3RO = false;
 
-
-  //   if(tyreController.vehicleStructureList.isNotEmpty) {
-
-  // tyreController.vehicleStructureList.forEach((element) {
-  //     if (element.tyre_position == "LO" && element.tyre_axel_id == "1") {
-  //       exist1LI = true;
-  //     }
-  //   });
-  //   if (exist1LI) {
-  //     selectedModel = tyreController.vehicleStructureList.firstWhere(
-  //         (element) =>
-  //             element.tyre_axel_id == "1" && element.tyre_position == "LO");
-
-  //     frontLeft = true;
-  //   }
-
-  //   tyreController.vehicleStructureList.forEach((element) {
-  //     if (element.tyre_position == "RO" && element.tyre_axel_id == "1") {
-  //       exist1RO = true;
-  //     }
-  //   });
-  //   if (exist1RO) {
-  //     selectedModel = tyreController.vehicleStructureList.firstWhere(
-  //         (element) =>
-  //             element.tyre_axel_id == "1" && element.tyre_position == "RO");
-
-  //     frontRight = true;
-  //   }
-
-  //   tyreController.vehicleStructureList.forEach((element) {
-  //     if (element.tyre_position == "LO" && element.tyre_axel_id == "2") {
-  //       exist2LO = true;
-  //     }
-  //   });
-  //   if (exist2LO) {
-  //     selectedModel = tyreController.vehicleStructureList.firstWhere(
-  //         (element) =>
-  //             element.tyre_axel_id == "2" && element.tyre_position == "LO");
-
-  //     middleLeftOut = true;
-  //   }
-
-  //   tyreController.vehicleStructureList.forEach((element) {
-  //     if (element.tyre_position == "LI" && element.tyre_axel_id == "2") {
-  //       exist2LI = true;
-  //     }
-  //   });
-  //   if (exist2LI) {
-  //     selectedModel = tyreController.vehicleStructureList.firstWhere(
-  //         (element) =>
-  //             element.tyre_axel_id == "2" && element.tyre_position == "LI");
-
-  //     middleLeftIn = true;
-  //   }
-
-  //   tyreController.vehicleStructureList.forEach((element) {
-  //     if (element.tyre_position == "RI" && element.tyre_axel_id == "2") {
-  //       exist2RI = true;
-  //     }
-  //   });
-  //   if (exist2RI) {
-  //     selectedModel = tyreController.vehicleStructureList.firstWhere(
-  //         (element) =>
-  //             element.tyre_axel_id == "2" && element.tyre_position == "RI");
-
-  //     middleRightIn = true;
-  //   }
-
-  //   tyreController.vehicleStructureList.forEach((element) {
-  //     if (element.tyre_position == "RO" && element.tyre_axel_id == "2") {
-  //       exist2RO = true;
-  //     }
-  //   });
-  //   if (exist2RO) {
-  //     selectedModel = tyreController.vehicleStructureList.firstWhere(
-  //         (element) =>
-  //             element.tyre_axel_id == "2" && element.tyre_position == "RO");
-
-  //     middleRightOut = true;
-  //   }
-
-  //   tyreController.vehicleStructureList.forEach((element) {
-  //     if (element.tyre_position == "LO" && element.tyre_axel_id == "3") {
-  //       exist3LO = true;
-  //     }
-  //   });
-  //   if (exist3LO) {
-  //     selectedModel = tyreController.vehicleStructureList.firstWhere(
-  //         (element) =>
-  //             element.tyre_axel_id == "3" && element.tyre_position == "LO");
-
-  //     backLeftOut = true;
-  //   }
-
-  //   tyreController.vehicleStructureList.forEach((element) {
-  //     if (element.tyre_position == "LI" && element.tyre_axel_id == "3") {
-  //       exist3LI = true;
-  //     }
-  //   });
-  //   if (exist3LI) {
-  //     selectedModel = tyreController.vehicleStructureList.firstWhere(
-  //         (element) =>
-  //             element.tyre_axel_id == "3" && element.tyre_position == "LI");
-
-  //     backLeftIn = true;
-  //   }
-
-  //   tyreController.vehicleStructureList.forEach((element) {
-  //     if (element.tyre_position == "RI" && element.tyre_axel_id == "3") {
-  //       exist3RI = true;
-  //     }
-  //   });
-  //   if (exist3RI) {
-  //     selectedModel = tyreController.vehicleStructureList.firstWhere(
-  //         (element) =>
-  //             element.tyre_axel_id == "3" && element.tyre_position == "RI");
-
-  //     backRightIn = true;
-  //   }
-
-  //   tyreController.vehicleStructureList.forEach((element) {
-  //     if (element.tyre_position == "RO" && element.tyre_axel_id == "3") {
-  //       exist3RO = true;
-  //     }
-  //   });
-  //   if (exist3RO) {
-  //     selectedModel = tyreController.vehicleStructureList.firstWhere(
-  //         (element) =>
-  //             element.tyre_axel_id == "3" && element.tyre_position == "RO");
-
-  //     backRightOut = true;
-
-     
-  //   }
-
-  //   }
-
-   
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -232,7 +82,7 @@ class _SelectTyreRotationScreenState extends State<SelectTyreRotationScreen> {
 
      
 
-       tyreController.isSubmitting.value
+       tyreController. isVehicleStructureLoading.value
                         ? Align(
                             alignment: Alignment.center,
                             child: Platform.isAndroid

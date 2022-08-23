@@ -27,8 +27,10 @@ class _TyreRetiringHomeScreenState extends State<TyreRetiringHomeScreen> with Au
     // TODO: implement initState
     super.initState();
     tyres.add(TyreRetiringFormModel());
-    //  tyreController.getTyreSerialNumberApi();
-    // tyreController.retiringReasonApi();
+
+    tyreController.defectApi();
+    tyreController.getTyreForRetiringApi();
+
   }
 
   @override

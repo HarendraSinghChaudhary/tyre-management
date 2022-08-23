@@ -23,6 +23,8 @@ import '../../utils/store.dart';
 import '../../utils/toast.dart';
 
 class AuthController extends BaseController {
+
+ 
   RxBool sendingEmail = false.obs;
   RxBool veryfyingOtp = false.obs;
   RxString timeEllapsedForOtp = 60.toString().obs;
@@ -44,6 +46,8 @@ class AuthController extends BaseController {
 
 
     Future<dynamic> loginApi(String email, String password, ) async {
+
+      sendingEmail(true);
     // FirebaseMessaging.instance.getToken().then((value) {
     //   fcm_token = value.toString();
     //   print("FCM "+fcm_token.toString()+"^^");
@@ -54,6 +58,7 @@ class AuthController extends BaseController {
     print(email);
     print(password);
     String msg = "";
+
     var jsonRes;
     http.Response? res;
     var request = http.post(
@@ -83,9 +88,7 @@ var responsedynamic;
       jsonRes = _decoder.convert(response.body.toString());
       print("Response: " + response.body.toString() + "_");
       print("ResponseJSON: " + jsonRes.toString() + "_");
-      // print("status: " + jsonRes["status"].toString() + "_");
-      // print("message: " + jsonRes["message"].toString() + "_");
-      // msg = jsonRes["message"].toString();
+     
     });
     if (res!.statusCode == 200) {
       if (res!.statusCode == 200) {
@@ -102,20 +105,23 @@ var responsedynamic;
       print("press here 3" +role.toString()+"");
       // user?.data?.role?.userRole=="fuel_master" ? Get.offAll(FuelMasterLandingScreen()) : Get.offAll(MainDashboard());
       user?.data?.role?.userRole=="fuel_master" ? Get.offAll(TyreHomeScreen()) : Get.offAll(MainDashboard());
-  // Get.offAll(TyreHomeScreen());
+  
    print("press here 4");
-        // SharedPreferences prefs = await SharedPreferences.getInstance();
-        // prefs.setString('id', jsonRes["data"]["id"].toString());
-        // prefs.setString('token', jsonRes["data"]["token"].toString());
-        //  print("press here 5");
+       
         var tokeenen = user?.data?.token.toString();
         print("token: "+tokeenen.toString()+"");
        
         // prefs.commit();
          print("press here 6");
+
+         sendingEmail(false);
+         update();
       
        
       }else{
+
+          sendingEmail(false);
+         update();
         // setState(() {
         //   isloading = false;
         // });
@@ -124,6 +130,9 @@ var responsedynamic;
 
       }
     } else {
+
+        sendingEmail(false);
+         update();
       // ScaffoldMessenger.of(context)
       //     .showSnackBar(SnackBar(content: Text('Error while fetching data')));
 

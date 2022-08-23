@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:PrimeMetrics/controllers/tyre/tyre_controller.dart';
 import 'package:PrimeMetrics/screens/tyre_management/tyre_inspection/registration_number_by_shop.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -90,6 +93,18 @@ class _ShopInspectionSAcreenState extends State<ShopInspectionScreen> {
 
 
                     Obx((() =>
+
+                     tyreController.isSubmitting.value
+                        ? Align(
+                            alignment: Alignment.center,
+                            child: Platform.isAndroid
+                                ? CircularProgressIndicator()
+                                : CupertinoActivityIndicator())
+                        :
+
+
+
+
 
                     SearchableDropdown(
                         withIcon: false,

@@ -6,6 +6,7 @@ import 'package:PrimeMetrics/controllers/tyre/tyre_controller.dart';
 import 'package:PrimeMetrics/screens/fuel_master/fuel_master_widgets/searchable_dropdown.dart';
 import 'package:PrimeMetrics/utils/images.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -175,46 +176,59 @@ class _DetailedInspectionScreenState extends State<DetailedInspectionScreen> {
                       },
                       itemCount: list.length,
                     ),
-                    SizedBox(
-                      height: 10,
+                    Visibility(
+                       visible: value == 1 ? true : false,
+
+                      child: SizedBox(
+                        height: 10,
+                      ),
                     ),
 
-                         SearchableDropdown(
-                        withIcon: false,
-                        enabled: true,
-                        hintText: "Defect",
-                        listItems: tyreController.defectList
-                            .map((e) => "${e.defect_type}")
-                            .toList(),
-                        onChanged: (value) {
-                          id = tyreController.defectList
-                                  .firstWhere(
-                                      (element) => value == element.defect_type)
-                                  .id ??
-                              0;
-
-                          defect_type = tyreController.defectList
-                              .firstWhere(
-                                  (element) => value == element.defect_type)
-                              .defect_type
-                              .toString();
-
-                          print("regNumber onChanged $id");
-                          print("regNumber  $defect_type");
-                          // data.remove('vehicle_id');
-                          // data.putIfAbsent('vehicle_id', () => vehicleId);
-                        },
-                        searchFieldProps: TextFieldProps(
-                          decoration: InputDecoration(
-                            suffixIcon: Icon(
-                              Icons.keyboard_arrow_down,
-                              color: Colors.black,
+                         Visibility(
+                          visible: value == 1 ? true : false,
+                           child: 
+                           
+                           SearchableDropdown(
+                                                 withIcon: false,
+                                                 enabled: true,
+                                                 hintText: "Defect",
+                                                 listItems: tyreController.defectList
+                              .map((e) => "${e.defect_type}")
+                              .toList(),
+                                                 onChanged: (value) {
+                            id = tyreController.defectList
+                                    .firstWhere(
+                                        (element) => value == element.defect_type)
+                                    .id ??
+                                0;
+                         
+                            defect_type = tyreController.defectList
+                                .firstWhere(
+                                    (element) => value == element.defect_type)
+                                .defect_type
+                                .toString();
+                         
+                            print("regNumber onChanged $id");
+                            print("regNumber  $defect_type");
+                            // data.remove('vehicle_id');
+                            // data.putIfAbsent('vehicle_id', () => vehicleId);
+                                                 },
+                                                 searchFieldProps: TextFieldProps(
+                            decoration: InputDecoration(
+                              suffixIcon: Icon(
+                                Icons.keyboard_arrow_down,
+                                color: Colors.black,
+                              ),
+                              hintText: "Search",
+                              border: InputBorder.none,
                             ),
-                            hintText: "Search",
-                            border: InputBorder.none,
-                          ),
-                        ),
-                      ),
+                                                 ),
+                                               ),
+                      
+                      
+                      
+                      
+                         ),
                  
                     SizedBox(
                       height: 10,
@@ -305,7 +319,7 @@ class _DetailedInspectionScreenState extends State<DetailedInspectionScreen> {
 
                           if (pressureController.text.isNotEmpty && 
                           
-                          defect_type.toString() != "" &&
+                          
                           depthController.text.toString() != "" && 
                           file != null
                           
@@ -368,6 +382,7 @@ class _DetailedInspectionScreenState extends State<DetailedInspectionScreen> {
                                         onTap: () {
 
                                           tyreController.detailedInspectionApi(
+                                            isSelect: 0,
                                             deploy_on: widget.deploy_on,
                                             type: "details_inspection", 
                                             file: file?.value??XFile(""),
@@ -387,7 +402,25 @@ class _DetailedInspectionScreenState extends State<DetailedInspectionScreen> {
                                           alignment: Alignment.center,
                                           width: ScreenSize.width * 0.82,
                                           height: ScreenSize.height * 0.065,
-                                          child: const Text(
+                                          child: 
+
+
+
+                                               Obx((() =>
+
+
+                           tyreController.isSubmitting.value
+                        ? Align(
+                            alignment: Alignment.center,
+                            child: Platform.isAndroid
+                                ? CircularProgressIndicator(color: Colors.white, strokeWidth: 1,)
+                                : CupertinoActivityIndicator())
+                        :
+                                          
+                                          
+                                          
+                                          
+                                           Text(
                                             "Yes",
                                             style: TextStyle(
                                               fontWeight: FontWeight.normal,
@@ -395,7 +428,9 @@ class _DetailedInspectionScreenState extends State<DetailedInspectionScreen> {
                                               fontSize: 18,
                                               decoration: TextDecoration.none,
                                             ),
-                                          ),
+                                          )
+
+                                               )),
                                           decoration: BoxDecoration(
                                               color: green,
                                               boxShadow: [
@@ -416,15 +451,47 @@ class _DetailedInspectionScreenState extends State<DetailedInspectionScreen> {
                                       ),
                                       GestureDetector(
                                         onTap: () {
-                                          Get.offAll(TyreHomeScreen(),
-                                              transition:
-                                                  Transition.leftToRight);
+
+                                                 tyreController.detailedInspectionApi(
+                                            isSelect: 1,
+                                            deploy_on: widget.deploy_on,
+                                            type: "details_inspection", 
+                                            file: file?.value??XFile(""),
+                                            tyre_id: widget.tyre_id, 
+                                            tyre_serial_number: widget.tyre_serial_number, 
+                                            tread_depth: depthController.text.toString(), 
+                                            tyre_psi: pressureController.text.toString(), 
+                                            tyre_defect: defect_type.toString(), 
+                                            inspection_note: noteController.text.toString(), 
+                                            is_retread: value.toString(), 
+                                            defect_id: id.toString(),
+                                            odometer: widget.odometer.toString()
+                                          );
+                                        
                                         },
                                         child: Container(
                                           alignment: Alignment.center,
                                           width: ScreenSize.width * 0.82,
                                           height: ScreenSize.height * 0.065,
-                                          child: Text(
+                                          child: 
+
+
+
+                                               Obx((() =>
+
+
+                           tyreController.isDetailLoading.value
+                        ? Align(
+                            alignment: Alignment.center,
+                            child: Platform.isAndroid
+                                ? CircularProgressIndicator(color: primaryColors, strokeWidth: 1,)
+                                : CupertinoActivityIndicator())
+                        :
+                                          
+                                          
+                                          
+                                          
+                                          Text(
                                             "No",
                                             style: TextStyle(
                                               fontWeight: FontWeight.normal,
@@ -432,7 +499,9 @@ class _DetailedInspectionScreenState extends State<DetailedInspectionScreen> {
                                               fontSize: 18,
                                               decoration: TextDecoration.none,
                                             ),
-                                          ),
+                                          )
+                                          
+                                               )),
                                           decoration: BoxDecoration(
                                               color: Colors.white,
                                               boxShadow: [
@@ -470,13 +539,26 @@ class _DetailedInspectionScreenState extends State<DetailedInspectionScreen> {
                           alignment: Alignment.center,
                           width: ScreenSize.width * 0.82,
                           height: ScreenSize.height * 0.065,
-                          child: Text(
+                          child: 
+
+                     
+
+
+                           Text(
                             "Submit",
                             style: TextStyle(
                                 fontWeight: FontWeight.normal,
                                 color: Colors.white,
                                 fontSize: 18),
                           ),
+                          
+                          
+                       
+                          
+                          
+                          
+                          
+                         
                           decoration: BoxDecoration(
                               color: green,
                               boxShadow: [
