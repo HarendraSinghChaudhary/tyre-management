@@ -6,7 +6,9 @@ import 'package:PrimeMetrics/models/user_info.dart';
 import 'package:PrimeMetrics/screens/dashboard/module.dart';
 
 import 'package:PrimeMetrics/utils/store.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get/get.dart';
 
 import 'package:get_storage/get_storage.dart';
@@ -23,6 +25,16 @@ import 'utils/screen_size.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
+    await GetStorage.init();
+
+     await FacebookAuth.instance.webInitialize(
+      appId: "1356832061430027",
+      cookie: true,
+      xfbml: true,
+      version: "v13.0",
+    );
+
   await GetStorage.init();
   Get.put(AuthController());
   Get.put(TripController());
@@ -44,6 +56,8 @@ void main() async {
     ),
   ));
 }
+
+var storage = GetStorage();
 
 class FoundationApp extends StatelessWidget {
   const FoundationApp({

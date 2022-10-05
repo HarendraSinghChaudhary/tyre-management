@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_collection_literals
+
 import 'package:PrimeMetrics/controllers/auth/auth_controller.dart';
 import 'package:PrimeMetrics/utils/constants.dart';
 
@@ -12,11 +14,11 @@ class UserInfo {
   UserInfo({this.data});
 
   UserInfo.fromJson(Map<String, dynamic> json) {
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['data'] != null ?  Data.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data =  Map<String, dynamic>();
     if (this.data != null) {
       data['data'] = this.data!.toJson();
     }

@@ -627,11 +627,14 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                                         SizedBox(
                                           width: 140,
                                           height: 40,
-                                          child: FlatButton(
-                                            color: Colors.amber,
-                                            shape: RoundedRectangleBorder(
+                                          child: TextButton(
+                                              style: TextButton.styleFrom(
+                                              foregroundColor: Colors.amber,
+                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(20)),
+
+                                            ),
                                             onPressed: () {
                                               Get.back();
                                             },
@@ -745,11 +748,14 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                                         SizedBox(
                                           width: 140,
                                           height: 40,
-                                          child: FlatButton(
-                                            color: Colors.amber,
-                                            shape: RoundedRectangleBorder(
+                                          child: TextButton(
+                                                style: TextButton.styleFrom(
+                                              foregroundColor: Colors.amber,
+                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(20)),
+
+                                            ),
                                             onPressed: () {
                                               Get.back();
                                             },
@@ -861,11 +867,14 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                                         SizedBox(
                                           width: 140,
                                           height: 40,
-                                          child: FlatButton(
-                                            color: Colors.amber,
-                                            shape: RoundedRectangleBorder(
+                                          child: TextButton(
+                                               style: TextButton.styleFrom(
+                                              foregroundColor: Colors.amber,
+                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(20)),
+
+                                            ),
                                             onPressed: () {
                                               Get.back();
                                             },
@@ -962,11 +971,14 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                                         SizedBox(
                                           width: 140,
                                           height: 40,
-                                          child: FlatButton(
-                                            color: Colors.amber,
-                                            shape: RoundedRectangleBorder(
+                                          child: TextButton(
+                                                style: TextButton.styleFrom(
+                                              foregroundColor: Colors.amber,
+                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(20)),
+
+                                            ),
                                             onPressed: () {
                                               Get.back();
                                             },
@@ -1076,11 +1088,14 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                                         SizedBox(
                                           width: 140,
                                           height: 40,
-                                          child: FlatButton(
-                                            color: Colors.amber,
-                                            shape: RoundedRectangleBorder(
+                                          child: TextButton(
+                                               style: TextButton.styleFrom(
+                                              foregroundColor: Colors.amber,
+                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(20)),
+
+                                            ),
                                             onPressed: () {
                                               Get.back();
                                             },
@@ -1177,11 +1192,14 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                                         SizedBox(
                                           width: 140,
                                           height: 40,
-                                          child: FlatButton(
-                                            color: Colors.amber,
-                                            shape: RoundedRectangleBorder(
+                                          child: TextButton(
+                                                style: TextButton.styleFrom(
+                                              foregroundColor: Colors.amber,
+                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(20)),
+
+                                            ),
                                             onPressed: () {
                                               Get.back();
                                             },
@@ -1292,11 +1310,14 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                                         SizedBox(
                                           width: 140,
                                           height: 40,
-                                          child: FlatButton(
-                                            color: Colors.amber,
-                                            shape: RoundedRectangleBorder(
+                                          child: TextButton(
+                                                style: TextButton.styleFrom(
+                                              foregroundColor: Colors.amber,
+                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(20)),
+
+                                            ),
                                             onPressed: () {
                                               Get.back();
                                             },
@@ -1393,11 +1414,14 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                                         SizedBox(
                                           width: 140,
                                           height: 40,
-                                          child: FlatButton(
-                                            color: Colors.amber,
-                                            shape: RoundedRectangleBorder(
+                                          child: TextButton(
+                                                style: TextButton.styleFrom(
+                                              foregroundColor: Colors.amber,
+                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(20)),
+
+                                            ),
                                             onPressed: () {
                                               Get.back();
                                             },
@@ -1507,11 +1531,14 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                                         SizedBox(
                                           width: 140,
                                           height: 40,
-                                          child: FlatButton(
-                                            color: Colors.amber,
-                                            shape: RoundedRectangleBorder(
+                                          child: TextButton(
+                                                style: TextButton.styleFrom(
+                                              foregroundColor: Colors.amber,
+                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(20)),
+
+                                            ),
                                             onPressed: () {
                                               Get.back();
                                             },
@@ -1608,11 +1635,14 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                                         SizedBox(
                                           width: 140,
                                           height: 40,
-                                          child: FlatButton(
-                                            color: Colors.amber,
-                                            shape: RoundedRectangleBorder(
+                                          child: TextButton(
+                                                style: TextButton.styleFrom(
+                                              foregroundColor: Colors.amber,
+                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(20)),
+
+                                            ),
                                             onPressed: () {
                                               Get.back();
                                             },

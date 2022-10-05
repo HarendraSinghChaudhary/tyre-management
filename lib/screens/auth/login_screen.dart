@@ -5,6 +5,7 @@ import 'dart:io';
 
 import 'package:PrimeMetrics/models/SocialLogin.dart';
 import 'package:PrimeMetrics/models/user_info.dart';
+import 'package:PrimeMetrics/screens/auth/forgot_password.dart';
 import 'package:PrimeMetrics/screens/auth/sign_up.dart';
 import 'package:PrimeMetrics/screens/fuel_master/fuel_master_landing_screen.dart';
 import 'package:PrimeMetrics/screens/tyre_management/tyre_home_screen.dart';
@@ -138,7 +139,8 @@ AuthController authController = Get.find();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return 
+    Scaffold(
       body: ScreenSize(
         child: Container(
           color: primaryColors,
@@ -323,6 +325,19 @@ AuthController authController = Get.find();
                             ],
                           ),
                         ),
+
+
+                        TextButton(onPressed: () {
+                          Get.to(() => ForgotPassword());
+                        }, child: Text("Forgot your password?",
+
+                        style: TextStyle(
+                          color: Colors.black
+                        ),
+                        
+                        
+                        
+                        )),
                         InkWell(
                           onTap: () async {
                             //Get.offAll(FuelMasterLandingScreen());
@@ -433,6 +448,9 @@ AuthController authController = Get.find();
         ),
       ),
     );
+  
+  
+  
   }
 
 

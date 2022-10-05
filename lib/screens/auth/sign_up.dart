@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:io';
+
 import 'package:PrimeMetrics/models/SocialLogin.dart';
 import 'package:PrimeMetrics/models/user_info.dart';
 import 'package:PrimeMetrics/screens/auth/login_screen.dart';
@@ -12,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
 import '../../controllers/auth/auth_controller.dart';
+import '../../main.dart';
 import '../../utils/colors.dart';
 import '../../utils/images.dart';
 import '../../utils/screen_size.dart';
@@ -330,19 +333,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             if (controller.sendingEmail.isTrue) {
                               return;
                             }
+
+                            await  storage.write('email', emailController.text,);
+
+
                             if (allFieldFilled() &&
                                 passwordMatching() &&
                                 vaildEmail()) {
-                              UserInfo? userInfo = await controller.sendEmail(
+                              // UserInfo? userInfo = await
+                               controller.signupApi(
                                   emailController.text,
                                   passwordController.text);
 
-                              if (userInfo == null) {
-                                //store.remove(social_account);
-                                Get.to(OtpScreen());
-                              } else {
-                                linkAccountDialog();
-                              }
+                              // if (userInfo == null) {
+                              //   //store.remove(social_account);
+                              //   Get.to(OtpScreen());
+                              // } else {
+                              //   linkAccountDialog();
+                              // }
                             }
                           },
                           child: Container(
@@ -361,7 +369,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       color: Colors.white,
                                     ));
                               }
-                              return Text(
+                              return 
+
+                              controller.isLoading.value
+                        ? Align(
+                            alignment: Alignment.center,
+                            child: Platform.isAndroid
+                                ? CircularProgressIndicator(color: Colors.white, strokeWidth: 1,)
+                                : CupertinoActivityIndicator())
+                        :
+
+
+
+                              
+                              
+                              
+                              
+                              Text(
                                 "Next",
                                 style: TextStyle(
                                     fontWeight: FontWeight.normal,

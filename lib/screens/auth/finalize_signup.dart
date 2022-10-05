@@ -1,19 +1,16 @@
-import 'dart:async';
-import 'dart:math';
+
+import 'dart:collection';
+
 
 import 'package:PrimeMetrics/main.dart';
 import 'package:PrimeMetrics/models/Role.dart';
-import 'package:PrimeMetrics/screens/dashboard/module.dart';
+import 'package:PrimeMetrics/models/saved_data.dart';
 //import 'package:PrimeMetrics/screens/dashboard/module.dart';
 import 'package:dropdown_selection/dropdown_selection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_rx/get_rx.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
-import 'package:get/route_manager.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../models/user_info.dart';
@@ -24,10 +21,12 @@ import '../../utils/screen_size.dart';
 import '../../controllers/auth/auth_controller.dart';
 
 import '../../utils/style.dart';
-import 'package:show_more_text_popup/show_more_text_popup.dart';
 
 import '../../utils/toast.dart';
 
+
+  Map <String, String> signUpMap = HashMap();
+  String isRole = "";
 class FinalizeSignup extends StatefulWidget {
   const FinalizeSignup({Key? key}) : super(key: key);
 
@@ -38,6 +37,8 @@ class FinalizeSignup extends StatefulWidget {
 class _FinalizeSignupState extends State<FinalizeSignup> {
   RxInt currentstep = 0.obs;
   AuthController controller = Get.find();
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -166,6 +167,13 @@ class Stage extends StatelessWidget {
   }
 }
 
+
+
+
+
+
+///Stage one
+
 class StageOneSigup extends StatefulWidget {
   RxInt currentstep;
 
@@ -195,6 +203,9 @@ class _StageOneSigupState extends State<StageOneSigup> {
 
   @override
   void initState() {
+
+    firstNameController.text = firstName;
+    lastNameController.text = lastName;
     firstNameController.text = AuthController.userInfo.data?.firstName ?? "";
     lastNameController.text = AuthController.userInfo.data?.lastName ?? "";
 
@@ -494,6 +505,18 @@ class _StageOneSigupState extends State<StageOneSigup> {
                   bottom: ScreenSize.height * 0.1),
               child: InkWell(
                 onTap: () {
+
+                  signUpMap["first_name"] = firstNameController.value.text;
+                  signUpMap["last_name"] = lastNameController.value.text;
+                  signUpMap["company"] = companyNameController.value.text;
+                  signUpMap["country_code"] = countrycodeController.value.text;
+                  signUpMap["address_one"] = addressOneController.value.text;
+                  signUpMap["address_two"] = addressTwoController.value.text;
+                  signUpMap["phone_number"] = phoneController.value.text;
+                  signUpMap["email"] = email.toString();
+                  signUpMap["password"] = "12345678";
+
+
                   if (widget.currentstep.value == 0) {
                     if (controller.validateStepOne(
                         firstNameController.value.text,
@@ -564,6 +587,23 @@ class _StageOneSigupState extends State<StageOneSigup> {
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/// Stage Two
+
+
 
 class StageTwoSignUp extends StatefulWidget {
   RxInt currentstep;
@@ -693,13 +733,15 @@ class _StageTwoSignUpState extends State<StageTwoSignUp> {
               showClearButton: false,
               onChanged: (item) {
                 if (item == null) {
-                  this.rollController.text = "CEO";
+                  rollController.text = "CEO";
                   AuthController.userInfo.data?.role = Role(userRole: "CEO");
 
                   return;
                 }
                 this.rollController.text = item;
                 AuthController.userInfo.data?.role = Role(userRole: item);
+
+                
               },
               onBeforeChange: (a, b) {
                 return Future.value(true);
@@ -717,6 +759,8 @@ class _StageTwoSignUpState extends State<StageTwoSignUp> {
             bool isSelected = value.value == 0 ? true : false;
             return GestureDetector(
               onTap: () {
+
+                isRole = "Admin";
                 currentSelected(0);
               },
               child: Container(
@@ -779,6 +823,8 @@ class _StageTwoSignUpState extends State<StageTwoSignUp> {
 
             return GestureDetector(
               onTap: () {
+
+                isRole = "Fleet Manager";
                 currentSelected(1);
               },
               child: Container(
@@ -840,6 +886,7 @@ class _StageTwoSignUpState extends State<StageTwoSignUp> {
             bool isSelected = value.value == 2 ? true : false;
             return GestureDetector(
               onTap: () {
+                isRole = "Inspection Manager";
                 currentSelected(2);
               },
               child: Container(
@@ -901,6 +948,7 @@ class _StageTwoSignUpState extends State<StageTwoSignUp> {
             bool isSelected = value.value == 3 ? true : false;
             return GestureDetector(
               onTap: () {
+                isRole = "Driver";
                 currentSelected(3);
               },
               child: Container(
@@ -964,6 +1012,10 @@ class _StageTwoSignUpState extends State<StageTwoSignUp> {
                     bottom: ScreenSize.height * 0.1),
                 child: InkWell(
                   onTap: () {
+
+                    signUpMap["role"] = rollController.text;
+                    signUpMap["signup_role"] = signuprollController.text;
+                   
                     if (widget.currentstep.value == 1) {
                       if (rollController.text.isEmpty) {
                         show("Invalid", "Please select a role");
@@ -1035,99 +1087,17 @@ class _StageTwoSignUpState extends State<StageTwoSignUp> {
   }
 }
 
-// class DropDownItem extends StatefulWidget {
-//   DropDownItem({
-//     Key? key,
-//     this.rollController,
-//   }) : super(key: key);
-//   TextEditingController? rollController;
 
-//   @override
-//   State<DropDownItem> createState() => _DropDownItemState();
-// }
 
-// class _DropDownItemState extends State<DropDownItem> {
 
-//   @override
-//   Widget build(BuildContext context) {
-//      return   Container(
-//                             width: ScreenSize.width,
-//                             height: ScreenSize.height * 0.07,
-//                             padding: EdgeInsets.symmetric(
-//                                 horizontal: ScreenSize.width * 0.03),
-//                             decoration: BoxDecoration(
-//                                 boxShadow: [
-//                                   BoxShadow(
-//                                       blurRadius: 3,
-//                                       spreadRadius: 1.2,
-//                                       offset: const Offset(0, 3),
-//                                       color: Colors.black.withOpacity(0.3))
-//                                 ],
-//                                 borderRadius: BorderRadius.all(
-//                                   Radius.circular(ScreenSize.height * 0.01),
-//                                 ),
-//                                 color: Colors.white),
-//                             child: DropdownSelection<String>(
-//                               mode: Mode.MENU,
-//                               showSearchBox: false,
-//                               showSelectedItem: true,
-//                               compareFn: (a, b) {
-//                                 if (b == null) {
-//                                   return false;
-//                                 }
-//                                 return a == b;
-//                               },
-//                               dropdownBuilder: (ctx, role, value) {
-//                                 return Container(
-//                                     padding:
-//                                         EdgeInsets.all(ScreenSize.width * 0.01),
-//                                     child: Text(
-//                                       role?? "Select Role",
-//                                       style: getStyle(
-//                                           color: Colors.black.withOpacity(0.8),
-//                                           fontSize: 13),
-//                                     ));
-//                               },
-//                               popupItemBuilder: (ctx, role, value) {
-//                                 return Container(
-//                                     padding:
-//                                         EdgeInsets.all(ScreenSize.width * 0.01),
-//                                     child: Text(
-//                                       role,
-//                                       style: getStyle(
-//                                           color: Colors.black, fontSize: 17),
-//                                     ));
-//                               },
-//                               dropdownSearchDecoration: InputDecoration(
-//                                 border: InputBorder.none,
-//                                 iconColor: Colors.grey,
-//                                 prefix: Container(
-//                                     margin: EdgeInsets.only(
-//                                         right: ScreenSize.width * 0.035),
-//                                     child: Image.asset(
-//                                       town,
-//                                       width: ScreenSize.width * 0.04,
-//                                     )),
-//                               ),
-//                               maxHeight: ScreenSize.height * 0.1,
-//                               items: ["COO","CEO"],
-//                               showClearButton: false,
-//                               onChanged: (item) {
-//                                 if (item == null) {
-//                                    widget.rollController?.text="CEO";
-//                                   return;
-//                                 }
-//                                  widget.rollController?.text=item;
 
-//                               },
-//                               onBeforeChange: (a, b) {
-//                                 return Future.value(true);
-//                               },
-//                             ),
-//                           );
 
-//   }
-// }
+
+
+
+
+
+
 
 class StageThreeSignUp extends StatefulWidget {
   RxInt currentstep;
@@ -1229,6 +1199,13 @@ class WidgetModule {
   RxBool selected = false.obs;
 }
 
+
+
+
+
+
+/// stage four
+
 class _StageFourSignUpState extends State<StageFourSignUp> {
   RxList<WidgetModule> modules = RxList.empty(growable: true);
   AuthController controller = Get.find();
@@ -1242,120 +1219,383 @@ class _StageFourSignUpState extends State<StageFourSignUp> {
     super.didChangeDependencies();
   }
 
-  @override
-  void initState() {
-    modules.add(WidgetModule(
-        Image.asset(
-          wheel,
-          width: 20,
-          color: grey,
-        ),
-        "Tyre Master",
-        Image.asset(tyre_master),
-        "tyre_master"));
-    modules.add(WidgetModule(
-        Icon(
-          Icons.local_gas_station,
-          color: grey,
-        ),
-        "Fuel Master",
-        Image.asset(
-          gasoline,
-        ),
-        "fuel_master"));
-    modules.add(WidgetModule(Icon(Icons.offline_pin_outlined, color: grey),
-        "Inspection Master", Image.asset(inspector), "inspection_master"));
-    // TODO: implement initState
-    super.initState();
-  }
+  RxString isSelected = "".obs;
+
+  // @override
+  // void initState() {
+  //   modules.add(WidgetModule(
+  //       Image.asset(
+  //         wheel,
+  //         width: 20,
+  //         color: grey,
+  //       ),
+  //       "Tyre Master",
+  //       Image.asset(tyre_master),
+  //       "tyre_master"));
+  //   modules.add(WidgetModule(
+  //       Icon(
+  //         Icons.local_gas_station,
+  //         color: grey,
+  //       ),
+  //       "Fuel Master",
+  //       Image.asset(
+  //         gasoline,
+  //       ),
+  //       "fuel_master"));
+  //   modules.add(WidgetModule(Icon(Icons.offline_pin_outlined, color: grey),
+  //       "Inspection Master", Image.asset(inspector), "inspection_master"));
+  //   // TODO: implement initState
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return
+
+
+    Obx(() => 
+
+
+
+
+
+
+   
+
+
+
+      
+     Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
           height: ScreenSize.height * 0.02,
         ),
-        ...modules.map((element) {
-          return InkWell(
+
+
+        
+
+
+           InkWell(
             onTap: () {
-              element.selected(!element.selected.value);
+
+            
+              isSelected.value = "tyre_master";
             },
-            child: Obx(
-              () => Column(
-                children: [
-                  Container(
-                    width: ScreenSize.width,
-                    height: ScreenSize.height * 0.07,
-                    padding: EdgeInsets.symmetric(
-                        horizontal: ScreenSize.width * 0.04),
-                    decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                              blurRadius: 3,
-                              spreadRadius: 1,
-                              offset: const Offset(0, 3),
-                              color: Colors.black.withOpacity(0.3))
-                        ],
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(element.selected.isFalse
-                              ? ScreenSize.height * 0.01
-                              : ScreenSize.height * 0.03),
-                        ),
-                        color: Colors.white),
-                    child: Row(
-                      children: [
-                        Container(
-                            margin: EdgeInsets.only(
-                                right: ScreenSize.width * 0.035),
-                            child: ObxValue((RxBool p0) {
-                              return p0.value
-                                  ? Container(
-                                      width: ScreenSize.width * 0.05,
-                                      height: ScreenSize.height * 0.05,
-                                      child: element.iconTwo)
-                                  : element.icon;
-                            }, element.selected)),
-                        Expanded(
-                            child: Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                "${element.title}",
-                                style: TextStyle(
-                                    color: element.selected.isTrue
-                                        ? Colors.black
-                                        : grey),
-                              ),
-                            ),
-                            Container(
-                              alignment: Alignment.center,
-                              width: ScreenSize.width * 0.045,
-                              height: ScreenSize.width * 0.045,
-                              decoration: BoxDecoration(
-                                  color: green, shape: BoxShape.circle),
-                              child: Icon(
-                                element.selected.isTrue
-                                    ? Icons.check
-                                    : Icons.circle,
-                                size: 12,
-                                color: Colors.white,
-                              ),
-                            ),
+             child: Container(
+                      width: ScreenSize.width,
+                      height: ScreenSize.height * 0.07,
+                      padding: EdgeInsets.symmetric(
+                          horizontal: ScreenSize.width * 0.04),
+                      decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                                blurRadius: 3,
+                                spreadRadius: 1,
+                                offset: const Offset(0, 3),
+                                color: Colors.black.withOpacity(0.3))
                           ],
-                        )),
-                      ],
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(
+                              isSelected.value != "tyre_master"
+                                ? ScreenSize.height * 0.01
+                                : ScreenSize.height * 0.03),
+                          ),
+                          color: Colors.white),
+                      child: Row(
+                        children: [
+                          // Container(
+                          //     margin: EdgeInsets.only(
+                          //         right: ScreenSize.width * 0.035),
+                          //     child: ObxValue((RxBool p0) {
+                          //       return p0.value
+                          //           ? Container(
+                          //               width: ScreenSize.width * 0.05,
+                          //               height: ScreenSize.height * 0.05,
+                          //               child: element.iconTwo)
+                          //           : element.icon;
+                          //     }, element.selected)),
+                          Expanded(
+                              child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  "Tyre Master",
+                                  style: TextStyle(
+                                      color: isSelected.value == "tyre_master"
+                                          ? Colors.black
+                                          : grey),
+                                ),
+                              ),
+                              Container(
+                                alignment: Alignment.center,
+                                width: ScreenSize.width * 0.045,
+                                height: ScreenSize.width * 0.045,
+                                decoration: BoxDecoration(
+                                    color: green, shape: BoxShape.circle),
+                                child: Icon(
+                                  isSelected.value == "tyre_master"
+                                      ? Icons.check
+                                      : Icons.circle,
+                                  size: 12,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          )),
+                        ],
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: ScreenSize.height * 0.012,
-                  ),
-                ],
-              ),
-            ),
-          );
-        }).toList(),
+           ),
+
+           SizedBox(height: Get.height * 0.02,),
+
+
+
+                     InkWell(
+                      onTap: () {
+                        isSelected.value = "fuel_master";
+                      },
+                       child: Container(
+                                         width: ScreenSize.width,
+                                         height: ScreenSize.height * 0.07,
+                                         padding: EdgeInsets.symmetric(
+                          horizontal: ScreenSize.width * 0.04),
+                                         decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                                blurRadius: 3,
+                                spreadRadius: 1,
+                                offset: const Offset(0, 3),
+                                color: Colors.black.withOpacity(0.3))
+                          ],
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(
+                              isSelected.value != "fuel_master"
+                                ? ScreenSize.height * 0.01
+                                : ScreenSize.height * 0.03),
+                          ),
+                          color: Colors.white),
+                                         child: Row(
+                        children: [
+                          // Container(
+                          //     margin: EdgeInsets.only(
+                          //         right: ScreenSize.width * 0.035),
+                          //     child: ObxValue((RxBool p0) {
+                          //       return p0.value
+                          //           ? Container(
+                          //               width: ScreenSize.width * 0.05,
+                          //               height: ScreenSize.height * 0.05,
+                          //               child: element.iconTwo)
+                          //           : element.icon;
+                          //     }, element.selected)),
+                          Expanded(
+                              child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  "Fuel Master",
+                                  style: TextStyle(
+                                      color: isSelected.value == "fuel_master"
+                                          ? Colors.black
+                                          : grey),
+                                ),
+                              ),
+                              Container(
+                                alignment: Alignment.center,
+                                width: ScreenSize.width * 0.045,
+                                height: ScreenSize.width * 0.045,
+                                decoration: BoxDecoration(
+                                    color: green, shape: BoxShape.circle),
+                                child: Icon(
+                                  isSelected.value == "fuel_master"
+                                      ? Icons.check
+                                      : Icons.circle,
+                                  size: 12,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          )),
+                        ],
+                                         ),
+                                       ),
+                     ),
+
+
+
+
+
+                     SizedBox(height: Get.height * 0.02,),
+
+
+                               InkWell(
+                      onTap: () {
+                        isSelected.value = "inspection_master";
+                      },
+                       child: Container(
+                                         width: ScreenSize.width,
+                                         height: ScreenSize.height * 0.07,
+                                         padding: EdgeInsets.symmetric(
+                          horizontal: ScreenSize.width * 0.04),
+                                         decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                                blurRadius: 3,
+                                spreadRadius: 1,
+                                offset: const Offset(0, 3),
+                                color: Colors.black.withOpacity(0.3))
+                          ],
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(
+                              isSelected.value != "inspection_master"
+                                ? ScreenSize.height * 0.01
+                                : ScreenSize.height * 0.03),
+                          ),
+                          color: Colors.white),
+                                         child: Row(
+                        children: [
+                          // Container(
+                          //     margin: EdgeInsets.only(
+                          //         right: ScreenSize.width * 0.035),
+                          //     child: ObxValue((RxBool p0) {
+                          //       return p0.value
+                          //           ? Container(
+                          //               width: ScreenSize.width * 0.05,
+                          //               height: ScreenSize.height * 0.05,
+                          //               child: element.iconTwo)
+                          //           : element.icon;
+                          //     }, element.selected)),
+                          Expanded(
+                              child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  "Inspection Master",
+                                  style: TextStyle(
+                                      color: isSelected.value == "inspection_master"
+                                          ? Colors.black
+                                          : grey),
+                                ),
+                              ),
+                              Container(
+                                alignment: Alignment.center,
+                                width: ScreenSize.width * 0.045,
+                                height: ScreenSize.width * 0.045,
+                                decoration: BoxDecoration(
+                                    color: green, shape: BoxShape.circle),
+                                child: Icon(
+                                  isSelected.value == "inspection_master"
+                                      ? Icons.check
+                                      : Icons.circle,
+                                  size: 12,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          )),
+                        ],
+                                         ),
+                                       ),
+                     ),
+
+
+
+
+
+
+
+
+
+
+        // ...modules.map((element) {
+        //   return InkWell(
+        //     onTap: () {
+        //       // element.selected(!element.selected.value);
+
+
+        //       isSelected = "tyre_master";
+
+              
+
+        //     },
+        //     child: Obx(
+        //       () => Column(
+        //         children: [
+
+                   
+
+        //           Container(
+        //             width: ScreenSize.width,
+        //             height: ScreenSize.height * 0.07,
+        //             padding: EdgeInsets.symmetric(
+        //                 horizontal: ScreenSize.width * 0.04),
+        //             decoration: BoxDecoration(
+        //                 boxShadow: [
+        //                   BoxShadow(
+        //                       blurRadius: 3,
+        //                       spreadRadius: 1,
+        //                       offset: const Offset(0, 3),
+        //                       color: Colors.black.withOpacity(0.3))
+        //                 ],
+        //                 borderRadius: BorderRadius.all(
+        //                   Radius.circular(element.selected.isFalse
+        //                       ? ScreenSize.height * 0.01
+        //                       : ScreenSize.height * 0.03),
+        //                 ),
+        //                 color: Colors.white),
+        //             child: Row(
+        //               children: [
+        //                 Container(
+        //                     margin: EdgeInsets.only(
+        //                         right: ScreenSize.width * 0.035),
+        //                     child: ObxValue((RxBool p0) {
+        //                       return p0.value
+        //                           ? Container(
+        //                               width: ScreenSize.width * 0.05,
+        //                               height: ScreenSize.height * 0.05,
+        //                               child: element.iconTwo)
+        //                           : element.icon;
+        //                     }, element.selected)),
+        //                 Expanded(
+        //                     child: Row(
+        //                   children: [
+        //                     Expanded(
+        //                       child: Text(
+        //                         "${element.title}",
+        //                         style: TextStyle(
+        //                             color: element.selected.isTrue
+        //                                 ? Colors.black
+        //                                 : grey),
+        //                       ),
+        //                     ),
+        //                     Container(
+        //                       alignment: Alignment.center,
+        //                       width: ScreenSize.width * 0.045,
+        //                       height: ScreenSize.width * 0.045,
+        //                       decoration: BoxDecoration(
+        //                           color: green, shape: BoxShape.circle),
+        //                       child: Icon(
+        //                         element.selected.isTrue
+        //                             ? Icons.check
+        //                             : Icons.circle,
+        //                         size: 12,
+        //                         color: Colors.white,
+        //                       ),
+        //                     ),
+        //                   ],
+        //                 )),
+        //               ],
+        //             ),
+        //           ),
+        //           SizedBox(
+        //             height: ScreenSize.height * 0.012,
+        //           ),
+        //         ],
+        //       ),
+        //     ),
+        //   );
+        // }).toList(),
         Stack(
           alignment: Alignment.center,
           children: [
@@ -1365,35 +1605,34 @@ class _StageFourSignUpState extends State<StageFourSignUp> {
                   bottom: ScreenSize.height * 0.1),
               child: InkWell(
                 onTap: () async {
-                  if (widget.currentstep.value == 3) {
-                    var list = modules
-                        .where((p0) => p0.selected.isTrue)
-                        .map((e) => e.title);
-                    var tyre = list.contains("Tyre Master");
-                    var fuel = list.contains("Fuel Master");
-                    var inspection = list.contains("Inspection Master");
 
-                    if (await controller.validateStepFlour(
-                        tyreMaster: tyre,
-                        fuelMaster: fuel,
-                        inspectionMaster: inspection)) {
-                      widget.currentstep(4);
-                    }
-                    print(AuthController.userInfo.toJson());
-                    // int a =
-                    //     int.tryParse(textEditingControllerInterLink.text) ?? 0;
-                    // int b = int.tryParse(textEditingControllerRigid.text) ?? 0;
-                    // int c =
-                    //     int.tryParse(textEditingControllerDrawbar.text) ?? 0;
-                    // int d = int.tryParse(textEditingControllerArtic.text) ?? 0;
+                  signUpMap["modules"] = isSelected.toString();
 
-                    // controller.validateStepThree(
-                    //     interlink: a,
-                    //     fleetDrawbar: c,
-                    //     fleetRigid: b,
-                    //     fleetArtic: d);
-                    //widget.currentstep(4);
-                  }
+                  AuthController authController = AuthController();
+                  authController.finalRegister(signUpMap);
+
+
+                  
+
+
+
+
+                  // if (widget.currentstep.value == 3) {
+                  //   var list = modules
+                  //       .where((p0) => p0.selected.isTrue)
+                  //       .map((e) => e.title);
+                  //   var tyre = list.contains("Tyre Master");
+                  //   var fuel = list.contains("Fuel Master");
+                  //   var inspection = list.contains("Inspection Master");
+
+                  //   if (await controller.validateStepFlour(
+                  //       tyreMaster: tyre,
+                  //       fuelMaster: fuel,
+                  //       inspectionMaster: inspection)) {
+                  //     widget.currentstep(4);
+                  //   }
+                 
+                  // }
                 },
                 child: Container(
                   alignment: Alignment.center,
@@ -1442,9 +1681,28 @@ class _StageFourSignUpState extends State<StageFourSignUp> {
           ],
         ),
       ],
+    )
+  
+  
+    
+    
     );
+    
+     
+    
+    
+  
+  
+  
   }
 }
+
+
+
+
+
+
+/// stage third
 
 class _StageThreeSignUpState extends State<StageThreeSignUp> {
   TextEditingController textEditingControllerRigid = TextEditingController();
@@ -1639,6 +1897,14 @@ class _StageThreeSignUpState extends State<StageThreeSignUp> {
                   bottom: ScreenSize.height * 0.1),
               child: InkWell(
                 onTap: () {
+
+                  signUpMap["rigid"] = textEditingControllerRigid.text;
+                  signUpMap["artic"] = textEditingControllerArtic.text;
+                  signUpMap["drawbar"] = textEditingControllerDrawbar.text;
+                  signUpMap["interlink"] = textEditingControllerInterLink.text;
+
+
+
                   if (widget.currentstep.value == 2) {
                     int a =
                         int.tryParse(textEditingControllerInterLink.text) ?? 0;

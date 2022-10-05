@@ -786,10 +786,13 @@ class TyreController extends BaseController {
                   SizedBox(
                     width: 140,
                     height: 40,
-                    child: FlatButton(
-                      color: Colors.amber,
-                      shape: RoundedRectangleBorder(
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.amber,
+                        shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20)),
+                      ),
+                
                       onPressed: () {
                         Get.back();
                       },
@@ -885,10 +888,17 @@ class TyreController extends BaseController {
                   SizedBox(
                     width: 140,
                     height: 40,
-                    child: FlatButton(
-                      color: Colors.amber,
-                      shape: RoundedRectangleBorder(
+                    child: TextButton(
+
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.amber,
+                             shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20)),
+                      ),
+
+                      
+                     
+                 
                       onPressed: () {
                         Get.back();
                       },
@@ -1224,8 +1234,11 @@ class TyreController extends BaseController {
         print("here 3");
 
         retreaTyreSerialNumberList.clear();
+        List list = [];
 
-        List list = jsonRes['data'];
+        if (jsonRes['data'] != null ){
+
+        list = jsonRes['data'];}
         print("here 4");
         // print("response: "+ response.data['data'].toString());
         retreaTyreSerialNumberList

@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:PrimeMetrics/screens/auth/reset_password.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -13,19 +16,20 @@ import '../../utils/style.dart';
 import '../../utils/toast.dart';
 import 'finalize_signup.dart';
 
-class OtpScreen extends StatefulWidget {
+class OtpVerification extends StatefulWidget {
   String email;
-  OtpScreen({required this.email});
+  OtpVerification({required this.email});
 
   @override
   _OtpScreenState createState() => _OtpScreenState();
 }
 
-class _OtpScreenState extends State<OtpScreen> {
+class _OtpScreenState extends State<OtpVerification> {
   AuthController controller = Get.find();
   TextEditingController otpConntroler = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    print(".....$widget.email");
     return Scaffold(
       body: ScreenSize(
         child: Container(
@@ -182,51 +186,16 @@ class _OtpScreenState extends State<OtpScreen> {
                             ],
                           ),
                         ),
-                        Obx(
-                          () => Container(
-                            alignment: Alignment.center,
-                            padding: EdgeInsets.symmetric(
-                                horizontal: ScreenSize.width * 0.1),
-                            margin: EdgeInsets.only(
-                                top: ScreenSize.height * 0.02,
-                                bottom: ScreenSize.height * 0.1),
-                            child: Text.rich(
-                              TextSpan(
-                                  style: getStyle(
-                                      fontWeight: FontWeight.normal,
-                                      color: Colors.black,
-                                      fontSize: 14),
-                                  text:
-                                      "If you didn’t receive the OTP, you can press ",
-                                  children: [
-                                    TextSpan(
-                                        style: getStyle(
-                                            color:
-                                                controller.activateResend.isTrue
-                                                    ? green
-                                                    : grey,
-                                            fontSize: 13),
-                                        text: "Resend ",
-                                        recognizer: TapGestureRecognizer()
-                                          ..onTap = () => {
-                                                if (controller
-                                                    .activateResend.isTrue)
-                                                  {controller.resend()}
-                                              }),
-                                    TextSpan(
-                                      style: getStyle(
-                                          fontWeight: FontWeight.normal,
-                                          color: Colors.black,
-                                          fontSize: 14),
-                                      text:
-                                          " ${controller.timeEllapsedForOtp} ",
-                                    )
-                                  ]),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                        Stack(
+                  
+
+
+                       const SizedBox(height: 30,),
+
+
+
+                      Obx(() =>
+
+                           Stack(
                           alignment: Alignment.center,
                           children: [
                             Positioned(
@@ -258,9 +227,8 @@ class _OtpScreenState extends State<OtpScreen> {
                             ),
                             InkWell(
                               onTap: () async {
-                                if (controller.submittingOtp.isTrue) {
-                                  return;
-                                }
+
+
                                 if (otpConntroler.value.text.isEmpty) {
                                   show("Otp Required", "Please enter otp");
                                 } else if (otpConntroler.value.text.length <
@@ -268,12 +236,16 @@ class _OtpScreenState extends State<OtpScreen> {
                                   show("Otp Error",
                                       "Enter a minimum of 4 digits");
                                 } else {
-                                  if (await controller
-                                      .verifyOTP(  widget.email,otpConntroler.value.text)) {
-                                      Get.to(const FinalizeSignup());
-                                  }
+
+                                  controller.otpVerifyApi(widget.email, otpConntroler.value.text);
+
+
+                                  
                                   
                                 }
+
+                            
+                               
                               },
                               child: Container(
                                 alignment: Alignment.center,
@@ -282,23 +254,30 @@ class _OtpScreenState extends State<OtpScreen> {
                                     bottom: ScreenSize.height * 0.1),
                                 width: ScreenSize.width * 0.82,
                                 height: ScreenSize.height * 0.065,
-                                child: ObxValue((RxBool value) {
-                                  if (value.isTrue) {
-                                    return SizedBox(
-                                      width: ScreenSize.width * 0.01,
-                                      height: ScreenSize.height * 0.01,
-                                      child: CircularProgressIndicator(
-                                          color: white),
-                                    );
-                                  }
-                                  return Text(
+                                child: 
+
+
+                                             controller.isOtpLoading.value
+                        ? Align(
+                            alignment: Alignment.center,
+                            child: Platform.isAndroid
+                                ? CircularProgressIndicator(color: Colors.white, strokeWidth: 1,)
+                                : CupertinoActivityIndicator())
+                        :
+                    
+                                
+                                
+                                
+                                
+                                
+                                Text(
                                     "Submit",
                                     style: TextStyle(
                                         fontWeight: FontWeight.w300,
                                         color: Colors.white,
                                         fontSize: 18),
-                                  );
-                                }, controller.submittingOtp),
+                                  ),
+                                
                                 decoration: BoxDecoration(
                                     color: green,
                                     boxShadow: [
@@ -314,6 +293,21 @@ class _OtpScreenState extends State<OtpScreen> {
                             ),
                           ],
                         ),
+                     
+                     
+                     
+                     
+                      
+                      
+                      )
+                      
+                      
+                      
+                      
+                   
+                     
+                     
+                     
                       ]),
                 ),
               ),

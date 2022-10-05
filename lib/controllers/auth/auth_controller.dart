@@ -1,10 +1,16 @@
+
+
 import 'dart:async';
 import 'dart:convert';
 
 import 'package:PrimeMetrics/controllers/BaseController.dart';
 import 'package:PrimeMetrics/models/SocialLogin.dart';
+import 'package:PrimeMetrics/screens/auth/login_screen.dart';
+import 'package:PrimeMetrics/screens/auth/otp.dart';
+import 'package:PrimeMetrics/screens/auth/otp_verification.dart';
+import 'package:PrimeMetrics/screens/auth/reset_password.dart';
 import 'package:PrimeMetrics/screens/dashboard/dashboard.dart';
-import 'package:PrimeMetrics/screens/fuel_master/fuel_master_landing_screen.dart';
+import 'package:PrimeMetrics/screens/dashboard/module.dart';
 import 'package:PrimeMetrics/utils/app_extensions.dart';
 import 'package:PrimeMetrics/utils/screen_size.dart';
 
@@ -12,17 +18,20 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart' as D;
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../models/user_info.dart' as U;
 
+import '../../screens/auth/finalize_signup.dart';
 import '../../screens/tyre_management/tyre_home_screen.dart';
-import '../../utils/constants.dart';
 import '../../utils/endpoints.dart';
 import '../../utils/store.dart';
 import '../../utils/toast.dart';
 
 class AuthController extends BaseController {
+
+  RxBool isForgotLoading = false.obs;
+   RxBool isOtpLoading = false.obs;
+    RxBool isResetLoading = false.obs;
 
  
   RxBool sendingEmail = false.obs;
@@ -104,7 +113,9 @@ var responsedynamic;
       var role = user?.data?.role?.userRole.toString();
       print("press here 3" +role.toString()+"");
       // user?.data?.role?.userRole=="fuel_master" ? Get.offAll(FuelMasterLandingScreen()) : Get.offAll(MainDashboard());
-      user?.data?.role?.userRole=="fuel_master" ? Get.offAll(TyreHomeScreen()) : Get.offAll(MainDashboard());
+     // user?.data?.role?.userRole=="fuel_master" ? Get.offAll(TyreHomeScreen()) : Get.offAll(MainDashboard());
+
+     Get.offAll(const ChooseModule());
   
    print("press here 4");
        
@@ -119,6 +130,9 @@ var responsedynamic;
       
        
       }else{
+
+
+       
 
           sendingEmail(false);
          update();
@@ -218,13 +232,84 @@ var responsedynamic;
     });
   }
 
+
+
+  Future <dynamic> socialSignInApi (
+
+String email, String token,
+      {String company = "Google", String accountId = ""}
+  
+) async {
+  isLoadingSocialService(true);
+   print(
+        "Service ${company} Email : ${email} Token :${token} AccountId : ${accountId}");
+  print('inside login Function');
+  var res = await http.post(Uri.parse(SOCIAL_SIGNIN),
+      body: {  
+      
+          "token": token,
+          "email": email,
+          "company": company,
+          "accountId": accountId});
+  print('inside login Function');
+  if (res.statusCode == 200) {
+    isLoading(true);
+    var data = jsonDecode(res.body);
+    if (data['data'] != null) {
+
+     U.Data.fromJson(data['data']);
+     U.Data a = U.Data.fromJson(data['data']);
+
+     print("......${a.toJson()}");
+
+     Get.to(() => const FinalizeSignup());
+
+
+
+   
+
+
+     
+
+      print("all is good");
+
+
+
+
+      // Get.to(() => OtpScreen(email: email,));
+      //  Get.snackbar(data['message'], "");
+
+
+  
+
+
+
+
+   
+
+       isLoadingSocialService(false);
+
+      return data;
+    } else {
+      isLoadingSocialService(false);
+   
+      Get.snackbar(data['message'], "");
+      return Future.error(data['message']);
+    }
+  } else {
+    isLoadingSocialService(false);
+    return Future.error('Server Error!');
+  }
+}
+
   Future<U.UserInfo?> linkAccountWithGoogle() async {
+
     //var social = store.read<SocialLogin>(social_account);
     // social?.userId = userInfo.data?.id;
     // social?.socialToken = social.socialToken;
     var data = social?.toLinkJson();
     print(userInfo.data?.id);
-    print("link account ${data}");
+    print("....................................link account ${data}");
     D.Response response = await dio.post(
       link_account,
       data: data,
@@ -236,59 +321,7 @@ var responsedynamic;
     return null;
   }
 
-  Future<U.UserInfo?> authWithSocial(String email, String token,
-      {String company = "Google", String accountId = ""}) async {
-    isLoadingSocialService(true);
-    print("start signing");
-    print(
-        "Service ${company} Email : ${email} Token :${token} AccountId : ${accountId}");
-    try {
-      print("Login in at " + SOCIAL_SIGNIN);
 
-      var response = await dio.post(
-        SOCIAL_SIGNIN,
-        data: {
-          "token": token,
-          "email": email,
-          "company": company,
-          "accountId": accountId
-        },
-      );
-
-      if (response.statusCode == 200) {
-        print("recieved an Ok from ${SOCIAL_SIGNIN}");
-        userInfo = U.UserInfo.fromJson(response.data);
-
-        var soci = SocialLogin.fromJson({
-          "social_token": token,
-          "email": email,
-          "social": company,
-          "account_id": accountId
-        });
-        print(response.data);
-        social = soci;
-
-        isLoadingSocialService(false);
-        return userInfo;
-      } else {
-        isLoadingSocialService(false);
-        show("Oops", "Service timeout");
-        print(response.data);
-      }
-      isLoadingSocialService(false);
-    } on D.DioError catch (e, trace) {
-      isLoadingSocialService(false);
-      print(e);
-      print(trace);
-    } on TimeoutException catch (e, trace) {
-      isLoadingSocialService(false);
-      print(e);
-      print(trace);
-    }
-
-    print("return");
-    return null;
-  }
 
   authWithFacebook(String email) {}
   resend() async {
@@ -313,52 +346,137 @@ var responsedynamic;
     }
   }
 
-  Future<U.UserInfo?> sendEmail(String email, String password) async {
-    print("email: "+email.toString());
-    print("password: "+password.toString());
-    sendingEmail(true);
-    print(SEND_EMAIL);
-    var response = await dio.post(
-      SEND_EMAIL,
-      data: {"email": email},
-    );
-    print(response.statusCode);
-    await setEmail(email);
-    await setPassword(email);
 
-    if (response.statusCode == 200 || response.statusCode == 405) {
-      activateResend(false);
-      int start = 60;
-      Timer.periodic(Duration(seconds: 1), (timer) {
-        if (start == 0) {
-          activateResend(true);
-          timeEllapsedForOtp("");
-          timer.cancel();
-        }
-        print("timer");
-        timeEllapsedForOtp("in " + (start--).toString() + " seconds.");
-      });
-    } else if (response.statusCode == 409) {
-      sendingEmail(false);
-      // Get.dialog(
-      //     Container(
-      //         width: ScreenSize.width * 0.1,
-      //         height: ScreenSize.width * 0.1,
-      //         child: Center(child: CircularProgressIndicator())),
-      //     barrierDismissible: false,
-      //   );
-      //print(response.body.runtimeType);
-      userInfo = U.UserInfo.fromJson(response.body);
-      return userInfo;
+
+
+
+
+
+Future <dynamic> signupApi(
+  String email,
+  String password,
+  
+) async {
+  isLoading(false);
+  print('inside login Function');
+  var res = await http.post(Uri.parse(SEND_EMAIL),
+      body: {"email": email,});
+  print('inside login Function');
+  if (res.statusCode == 200) {
+    isLoading(true);
+    var data = jsonDecode(res.body);
+    if (data['status'] == true) {
+
+
+     
+
+      print("all is good");
+
+
+
+
+      Get.to(() => OtpScreen(email: email,));
+       Get.snackbar(data['message'], "");
+
+
+  
+
+
+
+
+   
+
+         isLoading(false);
+
+      return data;
+    } else {
+      isLoading(false);
+   
+      Get.snackbar(data['message'], "");
+      return Future.error(data['message']);
     }
-
-    sendingEmail(false);
-    print(response.statusCode);
-    print(response.body);
-    print(response.headers);
-    return null;
+  } else {
+    isLoading(false);
+    return Future.error('Server Error!');
   }
+}
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  // Future<U.UserInfo?> sendEmail(String email, String password) async {
+  //   sendingEmail(true);
+  //   Map<String, String> map = HashMap();
+  //   map["email"] = email.toString();
 
+
+
+  //   print("email: "+email.toString());
+  //   print("password: "+password.toString());
+  //   res.FormData formData = res.FormData.fromMap(map);
+    
+
+  //   var response = await dio.post(
+  //     SEND_EMAIL,
+  //     data: formData,
+  //   );
+  //   print(".........$response.statusCode");
+  //   // await setEmail(email);
+  //   // await setPassword(email);
+
+  //   if (response.statusCode == 200) {
+
+
+  //     Get.to(() => const OtpScreen());
+  //     // activateResend(false);
+  //     // int start = 60;
+  //     // Timer.periodic(Duration(seconds: 1), (timer) {
+  //     //   if (start == 0) {
+  //     //     activateResend(true);
+  //     //     timeEllapsedForOtp("");
+  //     //     timer.cancel();
+  //     //   }
+  //     //   print("timer");
+  //     //   timeEllapsedForOtp("in " + (start--).toString() + " seconds.");
+  //     // });
+  //   } else if (response.statusCode == 409) {
+  //     sendingEmail(false);
+  //     // Get.dialog(
+  //     //     Container(
+  //     //         width: ScreenSize.width * 0.1,
+  //     //         height: ScreenSize.width * 0.1,
+  //     //         child: Center(child: CircularProgressIndicator())),
+  //     //     barrierDismissible: false,
+  //     //   );
+  //     print(response.body.runtimeType);
+  //     userInfo = U.UserInfo.fromJson(response.body);
+  //     return userInfo;
+  //   }
+
+  //   sendingEmail(false);
+  //   print(response.statusCode);
+  //   print(response.body);
+  //   print(response.headers);
+  //   return null;
+  // }
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   registerUser(U.Data user) async {
     var response = await dio.post(signUp, data: user.toJson());
   }
@@ -380,6 +498,8 @@ var responsedynamic;
       user?.data?.role?.userRole=="fuel_master" ? Get.offAll(TyreHomeScreen()) : Get.offAll(MainDashboard());
 
     } else {
+
+       
       show("Error login", "Username or Password is wrong");
       printError();
       
@@ -387,24 +507,154 @@ var responsedynamic;
     print("is it out? "+response.requestOptions.headers.toString());
   }
 
-  verifyOtp(String otp) async {
-    print("verying otp ${otp}");
-    submittingOtp(true);
-    var response =
-        await dio.post(veryfy_otp, data: {"otp": otp, "email": getEmail()});
-    submittingOtp(false);
-    if (response.statusCode == 200) {
-      submittingOtp(false);
-      await setSecret(response.body["secret"]);
-      print(response.body["secret"]);
-      return true;
-    }
+Future verifyOTP(
+  
+  String email,
+  String otp
+) async {
 
-    print(response.statusCode);
-    print(response.body);
-    show("Error verying", "Invalid code");
-    return false;
+  isLoading(true);
+
+  var res = await http.post(Uri.parse(veryfy_otp),
+      // headers: {"Authorization": token},
+      body: {"email": email, "otp": otp});
+
+  if (res.statusCode == 200) {
+    isLoading(true);
+    var data = jsonDecode(res.body);
+    if (data['status'] == true) {
+       Get.to(() => const FinalizeSignup());
+      isLoading(false);
+
+      return data;
+    } else {
+      isLoading(false);
+      return Future.error(data['message']);
+    }
+  } else {
+    isLoading(false);
+    return Future.error('Server Error!');
   }
+}
+
+
+
+// final registration api for finaliz_signup.dart
+
+Future finalRegister(
+
+  Map map
+  
+ 
+) async {
+  print("....$map");
+
+  isLoading(true);
+
+  var res = await http.post(Uri.parse(signUp),
+      // headers: {"Authorization": token},
+      body: map);
+
+  if (res.statusCode == 200) {
+    isLoading(true);
+    var data = jsonDecode(res.body);
+    if (data['status'] == true) {
+
+      
+      //  Get.to(() => const FinalizeSignup());
+      // isLoading(false);
+      print("this is good");
+
+      Get.offAll(()=>  const ChooseModule());
+
+
+
+      return data;
+    } else {
+      isLoading(false);
+      Get.snackbar(data['message'],"");
+      
+      return Future.error(data['message']);
+    }
+  } else {
+    isLoading(false);
+    return Future.error('Server Error!');
+  }
+}
+
+
+
+Future checkUser(
+
+  String email
+  
+ 
+) async {
+  print("....$email");
+
+  isLoading(true);
+  var exist;
+
+  var res = await http.post(Uri.parse(check_user),
+      // headers: {"Authorization": token},
+      body: {"email": email});
+
+  if (res.statusCode == 200) {
+    isLoading(true);
+    var data = jsonDecode(res.body);
+    if (data['status'] == true) {
+      exist = data['Isexits'];
+
+      print(".fghf......$exist");
+
+      // exist == true ? const TyreHomeScreen() : const FinalizeSignup();
+      Get.offAll(() =>const ChooseModule());
+
+
+      
+    
+      print("this is good");
+
+      
+
+      // Get.snackbar(data['message'],"");
+
+      return data;
+    } else {
+      isLoading(false);
+      // Get.snackbar(data['message'],"");
+       Get.to(() =>const FinalizeSignup());
+      
+      return Future.error(data['message']);
+    }
+  } else {
+    isLoading(false);
+    return Future.error('Server Error!');
+  }
+}
+
+
+
+  // verifyOtp(String otp) async {
+  //   print("verying otp ${otp}");
+  //   submittingOtp(true);
+  //   var response =
+  //       await dio.post(veryfy_otp, data: {"otp": otp, "email": getEmail()});
+  //   submittingOtp(false);
+  //   if (response.statusCode == 200) {
+  //     submittingOtp(false);
+  //     await setSecret(response.body["secret"]);
+  //     print(response.body["secret"]);
+
+  //     Get.to(() => const FinalizeSignup());
+  //     return true;
+  //   }
+
+  //   print(response.statusCode);
+  //   print(response.body);
+  //   show("Error verying", "Invalid code");
+  //   return false;
+  // }
 
   validateStepOne(
     String firstname,
@@ -505,15 +755,16 @@ var responsedynamic;
     if (social != null) {
       print("registering social");
       jsonEncode(userInfo.data?.getUserRegInfoFormartSocial());
-      print(userInfo.data?.getUserRegInfoFormartSocial());
+      print(        userInfo.data?.getUserRegInfoFormartSocial());
       var response = await dio.post(
         signUp,
         data: userInfo.data?.getUserRegInfoFormartSocial(),
       );
       print(response.body);
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         userInfo = U.UserInfo.fromJson(response.body);
         await setUser(userInfo);
+        print("..... + ${userInfo}");
         return true;
       }
       show("Signup error", "error occured while signing up");
@@ -538,4 +789,179 @@ var responsedynamic;
     }
     return false;
   }
+
+
+
+
+
+
+
+
+  Future forgotPasswordApi(
+
+  String email
+  
+ 
+) async {
+  print("....$email");
+
+  isForgotLoading(true);
+
+
+  var res = await http.post(Uri.parse(forgot_password_url),
+      // headers: {"Authorization": token},
+      body: {"email": email});
+
+  if (res.statusCode == 200) {
+    isForgotLoading(true);
+    var data = jsonDecode(res.body);
+    if (data['status'] == true) {
+      
+      Get.offAll(() =>  OtpVerification(email: email));
+
+
+      
+    
+      print("this is good");
+
+      isForgotLoading(false);
+
+      // Get.snackbar(data['message'],"");
+
+      return data;
+    } else {
+      isForgotLoading(false);
+      Get.snackbar(data['message'],"");
+      
+      
+      return Future.error(data['message']);
+    }
+  } else {
+    isForgotLoading(false);
+    return Future.error('Server Error!');
+  }
+}
+
+
+
+
+
+  Future otpVerifyApi(
+
+  String email,
+  String otp
+  
+ 
+) async {
+  print("....$email");
+
+  isOtpLoading(true);
+
+
+  var res = await http.post(Uri.parse(otp_verification_url),
+      // headers: {"Authorization": token},
+      body: {"email": email, "otp" : otp});
+
+  if (res.statusCode == 200) {
+    isOtpLoading(true);
+    var data = jsonDecode(res.body);
+    if (data['status'] == true) {
+
+      Get.to(() => ResetPassword(email: email,));
+
+
+      
+    
+      print("this is good");
+
+      
+  isOtpLoading(false);
+      // Get.snackbar(data['message'],"");
+
+      return data;
+    } else {
+      isOtpLoading(false);
+      Get.snackbar(data['message'],"");
+      
+      
+      return Future.error(data['message']);
+    }
+  } else {
+    isOtpLoading(false);
+    return Future.error('Server Error!');
+  }
+}
+
+
+
+
+
+  Future resetPasswordApi(
+
+    String email,
+
+  String password
+  
+  
+ 
+) async {
+  print("....$password");
+
+  isResetLoading(true);
+
+
+  var res = await http.post(Uri.parse(reset_password_url),
+      // headers: {"Authorization": token},
+      body: {"email" : email,  "newpassword": password});
+
+  if (res.statusCode == 200) {
+    isResetLoading(true);
+    var data = jsonDecode(res.body);
+    if (data['status'] == true) {
+
+      Get.offAll(() => const LoginScreen());
+
+
+      
+    
+      print("this is good");
+
+      isResetLoading(false);
+
+      
+
+      // Get.snackbar(data['message'],"");
+
+      return data;
+    } else {
+      isResetLoading(false);
+      Get.snackbar(data['message'],"");
+      
+      
+      return Future.error(data['message']);
+    }
+  } else {
+   isResetLoading(false);
+    return Future.error('Server Error!');
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

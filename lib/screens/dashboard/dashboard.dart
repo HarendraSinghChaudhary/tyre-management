@@ -39,7 +39,7 @@ class _MainDashboardState extends State<MainDashboard> {
     }
 
     print("init");
-     WidgetsBinding.instance!.addPostFrameCallback((_) {
+     WidgetsBinding.instance.addPostFrameCallback((_) {
        tripController.loadActiveTrip();
   // executes after build
   });

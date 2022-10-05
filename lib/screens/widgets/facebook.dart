@@ -20,7 +20,7 @@ class Facebook extends StatelessWidget {
   Facebook({Key? key, this.title = "Sign Up"}) : super(key: key);
 
   final _facebookSignIn = FacebookLogin();
-  AuthController controller = Get.find();
+ AuthController controller = AuthController();
 
   @override
   Widget build(BuildContext context) {
@@ -38,9 +38,15 @@ class Facebook extends StatelessWidget {
             case FacebookLoginStatus.success:
               final FacebookAccessToken? accessToken = res.accessToken;
               final email = await _facebookSignIn.getUserEmail();
-              UserInfo? info = await controller.authWithSocial(
-                  email ?? "", accessToken?.token ?? "",
-                  company: "Facebook", accountId: accessToken?.userId ?? "");
+              UserInfo? info = await controller.checkUser(email.toString());
+              // await controller.socialSignInApi(
+              //     email ?? "", accessToken?.token ?? "",
+              //     company: "Facebook", accountId: accessToken?.userId ?? "");
+
+              //      controller.checkUser(email.toString());
+
+
+                  
 
               print(
                   "Accounts ${(info?.data?.socialAccounts?.length ?? 0) > 0 ? true : false}");

@@ -29,7 +29,7 @@ class _DashboardState extends State<Dashboard> {
                   children: [
                     Text(
                         "Welcome to dashboard ${AuthController.userInfo.data?.firstName} "),
-                    RaisedButton(
+                    ElevatedButton(
                         child: Text("logout"),
                         onPressed: () async {
                           await getGoogleService().signOut();
