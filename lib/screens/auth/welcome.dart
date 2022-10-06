@@ -87,10 +87,10 @@ class WelcomePage extends StatelessWidget {
                             onTap: () {
                                 
                             
-                                Get.to(
-                                  ClassicDashboard()
+                                Get.offAll(
+                                  // ClassicDashboard()
 
-                                  // SignUpScreen()
+                                SignUpScreen()
                                   );
                             },
                             child: Container(

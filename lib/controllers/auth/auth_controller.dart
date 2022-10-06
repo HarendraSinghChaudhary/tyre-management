@@ -9,6 +9,7 @@ import 'package:PrimeMetrics/screens/auth/login_screen.dart';
 import 'package:PrimeMetrics/screens/auth/otp.dart';
 import 'package:PrimeMetrics/screens/auth/otp_verification.dart';
 import 'package:PrimeMetrics/screens/auth/reset_password.dart';
+import 'package:PrimeMetrics/screens/dashboard/classic_dashboard.dart';
 import 'package:PrimeMetrics/screens/dashboard/dashboard.dart';
 import 'package:PrimeMetrics/screens/dashboard/module.dart';
 import 'package:PrimeMetrics/utils/app_extensions.dart';
@@ -118,7 +119,7 @@ var responsedynamic;
       // user?.data?.role?.userRole=="fuel_master" ? Get.offAll(FuelMasterLandingScreen()) : Get.offAll(MainDashboard());
      // user?.data?.role?.userRole=="fuel_master" ? Get.offAll(TyreHomeScreen()) : Get.offAll(MainDashboard());
 
-     Get.offAll(const ChooseModule());
+     Get.offAll(const ClassicDashboard());
   
    print("press here 4");
        
@@ -568,7 +569,7 @@ Future finalRegister(
       // isLoading(false);
       print("this is good");
 
-      Get.offAll(()=>  const ChooseModule());
+      Get.offAll(()=>  const LoginScreen());
 
        isFinalSignUpLoading(false);
 
@@ -611,7 +612,7 @@ Future checkUser(
       print(".fghf......$exist");
 
       // exist == true ? const TyreHomeScreen() : const FinalizeSignup();
-      Get.offAll(() =>const ChooseModule());
+      Get.offAll(() =>const ClassicDashboard());
 
 
       

@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:PrimeMetrics/screens/dashboard/dashboard.dart';
+import 'package:PrimeMetrics/screens/tyre_management/tyre_home_screen.dart';
 import 'package:PrimeMetrics/utils/images.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -51,6 +53,7 @@ class _ClassicDashboardState extends State<ClassicDashboard> {
             
                       InkWell(
                         onTap: () {
+                          Get.to(() => TyreHomeScreen());
 
                         },
                         child: Container(
@@ -176,6 +179,17 @@ class _ClassicDashboardState extends State<ClassicDashboard> {
             
                          InkWell(
                           onTap:  () {
+
+                                Get.to(
+
+                  
+
+
+                    
+                    
+                    MainDashboard()
+                    
+                    );
 
                           },
                            child: Container(
