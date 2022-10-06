@@ -1,3 +1,7 @@
+// ignore_for_file: prefer_const_constructors
+
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -282,23 +286,30 @@ class _OtpScreenState extends State<OtpScreen> {
                                     bottom: ScreenSize.height * 0.1),
                                 width: ScreenSize.width * 0.82,
                                 height: ScreenSize.height * 0.065,
-                                child: ObxValue((RxBool value) {
-                                  if (value.isTrue) {
-                                    return SizedBox(
-                                      width: ScreenSize.width * 0.01,
-                                      height: ScreenSize.height * 0.01,
-                                      child: CircularProgressIndicator(
-                                          color: white),
-                                    );
-                                  }
-                                  return Text(
+                                child:
+
+
+                                   Obx((() => 
+                            
+                             
+
+                              controller.isVerifyLoading.value
+                        ? Align(
+                            alignment: Alignment.center,
+                            child: Platform.isAndroid
+                                ? CircularProgressIndicator(color: Colors.white, strokeWidth: 1,)
+                                : CupertinoActivityIndicator())
+                        :
+                                
+                                
+                               const  Text(
                                     "Submit",
                                     style: TextStyle(
                                         fontWeight: FontWeight.w300,
                                         color: Colors.white,
                                         fontSize: 18),
-                                  );
-                                }, controller.submittingOtp),
+                                  ))),
+                               
                                 decoration: BoxDecoration(
                                     color: green,
                                     boxShadow: [

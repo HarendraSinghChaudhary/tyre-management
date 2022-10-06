@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:PrimeMetrics/screens/auth/login_screen.dart';
+import 'package:PrimeMetrics/screens/dashboard/classic_dashboard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
@@ -86,7 +87,11 @@ class WelcomePage extends StatelessWidget {
                             onTap: () {
                                 
                             
-                                Get.to(SignUpScreen());
+                                Get.to(
+                                  ClassicDashboard()
+
+                                  // SignUpScreen()
+                                  );
                             },
                             child: Container(
                               alignment: Alignment.center,

@@ -328,6 +328,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ],
                           ),
                         ),
+
+
+
+
+
+
+                        
+                       
                         InkWell(
                           onTap: () async {
                             if (controller.sendingEmail.isTrue) {
@@ -360,18 +368,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 bottom: ScreenSize.height * 0.1),
                             width: ScreenSize.width * 0.82,
                             height: ScreenSize.height * 0.065,
-                            child: ObxValue((RxBool value) {
-                              if (value.isTrue) {
-                                return SizedBox(
-                                    height: ScreenSize.height * 0.02,
-                                    width: ScreenSize.height * 0.02,
-                                    child: CircularProgressIndicator(
-                                      color: Colors.white,
-                                    ));
-                              }
-                              return 
+                            child: 
 
-                              controller.isLoading.value
+
+                            Obx((() => 
+                            
+                             
+
+                              controller.isSignUpLoading.value
                         ? Align(
                             alignment: Alignment.center,
                             child: Platform.isAndroid
@@ -391,8 +395,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     fontWeight: FontWeight.normal,
                                     color: Colors.white,
                                     fontSize: 18),
-                              );
-                            }, controller.sendingEmail),
+                            ))),
+                            
                             decoration: BoxDecoration(
                                 color: green,
                                 boxShadow: [
@@ -406,7 +410,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     ScreenSize.width * 0.1)),
                           ),
                         ),
-                      
+                       
                         Facebook(),
                         Google(),
                         Container(

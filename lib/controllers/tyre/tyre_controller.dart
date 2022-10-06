@@ -279,7 +279,7 @@ class TyreController extends BaseController {
     try {
       res.Response response = await dioo.get("/tyrespecificationlist");
       if (response.statusCode == 200) {
-        if (response.data['data'] != null) {
+        if (response.data['data'].toString() != "null") {
           tyreSpecificationList.clear();
           List list = response.data['data'];
           tyreSpecificationList
@@ -788,7 +788,7 @@ class TyreController extends BaseController {
                     height: 40,
                     child: TextButton(
                       style: TextButton.styleFrom(
-                        foregroundColor: Colors.amber,
+                        backgroundColor: Colors.amber,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20)),
                       ),
@@ -891,7 +891,7 @@ class TyreController extends BaseController {
                     child: TextButton(
 
                       style: TextButton.styleFrom(
-                        foregroundColor: Colors.amber,
+                        backgroundColor: Colors.amber,
                              shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20)),
                       ),

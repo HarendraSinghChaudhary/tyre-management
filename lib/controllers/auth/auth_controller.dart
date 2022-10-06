@@ -32,6 +32,9 @@ class AuthController extends BaseController {
   RxBool isForgotLoading = false.obs;
    RxBool isOtpLoading = false.obs;
     RxBool isResetLoading = false.obs;
+  RxBool isSignUpLoading = false.obs;
+  RxBool isVerifyLoading = false.obs;
+  RxBool isFinalSignUpLoading = false.obs;  
 
  
   RxBool sendingEmail = false.obs;
@@ -253,7 +256,7 @@ String email, String token,
           "accountId": accountId});
   print('inside login Function');
   if (res.statusCode == 200) {
-    isLoading(true);
+    isLoadingSocialService(true);
     var data = jsonDecode(res.body);
     if (data['data'] != null) {
 
@@ -357,7 +360,7 @@ Future <dynamic> signupApi(
   String password,
   
 ) async {
-  isLoading(false);
+  isSignUpLoading(true);
   print('inside login Function');
   var res = await http.post(Uri.parse(SEND_EMAIL),
       body: {"email": email,});
@@ -386,17 +389,17 @@ Future <dynamic> signupApi(
 
    
 
-         isLoading(false);
+         isSignUpLoading(false);
 
       return data;
     } else {
-      isLoading(false);
+      isSignUpLoading(false);
    
       Get.snackbar(data['message'], "");
       return Future.error(data['message']);
     }
   } else {
-    isLoading(false);
+    isSignUpLoading(false);
     return Future.error('Server Error!');
   }
 }
@@ -513,14 +516,14 @@ Future verifyOTP(
   String otp
 ) async {
 
-  isLoading(true);
+  isVerifyLoading(true);
 
   var res = await http.post(Uri.parse(veryfy_otp),
       // headers: {"Authorization": token},
       body: {"email": email, "otp": otp});
 
   if (res.statusCode == 200) {
-    isLoading(true);
+    isVerifyLoading(true);
     var data = jsonDecode(res.body);
     if (data['status'] == true) {
        Get.to(() => const FinalizeSignup());
@@ -528,11 +531,11 @@ Future verifyOTP(
 
       return data;
     } else {
-      isLoading(false);
+      isVerifyLoading(false);
       return Future.error(data['message']);
     }
   } else {
-    isLoading(false);
+    isVerifyLoading(false);
     return Future.error('Server Error!');
   }
 }
@@ -549,14 +552,14 @@ Future finalRegister(
 ) async {
   print("....$map");
 
-  isLoading(true);
+  isFinalSignUpLoading(true);
 
   var res = await http.post(Uri.parse(signUp),
       // headers: {"Authorization": token},
       body: map);
 
   if (res.statusCode == 200) {
-    isLoading(true);
+    isFinalSignUpLoading(true);
     var data = jsonDecode(res.body);
     if (data['status'] == true) {
 
@@ -567,17 +570,17 @@ Future finalRegister(
 
       Get.offAll(()=>  const ChooseModule());
 
-
+       isFinalSignUpLoading(false);
 
       return data;
     } else {
-      isLoading(false);
+      isFinalSignUpLoading(false);
       Get.snackbar(data['message'],"");
       
       return Future.error(data['message']);
     }
   } else {
-    isLoading(false);
+    isFinalSignUpLoading(false);
     return Future.error('Server Error!');
   }
 }

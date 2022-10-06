@@ -1,5 +1,8 @@
 
+// ignore_for_file: prefer_const_constructors
+
 import 'dart:collection';
+import 'dart:io';
 
 
 import 'package:PrimeMetrics/main.dart';
@@ -1599,6 +1602,25 @@ class _StageFourSignUpState extends State<StageFourSignUp> {
         Stack(
           alignment: Alignment.center,
           children: [
+
+
+
+              Obx((() => 
+                            
+                             
+
+                              controller.isFinalSignUpLoading.value
+                        ? Align(
+                            alignment: Alignment.center,
+                            child: Platform.isAndroid
+                                ? CircularProgressIndicator(color: green, strokeWidth: 1,)
+                                : CupertinoActivityIndicator())
+                        :
+
+
+
+
+
             Container(
               margin: EdgeInsets.only(
                   top: ScreenSize.height * 0.05,
@@ -1617,22 +1639,7 @@ class _StageFourSignUpState extends State<StageFourSignUp> {
 
 
 
-                  // if (widget.currentstep.value == 3) {
-                  //   var list = modules
-                  //       .where((p0) => p0.selected.isTrue)
-                  //       .map((e) => e.title);
-                  //   var tyre = list.contains("Tyre Master");
-                  //   var fuel = list.contains("Fuel Master");
-                  //   var inspection = list.contains("Inspection Master");
-
-                  //   if (await controller.validateStepFlour(
-                  //       tyreMaster: tyre,
-                  //       fuelMaster: fuel,
-                  //       inspectionMaster: inspection)) {
-                  //     widget.currentstep(4);
-                  //   }
-                 
-                  // }
+                  
                 },
                 child: Container(
                   alignment: Alignment.center,
@@ -1648,7 +1655,13 @@ class _StageFourSignUpState extends State<StageFourSignUp> {
                             fontSize: 18),
                       );
                     } else if (widget.currentstep.value == 3) {
-                      return const Text(
+                      return 
+
+                       
+                      
+                      
+                      
+                     const Text(
                         "Submit",
                         style: TextStyle(
                             fontWeight: FontWeight.w300,
@@ -1677,7 +1690,7 @@ class _StageFourSignUpState extends State<StageFourSignUp> {
                           BorderRadius.circular(ScreenSize.width * 0.1)),
                 ),
               ),
-            ),
+            ))),
           ],
         ),
       ],

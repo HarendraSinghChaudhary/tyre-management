@@ -1,4 +1,5 @@
 import 'package:PrimeMetrics/screens/dashboard/dashboard.dart';
+import 'package:PrimeMetrics/screens/dashboard/dashboarrd.dart';
 import 'package:PrimeMetrics/screens/tyre_management/tyre_home_screen.dart';
 import 'package:PrimeMetrics/utils/colors.dart';
 import 'package:PrimeMetrics/utils/images.dart';
@@ -29,7 +30,16 @@ class ChooseModule extends StatelessWidget {
             children: [
               InkWell(
                 onTap: () {
-                  Get.to(MainDashboard());
+                  Get.to(
+
+                  //  const Dashboard()
+
+
+                    
+                    
+                    MainDashboard()
+                    
+                    );
                 },
                 child: Container(
                   child: Column(

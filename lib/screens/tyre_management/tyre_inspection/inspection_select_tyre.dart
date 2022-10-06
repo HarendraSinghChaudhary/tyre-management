@@ -629,7 +629,7 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                                           height: 40,
                                           child: TextButton(
                                               style: TextButton.styleFrom(
-                                              foregroundColor: Colors.amber,
+                                              backgroundColor: Colors.amber,
                                                shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(20)),
@@ -750,7 +750,7 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                                           height: 40,
                                           child: TextButton(
                                                 style: TextButton.styleFrom(
-                                              foregroundColor: Colors.amber,
+                                              backgroundColor: Colors.amber,
                                                shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(20)),
@@ -869,7 +869,7 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                                           height: 40,
                                           child: TextButton(
                                                style: TextButton.styleFrom(
-                                              foregroundColor: Colors.amber,
+                                              backgroundColor: Colors.amber,
                                                shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(20)),
@@ -973,7 +973,7 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                                           height: 40,
                                           child: TextButton(
                                                 style: TextButton.styleFrom(
-                                              foregroundColor: Colors.amber,
+                                              backgroundColor: Colors.amber,
                                                shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(20)),
@@ -1090,7 +1090,7 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                                           height: 40,
                                           child: TextButton(
                                                style: TextButton.styleFrom(
-                                              foregroundColor: Colors.amber,
+                                              backgroundColor: Colors.amber,
                                                shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(20)),
@@ -1194,7 +1194,7 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                                           height: 40,
                                           child: TextButton(
                                                 style: TextButton.styleFrom(
-                                              foregroundColor: Colors.amber,
+                                              backgroundColor: Colors.amber,
                                                shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(20)),
@@ -1312,7 +1312,7 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                                           height: 40,
                                           child: TextButton(
                                                 style: TextButton.styleFrom(
-                                              foregroundColor: Colors.amber,
+                                              backgroundColor: Colors.amber,
                                                shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(20)),
@@ -1416,7 +1416,7 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                                           height: 40,
                                           child: TextButton(
                                                 style: TextButton.styleFrom(
-                                              foregroundColor: Colors.amber,
+                                              backgroundColor: Colors.amber,
                                                shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(20)),
@@ -1533,7 +1533,7 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                                           height: 40,
                                           child: TextButton(
                                                 style: TextButton.styleFrom(
-                                              foregroundColor: Colors.amber,
+                                              backgroundColor: Colors.amber,
                                                shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(20)),
@@ -1637,7 +1637,7 @@ class _SelectTyreRotationScreenState extends State<InspectionSelectTyre> {
                                           height: 40,
                                           child: TextButton(
                                                 style: TextButton.styleFrom(
-                                              foregroundColor: Colors.amber,
+                                              backgroundColor: Colors.amber,
                                                shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(20)),
