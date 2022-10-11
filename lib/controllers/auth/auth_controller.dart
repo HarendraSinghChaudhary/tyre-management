@@ -612,7 +612,8 @@ Future checkUser(
       print(".fghf......$exist");
 
       // exist == true ? const TyreHomeScreen() : const FinalizeSignup();
-      Get.offAll(() =>const ClassicDashboard());
+      // Get.offAll(() =>const ClassicDashboard());
+      loginApi(email, "12345678");
 
 
       

@@ -39,6 +39,7 @@ class Google extends StatelessWidget {
     try {
       var reslut = await _googleSignIn.signIn();
       if (reslut != null) {
+         authController.isLoading(true);
         final userData = await reslut.authentication;
         final credential = GoogleAuthProvider.credential(
             accessToken: userData.accessToken, idToken: userData.idToken);
@@ -69,6 +70,7 @@ class Google extends StatelessWidget {
         await  storage.write('firstName', firstName);
         await  storage.write('lastName', lastName);
         return true;
+        
       }
       authController.isLoading(false);
       return false;
