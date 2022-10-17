@@ -356,6 +356,8 @@ class TyreController extends BaseController {
       token = getUserInfo()!.data!.token.toString();
     }
 
+    print("token: "+ token.toString());
+
     dioo.options.headers['content-Type'] = 'application/json';
     dioo.options.headers["Authorization"] = "Bearer ${token}";
 
@@ -422,6 +424,8 @@ class TyreController extends BaseController {
       token = getUserInfo()!.data!.token.toString();
     }
 
+    print("token vehicle list: "+ token.toString());
+
     dioo.options.headers['content-Type'] = 'application/json';
     dioo.options.headers["Authorization"] = "Bearer ${token}";
     var jsonRes;
@@ -455,6 +459,8 @@ class TyreController extends BaseController {
     if (getUserInfo() != null) {
       token = getUserInfo()!.data!.token.toString();
     }
+
+    print("tokenget: "+ token.toString());
 
       Map<String, dynamic> payload = {
       "vehicle_id": vehicleId, //boool

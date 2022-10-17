@@ -2,8 +2,11 @@ import 'package:PrimeMetrics/controllers/fuel/fuel_controller.dart';
 import 'package:PrimeMetrics/controllers/trip/trip_controller.dart';
 import 'package:PrimeMetrics/controllers/tyre/tyre_controller.dart';
 import 'package:PrimeMetrics/models/user_info.dart';
+import 'package:PrimeMetrics/screens/auth/login_screen.dart';
+import 'package:PrimeMetrics/screens/dashboard/classic_dashboard.dart';
  
 import 'package:PrimeMetrics/screens/dashboard/module.dart';
+import 'package:PrimeMetrics/screens/widgets/splash.dart';
 
 import 'package:PrimeMetrics/utils/store.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -43,18 +46,26 @@ void main() async {
 
   print(getUserInfo().runtimeType);
   runApp(GetMaterialApp(
-    home:
-    //  WelcomeScreen()
-     SplashScreen.timer(
-      seconds: 3,
-      //  navigateAfterSeconds: ScreenSize(
-      //     child:
-      //          MainDashboard()),
-      navigateAfterSeconds: ScreenSize(child: WelcomeScreen()),
-      backgroundColor: green,
-      loaderColor: white,
-    ),
+    home: 
+    Splash()
+    //WelcomeScreen()
+    //  SplashScreen.timer(
+    //   seconds: 3,
+    //   //  navigateAfterSeconds: ScreenSize(
+    //   //     child:
+    //   //          MainDashboard()),
+    //   navigateAfterSeconds: ScreenSize(child: WelcomeScreen()),
+    //   backgroundColor: green,
+    //   loaderColor: white,
+    // ),
   ));
+
+
+
+
+
+
+
 }
 
 var storage = GetStorage();

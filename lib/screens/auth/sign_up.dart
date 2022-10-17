@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:PrimeMetrics/models/SocialLogin.dart';
 import 'package:PrimeMetrics/models/user_info.dart';
+import 'package:PrimeMetrics/screens/auth/finalize_signup.dart';
 import 'package:PrimeMetrics/screens/auth/login_screen.dart';
 import 'package:PrimeMetrics/screens/widgets/facebook.dart';
 import 'package:PrimeMetrics/screens/widgets/google.dart';
@@ -343,6 +344,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             }
 
                             await  storage.write('email', emailController.text,);
+                           
 
 
                             if (allFieldFilled() &&
@@ -412,7 +414,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                        
                         Facebook(),
-                        Google(),
+                       
+                       
+                       
+                       
+                       Obx(() => 
+
+
+                                controller.isSocialSignInLoading.value
+                        ? Align(
+                            alignment: Alignment.center,
+                            child: Platform.isAndroid
+                                ? CircularProgressIndicator(color: Colors.orange, strokeWidth: 1,)
+                                : CupertinoActivityIndicator())
+                        :
+                       
+                       
+                        Google()),
                         Container(
                           alignment: Alignment.center,
                           margin: EdgeInsets.only(

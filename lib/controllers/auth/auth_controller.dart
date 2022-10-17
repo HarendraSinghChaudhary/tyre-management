@@ -35,7 +35,8 @@ class AuthController extends BaseController {
     RxBool isResetLoading = false.obs;
   RxBool isSignUpLoading = false.obs;
   RxBool isVerifyLoading = false.obs;
-  RxBool isFinalSignUpLoading = false.obs;  
+  RxBool isFinalSignUpLoading = false.obs;
+  RxBool isSocialSignInLoading = false.obs;  
 
  
   RxBool sendingEmail = false.obs;
@@ -59,6 +60,8 @@ class AuthController extends BaseController {
 
 
     Future<dynamic> loginApi(String email, String password, ) async {
+
+      print("login........................");
 
       sendingEmail(true);
     // FirebaseMessaging.instance.getToken().then((value) {
@@ -110,11 +113,17 @@ var responsedynamic;
         
            await setUser(U.UserInfo.fromJson(jsonRes));
 
-      show("Success", "Login Succeful");
+      show("Success", "Login Successful");
        print("press here2");
 
       var user =getUserInfo();
       var role = user?.data?.role?.userRole.toString();
+      var modules = user?.data?.modules?.first.toString();
+      print("modules: "+ modules.toString());
+     var md = modules!.split(",");
+     print("md: "+ md.toString());
+
+
       print("press here 3" +role.toString()+"");
       // user?.data?.role?.userRole=="fuel_master" ? Get.offAll(FuelMasterLandingScreen()) : Get.offAll(MainDashboard());
      // user?.data?.role?.userRole=="fuel_master" ? Get.offAll(TyreHomeScreen()) : Get.offAll(MainDashboard());
@@ -266,7 +275,7 @@ String email, String token,
 
      print("......${a.toJson()}");
 
-     Get.to(() => const FinalizeSignup());
+     Get.to(() => FinalizeSignup());
 
 
 
@@ -527,7 +536,7 @@ Future verifyOTP(
     isVerifyLoading(true);
     var data = jsonDecode(res.body);
     if (data['status'] == true) {
-       Get.to(() => const FinalizeSignup());
+       Get.to(() => FinalizeSignup());
       isLoading(false);
 
       return data;
@@ -590,11 +599,13 @@ Future finalRegister(
 
 Future checkUser(
 
-  String email
+  String email,
+  bool? isSocial
   
  
 ) async {
   print("....$email");
+  signUpMap["email"] = email.toString();
 
   isLoading(true);
   var exist;
@@ -613,7 +624,14 @@ Future checkUser(
 
       // exist == true ? const TyreHomeScreen() : const FinalizeSignup();
       // Get.offAll(() =>const ClassicDashboard());
-      loginApi(email, "12345678");
+      var pass = isSocial == true ? "12345678" : "";
+       loginApi(email, pass
+
+
+       
+       
+       
+      );
 
 
       
@@ -628,7 +646,7 @@ Future checkUser(
     } else {
       isLoading(false);
       // Get.snackbar(data['message'],"");
-       Get.to(() =>const FinalizeSignup());
+       Get.to(() => FinalizeSignup());
       
       return Future.error(data['message']);
     }

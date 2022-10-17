@@ -1,5 +1,5 @@
 
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_eronst_constructors
 
 import 'dart:collection';
 import 'dart:io';
@@ -29,9 +29,46 @@ import '../../utils/toast.dart';
 
 
   Map <String, String> signUpMap = HashMap();
+   RxBool isVisible = false.obs;
+
+Map<String, bool> masterValue = {
+    'Tyre Master': false,
+    'Inspection Master': false,
+    'Fuel master': false,
+    'Trip Master': false,
+   
+  };
+
+  List dataList = [];
+
+
+
+getCheckboxItems(){
+ 
+    masterValue.forEach((key, value) {
+      if(value == true)
+      {
+        dataList.add(key); 
+      }
+  });
+ 
+  // Printing all selected items on Terminal screen.
+  print(dataList);
+  // Here you will get all your selected Checkbox items.
+ 
+  // Clear array after use.
+  dataList.clear();
+}
+
+
+  RxList<String> masterList = ["Tyre Master", "Inspection Master", "Fuel master", "Trip Master"].obs;
+  RxList<bool> msList = [false, false, false, false].obs;
+  RxList <String> idList = RxList();
   String isRole = "";
 class FinalizeSignup extends StatefulWidget {
-  const FinalizeSignup({Key? key}) : super(key: key);
+
+
+   FinalizeSignup({Key? key, }) : super(key: key);
 
   @override
   _FinalizeSignupState createState() => _FinalizeSignupState();
@@ -45,6 +82,7 @@ class _FinalizeSignupState extends State<FinalizeSignup> {
 
   @override
   Widget build(BuildContext context) {
+  
     return Scaffold(
       body: ScreenSize(
         child: Container(
@@ -1222,7 +1260,14 @@ class _StageFourSignUpState extends State<StageFourSignUp> {
     super.didChangeDependencies();
   }
 
-  RxString isSelected = "".obs;
+  RxBool istyre = false.obs;
+  RxBool isfuel = false.obs;
+  RxBool isinspection = false.obs;
+  RxBool istrip = false.obs;
+  RxBool value = false.obs;
+  
+
+ final ScrollController _controller = ScrollController();
 
   // @override
   // void initState() {
@@ -1255,6 +1300,69 @@ class _StageFourSignUpState extends State<StageFourSignUp> {
   Widget build(BuildContext context) {
     return
 
+      //  Obx((() => ListView.builder(
+      //               controller: _controller,
+      //               itemCount: masterList.length,
+      //               shrinkWrap: true,
+      //               itemBuilder: (BuildContext context, int index) {
+      //                 print(isSelected);
+                    
+      //                 return Padding(
+      //                   padding: EdgeInsets.symmetric(
+      //                       horizontal: Get.height * 0.020,
+      //                       vertical: Get.height * 0.01),
+      //                   child: Container(
+      //                     height: Get.height * 0.12,
+      //                     decoration: BoxDecoration(
+      //                         borderRadius: BorderRadius.circular(15),
+      //                         color: Colors.white,
+      //                         boxShadow: [
+      //                           BoxShadow(
+      //                             color: Colors.blue.withOpacity(0.2),
+      //                             offset: const Offset(0, 3),
+      //                             blurRadius: 7,
+      //                           )
+      //                         ]),
+      //                     child: Center(
+      //                       child: CheckboxListTile(
+      //                         title: SizedBox(
+      //                           width: Get.width * 0.40,
+      //                           child: Text(
+                                 
+      //                                 masterList[index]
+      //                                 .toString(),
+                                
+      //                           ),
+      //                         ),
+                          
+      //                         autofocus: false,
+      //                         activeColor: green,
+      //                         checkColor: Colors.white,
+      //                         selected: value.value,
+      //                         value: msList[index],
+      //                         onChanged: (value) {
+      //                           print(value);
+      //                           setState(() {
+      //                             if (value == true) {
+      //                               idList.add(
+      //                                   masterList[index].toString());
+      //                             } else {
+      //                               idList.remove(
+      //                                 masterList[index].toString());
+                                     
+      //                             }
+
+      //                             isVisible.value = false;
+
+      //                             msList[index]= value!;
+      //                           });
+      //                         },
+      //                       ),
+      //                     ),
+      //                   ),
+      //                 );
+      //               })));
+
 
     Obx(() => 
 
@@ -1283,7 +1391,8 @@ class _StageFourSignUpState extends State<StageFourSignUp> {
             onTap: () {
 
             
-              isSelected.value = "tyre_master";
+              istyre.value = !istyre.value;
+
             },
              child: Container(
                       width: ScreenSize.width,
@@ -1300,7 +1409,7 @@ class _StageFourSignUpState extends State<StageFourSignUp> {
                           ],
                           borderRadius: BorderRadius.all(
                             Radius.circular(
-                              isSelected.value != "tyre_master"
+                              !istyre.value 
                                 ? ScreenSize.height * 0.01
                                 : ScreenSize.height * 0.03),
                           ),
@@ -1325,7 +1434,7 @@ class _StageFourSignUpState extends State<StageFourSignUp> {
                                 child: Text(
                                   "Tyre Master",
                                   style: TextStyle(
-                                      color: isSelected.value == "tyre_master"
+                                      color: istyre.value 
                                           ? Colors.black
                                           : grey),
                                 ),
@@ -1337,7 +1446,7 @@ class _StageFourSignUpState extends State<StageFourSignUp> {
                                 decoration: BoxDecoration(
                                     color: green, shape: BoxShape.circle),
                                 child: Icon(
-                                  isSelected.value == "tyre_master"
+                                  istyre.value
                                       ? Icons.check
                                       : Icons.circle,
                                   size: 12,
@@ -1351,90 +1460,12 @@ class _StageFourSignUpState extends State<StageFourSignUp> {
                     ),
            ),
 
-           SizedBox(height: Get.height * 0.02,),
-
-
-
-                     InkWell(
-                      onTap: () {
-                        isSelected.value = "fuel_master";
-                      },
-                       child: Container(
-                                         width: ScreenSize.width,
-                                         height: ScreenSize.height * 0.07,
-                                         padding: EdgeInsets.symmetric(
-                          horizontal: ScreenSize.width * 0.04),
-                                         decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                                blurRadius: 3,
-                                spreadRadius: 1,
-                                offset: const Offset(0, 3),
-                                color: Colors.black.withOpacity(0.3))
-                          ],
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(
-                              isSelected.value != "fuel_master"
-                                ? ScreenSize.height * 0.01
-                                : ScreenSize.height * 0.03),
-                          ),
-                          color: Colors.white),
-                                         child: Row(
-                        children: [
-                          // Container(
-                          //     margin: EdgeInsets.only(
-                          //         right: ScreenSize.width * 0.035),
-                          //     child: ObxValue((RxBool p0) {
-                          //       return p0.value
-                          //           ? Container(
-                          //               width: ScreenSize.width * 0.05,
-                          //               height: ScreenSize.height * 0.05,
-                          //               child: element.iconTwo)
-                          //           : element.icon;
-                          //     }, element.selected)),
-                          Expanded(
-                              child: Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  "Fuel Master",
-                                  style: TextStyle(
-                                      color: isSelected.value == "fuel_master"
-                                          ? Colors.black
-                                          : grey),
-                                ),
-                              ),
-                              Container(
-                                alignment: Alignment.center,
-                                width: ScreenSize.width * 0.045,
-                                height: ScreenSize.width * 0.045,
-                                decoration: BoxDecoration(
-                                    color: green, shape: BoxShape.circle),
-                                child: Icon(
-                                  isSelected.value == "fuel_master"
-                                      ? Icons.check
-                                      : Icons.circle,
-                                  size: 12,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
-                          )),
-                        ],
-                                         ),
-                                       ),
-                     ),
-
-
-
-
-
                      SizedBox(height: Get.height * 0.02,),
 
 
                                InkWell(
                       onTap: () {
-                        isSelected.value = "inspection_master";
+                        isinspection.value =!isinspection.value;
                       },
                        child: Container(
                                          width: ScreenSize.width,
@@ -1451,7 +1482,7 @@ class _StageFourSignUpState extends State<StageFourSignUp> {
                           ],
                           borderRadius: BorderRadius.all(
                             Radius.circular(
-                              isSelected.value != "inspection_master"
+                              !isinspection.value
                                 ? ScreenSize.height * 0.01
                                 : ScreenSize.height * 0.03),
                           ),
@@ -1476,7 +1507,7 @@ class _StageFourSignUpState extends State<StageFourSignUp> {
                                 child: Text(
                                   "Inspection Master",
                                   style: TextStyle(
-                                      color: isSelected.value == "inspection_master"
+                                      color: isinspection.value 
                                           ? Colors.black
                                           : grey),
                                 ),
@@ -1488,7 +1519,158 @@ class _StageFourSignUpState extends State<StageFourSignUp> {
                                 decoration: BoxDecoration(
                                     color: green, shape: BoxShape.circle),
                                 child: Icon(
-                                  isSelected.value == "inspection_master"
+                                  isinspection.value 
+                                      ? Icons.check
+                                      : Icons.circle,
+                                  size: 12,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          )),
+                        ],
+                                         ),
+                                       ),
+                     ),
+
+           SizedBox(height: Get.height * 0.02,),
+
+
+
+                     InkWell(
+                      onTap: () {
+                        isfuel.value = !isfuel.value;
+                      },
+                       child: Container(
+                                         width: ScreenSize.width,
+                                         height: ScreenSize.height * 0.07,
+                                         padding: EdgeInsets.symmetric(
+                          horizontal: ScreenSize.width * 0.04),
+                                         decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                                blurRadius: 3,
+                                spreadRadius: 1,
+                                offset: const Offset(0, 3),
+                                color: Colors.black.withOpacity(0.3))
+                          ],
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(
+                              !isfuel.value 
+                                ? ScreenSize.height * 0.01
+                                : ScreenSize.height * 0.03),
+                          ),
+                          color: Colors.white),
+                                         child: Row(
+                        children: [
+                          // Container(
+                          //     margin: EdgeInsets.only(
+                          //         right: ScreenSize.width * 0.035),
+                          //     child: ObxValue((RxBool p0) {
+                          //       return p0.value
+                          //           ? Container(
+                          //               width: ScreenSize.width * 0.05,
+                          //               height: ScreenSize.height * 0.05,
+                          //               child: element.iconTwo)
+                          //           : element.icon;
+                          //     }, element.selected)),
+                          Expanded(
+                              child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  "Fuel Master",
+                                  style: TextStyle(
+                                      color: isfuel.value
+                                          ? Colors.black
+                                          : grey),
+                                ),
+                              ),
+                              Container(
+                                alignment: Alignment.center,
+                                width: ScreenSize.width * 0.045,
+                                height: ScreenSize.width * 0.045,
+                                decoration: BoxDecoration(
+                                    color: green, shape: BoxShape.circle),
+                                child: Icon(
+                                  isfuel.value
+                                      ? Icons.check
+                                      : Icons.circle,
+                                  size: 12,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          )),
+                        ],
+                                         ),
+                                       ),
+                     ),
+
+
+
+
+
+                     SizedBox(height: Get.height * 0.02,),
+
+
+                               InkWell(
+                      onTap: () {
+                        istrip.value =!istrip.value;
+                      },
+                       child: Container(
+                                         width: ScreenSize.width,
+                                         height: ScreenSize.height * 0.07,
+                                         padding: EdgeInsets.symmetric(
+                          horizontal: ScreenSize.width * 0.04),
+                                         decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                                blurRadius: 3,
+                                spreadRadius: 1,
+                                offset: const Offset(0, 3),
+                                color: Colors.black.withOpacity(0.3))
+                          ],
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(
+                              !istrip.value
+                                ? ScreenSize.height * 0.01
+                                : ScreenSize.height * 0.03),
+                          ),
+                          color: Colors.white),
+                                         child: Row(
+                        children: [
+                          // Container(
+                          //     margin: EdgeInsets.only(
+                          //         right: ScreenSize.width * 0.035),
+                          //     child: ObxValue((RxBool p0) {
+                          //       return p0.value
+                          //           ? Container(
+                          //               width: ScreenSize.width * 0.05,
+                          //               height: ScreenSize.height * 0.05,
+                          //               child: element.iconTwo)
+                          //           : element.icon;
+                          //     }, element.selected)),
+                          Expanded(
+                              child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  "Trip Master",
+                                  style: TextStyle(
+                                      color: istrip.value 
+                                          ? Colors.black
+                                          : grey),
+                                ),
+                              ),
+                              Container(
+                                alignment: Alignment.center,
+                                width: ScreenSize.width * 0.045,
+                                height: ScreenSize.width * 0.045,
+                                decoration: BoxDecoration(
+                                    color: green, shape: BoxShape.circle),
+                                child: Icon(
+                                  istrip.value 
                                       ? Icons.check
                                       : Icons.circle,
                                   size: 12,
@@ -1627,8 +1809,30 @@ class _StageFourSignUpState extends State<StageFourSignUp> {
                   bottom: ScreenSize.height * 0.1),
               child: InkWell(
                 onTap: () async {
+                  idList.clear();
 
-                  signUpMap["modules"] = isSelected.toString();
+                  if(istyre.value){
+                    idList.add("tyre_master");
+                  }
+                  if(isinspection.value){
+                    idList.add("inspection_master");
+                  }
+                  if(isfuel.value){
+                    idList.add("fuel_master");
+                  }
+                  if(istrip.value){
+                    idList.add("trip_master");
+                  }
+                  print(idList);
+                   String sub = idList.join(",");
+
+                      print("true: " + sub);
+
+                  signUpMap["modules"] = sub.toString();
+
+
+
+                    // signUpMap["modules"] = "tyre_master";
 
                   AuthController authController = AuthController();
                   authController.finalRegister(signUpMap);
@@ -1700,6 +1904,11 @@ class _StageFourSignUpState extends State<StageFourSignUp> {
     
     
     );
+
+
+
+
+    
     
      
     

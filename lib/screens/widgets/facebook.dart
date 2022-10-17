@@ -3,6 +3,7 @@ import 'package:PrimeMetrics/utils/store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login_facebook/flutter_login_facebook.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 import '../../controllers/auth/auth_controller.dart';
 import '../../main.dart';
@@ -20,7 +21,9 @@ class Facebook extends StatelessWidget {
   Facebook({Key? key, this.title = "Sign Up"}) : super(key: key);
 
   final _facebookSignIn = FacebookLogin();
+  String? email;
  AuthController controller = AuthController();
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -37,8 +40,13 @@ class Facebook extends StatelessWidget {
           switch (res.status) {
             case FacebookLoginStatus.success:
               final FacebookAccessToken? accessToken = res.accessToken;
-              final email = await _facebookSignIn.getUserEmail();
-              UserInfo? info = await controller.checkUser(email.toString());
+               email = await _facebookSignIn.getUserEmail();
+               print("email fb: "+email.toString());
+               final storage = GetStorage();
+                
+                  controller.checkUser(email!, true);
+                  storage.write('email', email);
+              UserInfo? info = await controller.checkUser(email.toString(), true);
               // await controller.socialSignInApi(
               //     email ?? "", accessToken?.token ?? "",
               //     company: "Facebook", accountId: accessToken?.userId ?? "");
@@ -50,13 +58,18 @@ class Facebook extends StatelessWidget {
 
               print(
                   "Accounts ${(info?.data?.socialAccounts?.length ?? 0) > 0 ? true : false}");
+                  // print("email fb: "+email.toString());
 
               if (info != null &&
                   ((info.data?.socialAccounts?.length ?? 0) > 0)) {
                 var account = info.data?.socialAccounts
                     ?.where((element) => element.social == "Facebook");
                 if (account?.isEmpty ?? false) {
-                  Get.to(FinalizeSignup());
+                  // Get.to(FinalizeSignup());
+
+                  signUpMap["email"] = email.toString();
+                  controller.checkUser(email!, true);
+
                   return;
                 }
                 //store.remove(social_account);
@@ -64,7 +77,8 @@ class Facebook extends StatelessWidget {
                 Get.offAll(userHasCompany());
               } else if (userinfo != null) {
                 if (info?.data?.id == null) {
-                  Get.to(FinalizeSignup());
+                  // Get.to(FinalizeSignup());
+                  controller.checkUser(email!, true);
                 } else {
                   var userifo = await controller.linkAccountWithGoogle();
                   if (userinfo != null) {

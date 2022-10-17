@@ -1,7 +1,14 @@
+// ignore_for_file: prefer_const_constructors
+
+import 'dart:io';
+
+import 'package:PrimeMetrics/utils/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart';
 
 import '../../controllers/auth/auth_controller.dart';
 import '../../main.dart';
@@ -16,30 +23,49 @@ import '../../utils/toast.dart';
 import '../dashboard/dashboarrd.dart';
 import '../auth/finalize_signup.dart';
 
-class Google extends StatelessWidget {
+class Google extends StatefulWidget {
   String? title;
   Google({Key? key, this.title = "Sign Up"}) : super(key: key);
+
+  @override
+  State<Google> createState() => _GoogleState();
+}
+
+class _GoogleState extends State<Google> {
   final GoogleSignIn _googleSignIn = getGoogleService();
+
   AuthController controller = Get.find();
 
  String name ="";
+
  String email = "";
+
   String firstName = "";
+
   String lastName = "";
 
-
-
-  AuthController authController = AuthController();
+  bool isLoading = false;
 
     Future googleLogin() async {
-    var familyname;
-    authController.isLoading(true);
+
+      isLoading = true;
+    controller.isSocialSignInLoading.value=true;
+
+
     print("googleLogin method Called");
     GoogleSignIn _googleSignIn = GoogleSignIn();
     try {
+      Get.dialog(
+        Center(child: CircularProgressIndicator.adaptive(),)
+      );
       var reslut = await _googleSignIn.signIn();
       if (reslut != null) {
-         authController.isLoading(true);
+        isLoading = true;
+
+
+      
+         controller.isSocialSignInLoading.value=true;
+ 
         final userData = await reslut.authentication;
         final credential = GoogleAuthProvider.credential(
             accessToken: userData.accessToken, idToken: userData.idToken);
@@ -63,37 +89,67 @@ class Google extends StatelessWidget {
         print("name: " + name);
         print("email: " + email);
 
-        authController.isLoading(false);
+       isLoading = false;
+        controller.isSocialSignInLoading.value=false;
 
 
         await  storage.write('email', email);
         await  storage.write('firstName', firstName);
         await  storage.write('lastName', lastName);
+        Get.back();
         return true;
         
       }
-      authController.isLoading(false);
+      isLoading = false;
+       controller.isSocialSignInLoading.value=false;
+       Get.back();
       return false;
       
     } catch (error) {
-      authController.isLoading(false);
+      isLoading = false;
+       controller.isSocialSignInLoading.value=false;
+       Get.back();
+
       print(error);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return 
+
+
+
+    Obx(() => 
+
+
+                             controller.isSocialSignInLoading.value
+                        ? Align(
+                            alignment: Alignment.center,
+                            child: Platform.isAndroid
+                                ? CircularProgressIndicator(color: Colors.orange, strokeWidth: 1,)
+                                : CupertinoActivityIndicator())
+                        :
+
+
+  
+    
+    
+    
+    
+    
+    InkWell(
       onTap: () async {
+        controller.isSocialSignInLoading.value=true;
 
 
            googleLogin().then((value) {
-                               authController.isLoading(false);
+                           
 
                                 print("response google: " + value.toString());
                                 if (value) {
 
-                                  authController.checkUser(email);
+                                  controller.checkUser(email, true);
 
                                   
 
@@ -101,6 +157,9 @@ class Google extends StatelessWidget {
                                   
                                 }
                               });
+
+
+                              controller.isSocialSignInLoading.value=false;
 
 
 
@@ -178,7 +237,7 @@ class Google extends StatelessWidget {
               width: ScreenSize.width * 0.02,
             ),
             Text(
-              "$title With Google",
+              "${widget.title} With Google",
               style: getStyle(color: Colors.black),
             ),
           ],
@@ -187,6 +246,6 @@ class Google extends StatelessWidget {
             color: Colors.white,
             borderRadius: BorderRadius.circular(ScreenSize.width * 0.01)),
       ),
-    );
+    ));
   }
 }

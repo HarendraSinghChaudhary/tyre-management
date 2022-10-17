@@ -8,6 +8,7 @@ import 'package:PrimeMetrics/screens/tyre_management/tyre_retread/retread_home_s
 import 'package:PrimeMetrics/screens/tyre_management/tyre_rotation/tyre_rotation_home_screen.dart';
 import 'package:PrimeMetrics/utils/app_extensions.dart';
 import 'package:PrimeMetrics/utils/images.dart';
+import 'package:PrimeMetrics/utils/store.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -45,6 +46,7 @@ class _TyreHomeScreenState extends State<TyreHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // print("token Home: "+ getUserInfo()!.data!.token.toString());
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: primaryColors,

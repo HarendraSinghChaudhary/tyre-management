@@ -274,7 +274,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                 } else {
                                   if (await controller
                                       .verifyOTP(  widget.email,otpConntroler.value.text)) {
-                                      Get.to(const FinalizeSignup());
+                                      Get.to(FinalizeSignup());
                                   }
                                   
                                 }

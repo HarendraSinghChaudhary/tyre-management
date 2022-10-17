@@ -130,8 +130,8 @@ AuthController authController = Get.find();
     // TODO: implement initState
 
 
-    emailController.text = "specky9coder@gmail.com";
-    passwordController.text = "111111";
+    // emailController.text = "specky9coder@gmail.com";
+    // passwordController.text = "111111";
 
 
     super.initState();
