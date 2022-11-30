@@ -1,4 +1,3 @@
-
 // ignore_for_file: prefer_const_declarations, non_constant_identifier_names
 
 bool isDev = true;
@@ -15,7 +14,9 @@ var current_env = env.aws;
 //     : current_env == env.aws
 //         ? "http://primemetricsbackendapis-env.eba-ueznnzk8.eu-west-1.elasticbeanstalk.com/api"
 //         : "https://primemetrics.branfoot.com/api";
-   final String baseUrl = "https://builtenance.com/development/primemetics/api";
+final String baseUrl = "https://builtenance.com/development/primemetics/api";
+// final String baseUrl =
+//     "http://primemetricsbackendapis-env.eba-ueznnzk8.eu-west-1.elasticbeanstalk.com/api/";
 final String signUp = baseUrl + "/user/signup";
 final String login = baseUrl + "/user/signIn";
 final String SEND_EMAIL = baseUrl + "/user/sendOtp";
@@ -41,8 +42,6 @@ final String ADD_REFUEL_POINT = baseUrl + "/user/trip/refuel";
 final String END_TRIP = baseUrl + "/user/trip/end";
 final String CLOSE_TRIP = baseUrl + "/user/trip/close";
 final String USER = baseUrl + "/user";
-
-
 
 final String RECENT_TRIPS = baseUrl + "/user/recenttrip";
 final String DRIVER_LIST = baseUrl + "/user/driverlist";
@@ -72,19 +71,12 @@ final String SERIALNUMBER_URL = baseUrl + "/serial_number";
 final String DISMOUNTREASON_URL = baseUrl + "/dismountResion";
 final String ROTATETYRE_URL = baseUrl + "/rotatetyre";
 
-
-
-
 final String CHECKPRESSURE_URL = baseUrl + "/checkPressure";
-
-
 
 // final String  VEHICLE_STRUCTURE
 
-
-
 getHost() {
- return  Uri.parse(baseUrl).host;
+  return Uri.parse(baseUrl).host;
 }
 
 enum env { aws, dev, primemetrics }

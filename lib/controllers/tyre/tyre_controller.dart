@@ -48,7 +48,6 @@ class TyreController extends BaseController {
   RxBool isDetailLoading = false.obs;
   RxBool isVehicleStructureLoading = false.obs;
 
-
   RxList<StoreCode> storeList = RxList();
   RxList<Brand> tyreBrandList = RxList();
   RxList<TyreModel> tyreModelList = RxList();
@@ -243,8 +242,8 @@ class TyreController extends BaseController {
           tyreSerialNumberList
               .addAll(list.map((e) => SerialNumberModel.fromJson(e)).toList());
 
-              isSubmitting(false);
-              update();
+          isSubmitting(false);
+          update();
         }
       }
       print("tyreSizeList : ${tyreSizeList.length}");
@@ -253,20 +252,15 @@ class TyreController extends BaseController {
         print("tyrePsi: ${element.tyre_psi}");
         print("tyreId: ${element.id}");
       });
-        isSubmitting(false);
-         update();
+      isSubmitting(false);
+      update();
     } on res.DioError catch (e, trace) {
       print(trace);
       isSubmitting(false);
-         update();
+      update();
     }
   }
 
- 
- 
- 
- 
- 
   getTyreSpecificationList() async {
     var token = "";
     if (getUserInfo() != null) {
@@ -356,7 +350,7 @@ class TyreController extends BaseController {
       token = getUserInfo()!.data!.token.toString();
     }
 
-    print("token: "+ token.toString());
+    print("token: " + token.toString());
 
     dioo.options.headers['content-Type'] = 'application/json';
     dioo.options.headers["Authorization"] = "Bearer ${token}";
@@ -377,9 +371,7 @@ class TyreController extends BaseController {
   }
 
   dismountReason() async {
-
-    isDismountReason (true);
-
+    isDismountReason(true);
 
     print("cleck here 1");
     var token = "";
@@ -390,7 +382,7 @@ class TyreController extends BaseController {
     dioo.options.headers['content-Type'] = 'application/json';
 
     try {
-       isDismountReason (true);
+      isDismountReason(true);
       res.Response response = await dioo.get("/dismountResion");
       print("cleck here 2");
       if (response.statusCode == 200) {
@@ -401,44 +393,45 @@ class TyreController extends BaseController {
           List list = response.data['data'];
           dismountReasonList
               .addAll(list.map((e) => DismountReason.fromJson(e)).toList());
-               isDismountReason (false);
+          isDismountReason(false);
         }
-         isDismountReason (false);
+        isDismountReason(false);
       }
       print("dismountResion list : ${dismountReasonList.length}");
       dismountReasonList.forEach((element) {
         print("${element.dismount_reason}");
       });
-       isDismountReason (false);
+      isDismountReason(false);
     } on res.DioError catch (e, trace) {
       print(trace);
-       isDismountReason (false);
+      isDismountReason(false);
     }
   }
 
-  getVehicles( String vehicle_type) async {
-    print("vehicle_type: "+ vehicle_type.toString());
+  getVehicles(String vehicle_type) async {
+    print("vehicle_type: " + vehicle_type.toString());
     var token = "";
     isSubmitting(true);
     if (getUserInfo() != null) {
       token = getUserInfo()!.data!.token.toString();
     }
 
-    print("token vehicle list: "+ token.toString());
+    print("token vehicle list: " + token.toString());
 
     dioo.options.headers['content-Type'] = 'application/json';
     dioo.options.headers["Authorization"] = "Bearer ${token}";
     var jsonRes;
 
     try {
-      res.Response response = await dioo.get("/company/vehicles", queryParameters: {"vehicle_type": vehicle_type});
+      res.Response response = await dioo.get("/company/vehicles",
+          queryParameters: {"vehicle_type": vehicle_type});
       if (response.statusCode == 200) {
         var jesres = jsonDecode(response.data);
         if (jesres['data'] != null) {
           companyVehicles.clear();
           List list = jesres['data'];
           companyVehicles.addAll(list.map((e) => Vehicle.fromJson(e)).toList());
-          print("data: "+jesres['data'].toString());
+          print("data: " + jesres['data'].toString());
 
           isSubmitting(false);
           update();
@@ -447,12 +440,15 @@ class TyreController extends BaseController {
     } on res.DioError catch (e, trace) {
       print(trace);
       isSubmitting(false);
-          update();
+      update();
     }
   }
 
-  Future<bool> getVehicleStructure({required int vehicleId, required String tyre_vehicle_id, }) async {
-    isVehicleStructureLoading (true);
+  Future<bool> getVehicleStructure({
+    required int vehicleId,
+    required String tyre_vehicle_id,
+  }) async {
+    isVehicleStructureLoading(true);
     print("vehcle id: " + vehicleId.toString());
     print("tyre_vehicle_id: " + tyre_vehicle_id.toString());
     var token = "";
@@ -460,28 +456,25 @@ class TyreController extends BaseController {
       token = getUserInfo()!.data!.token.toString();
     }
 
-    print("tokenget: "+ token.toString());
+    print("tokenget: " + token.toString());
 
-      Map<String, dynamic> payload = {
+    Map<String, dynamic> payload = {
       "vehicle_id": vehicleId, //boool
       "tyre_vehicle_id": tyre_vehicle_id.toString(), // string
-
     };
 
     dioo.options.headers['content-Type'] = 'application/json';
     dioo.options.headers["Authorization"] = "Bearer ${token}";
 
     try {
-
-         isVehicleStructureLoading(true);
-      res.Response response = await dioo
-          .get("/vehiclestructure", 
-           queryParameters: payload
+      isVehicleStructureLoading(true);
+      res.Response response = await dioo.get("/vehiclestructure",
+          queryParameters: payload
           // {"vehicle_id": vehicleId, "tyre_vehicle_id": tyre_vehicle_id.toString()}
           );
       print("response..: " + response.toString());
       if (response.statusCode == 200) {
-         vehicleStructureList.clear();
+        vehicleStructureList.clear();
         if (response.data['success'] == true) {
           vehicleStructureList.clear();
           List list = response.data['data']['tyres'];
@@ -489,14 +482,14 @@ class TyreController extends BaseController {
               .addAll(list.map((e) => VehecleStructure.fromJson(e)).toList());
           //VehicleStructure vehicleStructure = VehicleStructure.fromJson(response.data['data']);
 
-          isVehicleStructureLoading (false);
+          isVehicleStructureLoading(false);
           // update();
           vehicleStructure =
               VehicleStructure.fromJson(response.data['data']).obs;
-              // message = response.data['message'].toString().obs;
+          // message = response.data['message'].toString().obs;
           return Future.value(true);
         } else {
-          isVehicleStructureLoading (false);
+          isVehicleStructureLoading(false);
           // update();
           // sfdsds
           // message = response.data['message'].toString().obs;
@@ -626,7 +619,7 @@ class TyreController extends BaseController {
           Get.snackbar("Tyre dismounted successfully", "");
 
           Get.offAll(TyreHomeScreen(), transition: Transition.leftToRight);
-           isSubmitting(false);
+          isSubmitting(false);
         }
       } else {
         show("Error", response.data['message']);
@@ -796,9 +789,8 @@ class TyreController extends BaseController {
                       style: TextButton.styleFrom(
                         backgroundColor: Colors.amber,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)),
+                            borderRadius: BorderRadius.circular(20)),
                       ),
-                
                       onPressed: () {
                         Get.back();
                       },
@@ -813,9 +805,6 @@ class TyreController extends BaseController {
                   ),
                 ],
               ));
-       
-       
-       
         }
       } else {
         show("Error", response.data['message']);
@@ -847,7 +836,6 @@ class TyreController extends BaseController {
     dioo.options.headers["Authorization"] = "Bearer ${token}";
 
     try {
-     
       res.FormData formData = res.FormData.fromMap(map);
 
       print("Data: " + formData.toString());
@@ -864,7 +852,7 @@ class TyreController extends BaseController {
           Get.snackbar(response.data['message'], "");
           // message = response.data['message'];
 
-           Get.defaultDialog(
+          Get.defaultDialog(
               contentPadding: EdgeInsets.all(10),
               title: "",
 
@@ -895,16 +883,11 @@ class TyreController extends BaseController {
                     width: 140,
                     height: 40,
                     child: TextButton(
-
                       style: TextButton.styleFrom(
                         backgroundColor: Colors.amber,
-                             shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20)),
                       ),
-
-                      
-                     
-                 
                       onPressed: () {
                         Get.back();
                       },
@@ -919,8 +902,7 @@ class TyreController extends BaseController {
                   ),
                 ],
               ));
-              // 7302833684
-       
+          // 7302833684
 
           // Get.offAll(TyreHomeScreen(), transition: Transition.leftToRight);
 
@@ -1013,11 +995,10 @@ class TyreController extends BaseController {
           // Get.snackbar("Pressure check successfully", "");
           Get.snackbar(response.data['message'], "");
 
-
-         Get.offAll(InspectionHomeScreen(),
+          Get.offAll(InspectionHomeScreen(),
               transition: Transition.leftToRight);
 
-          print("image: "+ response.data['message'].toString());
+          print("image: " + response.data['message'].toString());
 
           // Get.(TyreHomeScreen(), transition: Transition.leftToRight);
           isInspectionLoading(false);
@@ -1044,7 +1025,6 @@ class TyreController extends BaseController {
     try {
       res.Response response = await dioo.get("/tyredefectlist");
       if (response.statusCode == 200) {
-       
         if (response.data['data'] != null) {
           defectList.clear();
           List list = response.data['data'];
@@ -1056,23 +1036,21 @@ class TyreController extends BaseController {
     }
   }
 
-  detailedInspectionApi(
-      {
-      required int isSelect,
-      required String deploy_on,
-      required String type,
-      required XFile file,
-      required String tyre_id,
-      required String tyre_serial_number,
-      required String tread_depth,
-      required String tyre_psi,
-      required String tyre_defect,
-      required String inspection_note,
-      required String is_retread,
-      required String defect_id,
-
-      required String odometer,
-      }) async {
+  detailedInspectionApi({
+    required int isSelect,
+    required String deploy_on,
+    required String type,
+    required XFile file,
+    required String tyre_id,
+    required String tyre_serial_number,
+    required String tread_depth,
+    required String tyre_psi,
+    required String tyre_defect,
+    required String inspection_note,
+    required String is_retread,
+    required String defect_id,
+    required String odometer,
+  }) async {
     isSubmitting(true);
     isDetailLoading(true);
     Map<String, String> map = HashMap();
@@ -1089,7 +1067,7 @@ class TyreController extends BaseController {
     map["odometer"] = odometer.toString();
 
     print("type " + type.toString());
-    print("tyre id: "+ tyre_id.toString()); 
+    print("tyre id: " + tyre_id.toString());
     print("tyre_serial_number " + tyre_serial_number.toString());
     print("tread_depth " + tread_depth.toString());
     print("tyre_psi " + tyre_psi.toString());
@@ -1111,10 +1089,10 @@ class TyreController extends BaseController {
 
     try {
       isSubmitting(true);
-       isDetailLoading(true);
+      isDetailLoading(true);
       res.FormData formData = res.FormData.fromMap(map);
 
-       formData.files.add(MapEntry(
+      formData.files.add(MapEntry(
           "image",
           await res.MultipartFile.fromFile(
             file.path,
@@ -1132,40 +1110,32 @@ class TyreController extends BaseController {
         if (response.data['success'] == true) {
           print("press here...2");
           isSubmitting(false);
-           isDetailLoading(false);
+          isDetailLoading(false);
 
           Get.snackbar(response.data['message'], "");
 
-          isSelect == 0 ?
+          isSelect == 0
+              ? Get.offAll(InspectionHomeScreen(),
+                  transition: Transition.leftToRight)
+              : Get.offAll(TyreHomeScreen(),
+                  transition: Transition.leftToRight);
 
-          Get.offAll(InspectionHomeScreen(),
-              transition: Transition.leftToRight)
-
-              :
-
-               Get.offAll(TyreHomeScreen(),
-              transition: Transition.leftToRight)
-              
-              ;
-
-                isSubmitting(false);
-                   isDetailLoading(false);
+          isSubmitting(false);
+          isDetailLoading(false);
         }
       } else {
         show("Error", response.data['message']);
         isSubmitting(false);
-           isDetailLoading(false);
+        isDetailLoading(false);
       }
     } on res.DioError catch (e, trace) {
       isSubmitting(false);
-         isDetailLoading(false);
+      isDetailLoading(false);
       print(trace);
     }
   }
 
   getVehiclesbyShopApi(String id) async {
-
-   
     var token = "";
     if (getUserInfo() != null) {
       token = getUserInfo()!.data!.token.toString();
@@ -1175,7 +1145,6 @@ class TyreController extends BaseController {
     dioo.options.headers["Authorization"] = "Bearer ${token}";
 
     try {
- 
       res.Response response = await dioo
           .get(
         "/tyresbystoresid?store=" + id,
@@ -1191,9 +1160,9 @@ class TyreController extends BaseController {
           List list = response.data['data'];
           tyreSerialNumberList
               .addAll(list.map((e) => SerialNumberModel.fromJson(e)).toList());
-              isSubmitting(false);
-        }
           isSubmitting(false);
+        }
+        isSubmitting(false);
       }
 
       print("tyreSizeList : ${tyreSizeList.length}");
@@ -1202,10 +1171,10 @@ class TyreController extends BaseController {
         print("tyrePsi: ${element.tyre_psi}");
         print("tyreId: ${element.id}");
       });
-        isSubmitting(false);
+      isSubmitting(false);
     } on res.DioError catch (e, trace) {
       print(trace);
-        isSubmitting(false);
+      isSubmitting(false);
     }
   }
 
@@ -1242,9 +1211,9 @@ class TyreController extends BaseController {
         retreaTyreSerialNumberList.clear();
         List list = [];
 
-        if (jsonRes['data'] != null ){
-
-        list = jsonRes['data'];}
+        if (jsonRes['data'] != null) {
+          list = jsonRes['data'];
+        }
         print("here 4");
         // print("response: "+ response.data['data'].toString());
         retreaTyreSerialNumberList
@@ -1407,8 +1376,6 @@ class TyreController extends BaseController {
       isSubmitting(true);
       res.FormData formData = res.FormData.fromMap(map);
 
-     
-
       var jsonRes;
 
       print("Data: " + formData.toString());
@@ -1489,10 +1456,7 @@ class TyreController extends BaseController {
     }
   }
 
-
-
-
-    rubberTyreApi() async {
+  rubberTyreApi() async {
     var token = "";
     if (getUserInfo() != null) {
       token = getUserInfo()!.data!.token.toString();
@@ -1542,11 +1506,7 @@ class TyreController extends BaseController {
     }
   }
 
-
-
-
-
-      retiringReasonApi() async {
+  retiringReasonApi() async {
     var token = "";
     if (getUserInfo() != null) {
       token = getUserInfo()!.data!.token.toString();
@@ -1570,7 +1530,6 @@ class TyreController extends BaseController {
       if (response.statusCode == 200) {
         print("here 1");
 
-        
         print("here 2");
         jsonRes = jsonDecode(response.body.toString());
         print("here 3");
@@ -1587,7 +1546,6 @@ class TyreController extends BaseController {
 
       print("retiringReasonList : ${retiringReasonList.length}");
       retiringReasonList.forEach((element) {
-   
         print("reason: ${element.reason}");
         print("tyreId: ${element.id}");
       });
@@ -1596,21 +1554,14 @@ class TyreController extends BaseController {
     }
   }
 
-
-
-
-
-    tyreRetiringApi({
+  tyreRetiringApi({
     required String tyre_retiring,
-   
   }) async {
     isSubmitting(true);
     Map<String, String> map = HashMap();
     map["tyre_retiring"] = tyre_retiring.toString();
 
-
     print("tyre_retiring: " + tyre_retiring.toString());
-   
 
     var token = "";
     if (getUserInfo() != null) {
@@ -1624,8 +1575,6 @@ class TyreController extends BaseController {
       isSubmitting(true);
       res.FormData formData = res.FormData.fromMap(map);
 
-    
-
       print("Data: " + formData.toString());
       res.Response response = await dioo.post("/retiring_tyre", data: formData);
       print("Res " + response.data.toString() + "^^");
@@ -1636,7 +1585,7 @@ class TyreController extends BaseController {
         Get.snackbar(response.data['message'], "");
 
         Get.offAll(TyreHomeScreen(), transition: Transition.leftToRight);
-         isSubmitting(false);
+        isSubmitting(false);
       } else {
         show("Error", response.data['message']);
         isSubmitting(false);
@@ -1647,11 +1596,7 @@ class TyreController extends BaseController {
     }
   }
 
-
-
-
   getNewUnmountTyreApi() async {
-   
     var token = "";
     if (getUserInfo() != null) {
       token = getUserInfo()!.data!.token.toString();
@@ -1681,8 +1626,6 @@ class TyreController extends BaseController {
           List list = data['data'];
           newUnmountTyreList
               .addAll(list.map((e) => SerialNumberModel.fromJson(e)).toList());
-
-           
         }
       }
       print("tyreSizeList : ${tyreSizeList.length}");
@@ -1691,17 +1634,12 @@ class TyreController extends BaseController {
         print("tyrePsi: ${element.tyre_psi}");
         print("tyreId: ${element.id}");
       });
-       
-    
     } on res.DioError catch (e, trace) {
       print(trace);
-    
     }
   }
 
-
-  
-    getTyreForRetiringApi() async {
+  getTyreForRetiringApi() async {
     isSubmitting(true);
     var token = "";
     if (getUserInfo() != null) {
@@ -1733,8 +1671,8 @@ class TyreController extends BaseController {
           getTyreForRetireList
               .addAll(list.map((e) => SerialNumberModel.fromJson(e)).toList());
 
-              isSubmitting(false);
-              update();
+          isSubmitting(false);
+          update();
         }
       }
       print("tyreSizeList : ${tyreSizeList.length}");
@@ -1743,25 +1681,15 @@ class TyreController extends BaseController {
         print("tyrePsi: ${element.tyre_psi}");
         print("tyreId: ${element.id}");
       });
-        isSubmitting(false);
-         update();
+      isSubmitting(false);
+      update();
     } on res.DioError catch (e, trace) {
       print(trace);
       isSubmitting(false);
-         update();
+      update();
     }
   }
 
- 
- 
- 
- 
-  
-  
-  
-  
-  
-  
   @override
   void onError() {
     setLoadingsFalse();
