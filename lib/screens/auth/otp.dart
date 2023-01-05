@@ -105,7 +105,6 @@ class _OtpScreenState extends State<OtpScreen> {
                                       color: Colors.black, fontSize: 14),
                                 ),
                               ),
-                            
                               Text(
                                 widget.email,
                                 style: getStyle(
@@ -169,10 +168,10 @@ class _OtpScreenState extends State<OtpScreen> {
                                     show("Otp too",
                                         "Enter a minimum of 4 digits");
                                   } else {
-  //                                   if(await controller.verifyOtp(value)){
-  // Get.to(FinalizeSignup());
-  //                                   }
-                                  
+                                    //                                   if(await controller.verifyOtp(value)){
+                                    // Get.to(FinalizeSignup());
+                                    //                                   }
+
                                   }
                                 },
                                 keyboardType: TextInputType.number,
@@ -261,23 +260,24 @@ class _OtpScreenState extends State<OtpScreen> {
                               ),
                             ),
                             InkWell(
-                              onTap: () async {
+                              onTap: () {
                                 if (controller.submittingOtp.isTrue) {
                                   return;
                                 }
+
                                 if (otpConntroler.value.text.isEmpty) {
                                   show("Otp Required", "Please enter otp");
-                                } else if (otpConntroler.value.text.length <
-                                    4) {
+                                  return;
+                                }
+
+                                if (otpConntroler.value.text.length != 4) {
                                   show("Otp Error",
                                       "Enter a minimum of 4 digits");
-                                } else {
-                                  if (await controller
-                                      .verifyOTP(  widget.email,otpConntroler.value.text)) {
-                                      Get.to(FinalizeSignup());
-                                  }
-                                  
+                                  return;
                                 }
+
+                                controller.verifyOTP(
+                                    widget.email, otpConntroler.value.text);
                               },
                               child: Container(
                                 alignment: Alignment.center,
@@ -287,29 +287,22 @@ class _OtpScreenState extends State<OtpScreen> {
                                 width: ScreenSize.width * 0.82,
                                 height: ScreenSize.height * 0.065,
                                 child:
-
-
-                                   Obx((() => 
-                            
-                             
-
-                              controller.isVerifyLoading.value
-                        ? Align(
-                            alignment: Alignment.center,
-                            child: Platform.isAndroid
-                                ? CircularProgressIndicator(color: Colors.white, strokeWidth: 1,)
-                                : CupertinoActivityIndicator())
-                        :
-                                
-                                
-                               const  Text(
-                                    "Submit",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w300,
-                                        color: Colors.white,
-                                        fontSize: 18),
-                                  ))),
-                               
+                                    Obx((() => controller.isVerifyLoading.value
+                                        ? Align(
+                                            alignment: Alignment.center,
+                                            child: Platform.isAndroid
+                                                ? CircularProgressIndicator(
+                                                    color: Colors.white,
+                                                    strokeWidth: 1,
+                                                  )
+                                                : CupertinoActivityIndicator())
+                                        : const Text(
+                                            "Submit",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w300,
+                                                color: Colors.white,
+                                                fontSize: 18),
+                                          ))),
                                 decoration: BoxDecoration(
                                     color: green,
                                     boxShadow: [

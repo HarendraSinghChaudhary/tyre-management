@@ -14,9 +14,10 @@ var current_env = env.aws;
 //     : current_env == env.aws
 //         ? "http://primemetricsbackendapis-env.eba-ueznnzk8.eu-west-1.elasticbeanstalk.com/api"
 //         : "https://primemetrics.branfoot.com/api";
-final String baseUrl = "https://builtenance.com/development/primemetics/api";
+final String baseUrl =
+    "http://ec2-54-171-150-14.eu-west-1.compute.amazonaws.com/api";
 // final String baseUrl =
-//     "http://primemetricsbackendapis-env.eba-ueznnzk8.eu-west-1.elasticbeanstalk.com/api/";
+//     "http://ec2-54-171-150-14.eu-west-1.compute.amazonaws.com";
 final String signUp = baseUrl + "/user/signup";
 final String login = baseUrl + "/user/signIn";
 final String SEND_EMAIL = baseUrl + "/user/sendOtp";

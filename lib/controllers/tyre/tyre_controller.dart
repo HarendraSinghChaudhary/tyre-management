@@ -1259,6 +1259,7 @@ class TyreController extends BaseController {
     map["vendor"] = vendor.toString();
 
     print("tyre_id " + tyre_id.toString());
+    print("weight " + weight.toString());
     print("width " + width.toString());
     print("thread_depth " + thread_depth.toString());
     print("day " + day.toString());
@@ -1278,15 +1279,6 @@ class TyreController extends BaseController {
     try {
       isSubmitting(true);
       res.FormData formData = res.FormData.fromMap(map);
-
-      //  formData.files.add(MapEntry(
-      //       "image",
-      //       await res.MultipartFile.fromFile(
-      //         file.path,
-      //         filename: file.name,
-      //       )));
-
-      //   print("file image" + file.name.toString());
 
       var jsonRes;
 

@@ -1,5 +1,3 @@
-
-
 import 'dart:async';
 import 'dart:convert';
 
@@ -29,16 +27,14 @@ import '../../utils/store.dart';
 import '../../utils/toast.dart';
 
 class AuthController extends BaseController {
-
   RxBool isForgotLoading = false.obs;
-   RxBool isOtpLoading = false.obs;
-    RxBool isResetLoading = false.obs;
+  RxBool isOtpLoading = false.obs;
+  RxBool isResetLoading = false.obs;
   RxBool isSignUpLoading = false.obs;
   RxBool isVerifyLoading = false.obs;
   RxBool isFinalSignUpLoading = false.obs;
-  RxBool isSocialSignInLoading = false.obs;  
+  RxBool isSocialSignInLoading = false.obs;
 
- 
   RxBool sendingEmail = false.obs;
   RxBool veryfyingOtp = false.obs;
   RxString timeEllapsedForOtp = 60.toString().obs;
@@ -48,22 +44,21 @@ class AuthController extends BaseController {
   RxBool isLoadingSocialService = false.obs;
   static SocialLogin? social;
   static U.UserInfo userInfo = U.UserInfo();
-    RxBool isLoading = false.obs;
+  RxBool isLoading = false.obs;
   RxList jobList = [].obs;
 
   @override
   void onInit() {
-
     super.onInit();
   }
 
+  Future<dynamic> loginApi(
+    String email,
+    String password,
+  ) async {
+    print("login........................");
 
-
-    Future<dynamic> loginApi(String email, String password, ) async {
-
-      print("login........................");
-
-      sendingEmail(true);
+    sendingEmail(true);
     // FirebaseMessaging.instance.getToken().then((value) {
     //   fcm_token = value.toString();
     //   print("FCM "+fcm_token.toString()+"^^");
@@ -78,25 +73,16 @@ class AuthController extends BaseController {
     var jsonRes;
     http.Response? res;
     var request = http.post(
-        Uri.parse(
-
+      Uri.parse(
           // RestDatasource.LOGIN_URL,
-          "https://builtenance.com/development/primemetics/api/user/signIn",
-
-         
-         
-        ),
-        body: {
-          "email": email.toString().trim(),
-          "password": password.toString().trim(),
-         
-
-        },
-
-       
-        
-        );
-var responsedynamic;
+          // "https://builtenance.com/development/primemetics/api/user/signIn",
+          login),
+      body: {
+        "email": email.toString().trim(),
+        "password": password.toString().trim(),
+      },
+    );
+    var responsedynamic;
     await request.then((http.Response response) {
       res = response;
       responsedynamic = response.body;
@@ -104,51 +90,42 @@ var responsedynamic;
       jsonRes = _decoder.convert(response.body.toString());
       print("Response: " + response.body.toString() + "_");
       print("ResponseJSON: " + jsonRes.toString() + "_");
-     
     });
     if (res!.statusCode == 200) {
       if (res!.statusCode == 200) {
-
         print("press here 1");
-        
-           await setUser(U.UserInfo.fromJson(jsonRes));
 
-      show("Success", "Login Successful");
-       print("press here2");
+        await setUser(U.UserInfo.fromJson(jsonRes));
 
-      var user =getUserInfo();
-      var role = user?.data?.role?.userRole.toString();
-      var modules = user?.data?.modules?.first.toString();
-      print("modules: "+ modules.toString());
-     var md = modules!.split(",");
-     print("md: "+ md.toString());
+        show("Success", "Login Successful");
+        print("press here2");
 
+        var user = getUserInfo();
+        var role = user?.data?.role?.userRole.toString();
+        var modules = user?.data?.modules?.first.toString();
+        print("modules: " + modules.toString());
+        var md = modules!.split(",");
+        print("md: " + md.toString());
 
-      print("press here 3" +role.toString()+"");
-      // user?.data?.role?.userRole=="fuel_master" ? Get.offAll(FuelMasterLandingScreen()) : Get.offAll(MainDashboard());
-     // user?.data?.role?.userRole=="fuel_master" ? Get.offAll(TyreHomeScreen()) : Get.offAll(MainDashboard());
+        print("press here 3" + role.toString() + "");
+        // user?.data?.role?.userRole=="fuel_master" ? Get.offAll(FuelMasterLandingScreen()) : Get.offAll(MainDashboard());
+        // user?.data?.role?.userRole=="fuel_master" ? Get.offAll(TyreHomeScreen()) : Get.offAll(MainDashboard());
 
-     Get.offAll(const ClassicDashboard());
-  
-   print("press here 4");
-       
+        Get.offAll(const ClassicDashboard());
+
+        print("press here 4");
+
         var tokeenen = user?.data?.token.toString();
-        print("token: "+tokeenen.toString()+"");
-       
+        print("token: " + tokeenen.toString() + "");
+
         // prefs.commit();
-         print("press here 6");
+        print("press here 6");
 
-         sendingEmail(false);
-         update();
-      
-       
-      }else{
-
-
-       
-
-          sendingEmail(false);
-         update();
+        sendingEmail(false);
+        update();
+      } else {
+        sendingEmail(false);
+        update();
         // setState(() {
         //   isloading = false;
         // });
@@ -157,9 +134,8 @@ var responsedynamic;
 
       }
     } else {
-
-        sendingEmail(false);
-         update();
+      sendingEmail(false);
+      update();
       // ScaffoldMessenger.of(context)
       //     .showSnackBar(SnackBar(content: Text('Error while fetching data')));
 
@@ -169,9 +145,6 @@ var responsedynamic;
     }
   }
 
-
-
-
   Future<U.UserInfo?> getProfile() async {
     if (getUserInfo() == null) {
       return null;
@@ -179,27 +152,25 @@ var responsedynamic;
     var userInfo = getUserInfo();
     try {
       print(getHost());
-      print("Url is "+USER);
-      var response = await dio.get("https://builtenance.com/development/primemetics/api/users?id=4",
-          options: D.Options(headers:
-           {"Authorization":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2J1aWx0ZW5hbmNlLmNvbS9kZXZlbG9wbWVudC9wcmltZW1ldGljcy9hcGkvdXNlciIsImlhdCI6MTY1NTIwNjg4MCwiZXhwIjoxNjU1MjA3MDAwLCJuYmYiOjE2NTUyMDY4ODAsImp0aSI6IjBqYkw2MWNnTFc5NmZWTGQiLCJzdWIiOiI0IiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyIsImlkIjo0fQ.uAiELmJb6nMTVRH2wxHZ6VNunKOEwm4m4A5cwLkx3Ls"
-          //   'accept': "application/json",
-          //   "Content-Type": "application/json",
-          //   "Accept": "application/json",
-          //   "User-Agent": "PostmanRuntime/7.29.0",
-          //   "Cache-Control": "no-cache",
-          //   "Postman-Token": "38c764b1-1bbd-4d93-825b-2d52516e7da3",
-          //     "Host": getHost(),
-          //   "Accept-Encoding": "gzip, deflate, br",
-          //   "Connection": "keep-alive",
-          //   "Authorization": "Bearer ${userInfo?.data?.token}",
-           }
-          
-          )
-          
-          );
+      print("Url is " + USER);
+      var response = await dio.get(
+          "https://builtenance.com/development/primemetics/api/users?id=4",
+          options: D.Options(headers: {
+            "Authorization":
+                "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2J1aWx0ZW5hbmNlLmNvbS9kZXZlbG9wbWVudC9wcmltZW1ldGljcy9hcGkvdXNlciIsImlhdCI6MTY1NTIwNjg4MCwiZXhwIjoxNjU1MjA3MDAwLCJuYmYiOjE2NTUyMDY4ODAsImp0aSI6IjBqYkw2MWNnTFc5NmZWTGQiLCJzdWIiOiI0IiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyIsImlkIjo0fQ.uAiELmJb6nMTVRH2wxHZ6VNunKOEwm4m4A5cwLkx3Ls"
+            //   'accept': "application/json",
+            //   "Content-Type": "application/json",
+            //   "Accept": "application/json",
+            //   "User-Agent": "PostmanRuntime/7.29.0",
+            //   "Cache-Control": "no-cache",
+            //   "Postman-Token": "38c764b1-1bbd-4d93-825b-2d52516e7da3",
+            //     "Host": getHost(),
+            //   "Accept-Encoding": "gzip, deflate, br",
+            //   "Connection": "keep-alive",
+            //   "Authorization": "Bearer ${userInfo?.data?.token}",
+          }));
 
-      print("Responseee "+response.toString()+"^^");
+      print("Responseee " + response.toString() + "^^");
       if (response.isOk) {
         var user = U.UserInfo.fromJson(response.data);
         await setUser(user);
@@ -245,78 +216,51 @@ var responsedynamic;
     });
   }
 
-
-
-  Future <dynamic> socialSignInApi (
-
-String email, String token,
-      {String company = "Google", String accountId = ""}
-  
-) async {
-  isLoadingSocialService(true);
-   print(
-        "Service ${company} Email : ${email} Token :${token} AccountId : ${accountId}");
-  print('inside login Function');
-  var res = await http.post(Uri.parse(SOCIAL_SIGNIN),
-      body: {  
-      
-          "token": token,
-          "email": email,
-          "company": company,
-          "accountId": accountId});
-  print('inside login Function');
-  if (res.statusCode == 200) {
+  Future<dynamic> socialSignInApi(String email, String token,
+      {String company = "Google", String accountId = ""}) async {
     isLoadingSocialService(true);
-    var data = jsonDecode(res.body);
-    if (data['data'] != null) {
+    print(
+        "Service ${company} Email : ${email} Token :${token} AccountId : ${accountId}");
+    print('inside login Function');
+    var res = await http.post(Uri.parse(SOCIAL_SIGNIN), body: {
+      "token": token,
+      "email": email,
+      "company": company,
+      "accountId": accountId
+    });
+    print('inside login Function');
+    if (res.statusCode == 200) {
+      isLoadingSocialService(true);
+      var data = jsonDecode(res.body);
+      if (data['data'] != null) {
+        U.Data.fromJson(data['data']);
+        U.Data a = U.Data.fromJson(data['data']);
 
-     U.Data.fromJson(data['data']);
-     U.Data a = U.Data.fromJson(data['data']);
+        print("......${a.toJson()}");
 
-     print("......${a.toJson()}");
+        Get.to(() => FinalizeSignup());
 
-     Get.to(() => FinalizeSignup());
+        print("all is good");
 
+        // Get.to(() => OtpScreen(email: email,));
+        //  Get.snackbar(data['message'], "");
 
+        isLoadingSocialService(false);
 
-   
+        return data;
+      } else {
+        isLoadingSocialService(false);
 
-
-     
-
-      print("all is good");
-
-
-
-
-      // Get.to(() => OtpScreen(email: email,));
-      //  Get.snackbar(data['message'], "");
-
-
-  
-
-
-
-
-   
-
-       isLoadingSocialService(false);
-
-      return data;
+        Get.snackbar(data['message'], "");
+        return Future.error(data['message']);
+      }
     } else {
       isLoadingSocialService(false);
-   
-      Get.snackbar(data['message'], "");
-      return Future.error(data['message']);
+      return Future.error('Server Error!');
     }
-  } else {
-    isLoadingSocialService(false);
-    return Future.error('Server Error!');
   }
-}
 
   Future<U.UserInfo?> linkAccountWithGoogle() async {
-
     //var social = store.read<SocialLogin>(social_account);
     // social?.userId = userInfo.data?.id;
     // social?.socialToken = social.socialToken;
@@ -333,8 +277,6 @@ String email, String token,
     print(response.body);
     return null;
   }
-
-
 
   authWithFacebook(String email) {}
   resend() async {
@@ -359,80 +301,53 @@ String email, String token,
     }
   }
 
+  Future<dynamic> signupApi(
+    String email,
+    String password,
+  ) async {
+    isSignUpLoading(true);
+    print('inside login Function');
+    var res = await http.post(
+        Uri.parse(
+            "http://ec2-54-171-150-14.eu-west-1.compute.amazonaws.com/api/user/sendOtp"),
+        body: {
+          "email": email,
+        });
+    print('inside login Function');
+    if (res.statusCode == 200) {
+      isLoading(true);
+      var data = jsonDecode(res.body);
+      if (data['status'] == true) {
+        print("all is good");
 
+        Get.to(() => OtpScreen(
+              email: email,
+            ));
+        Get.snackbar(data['message'], "");
 
+        isSignUpLoading(false);
 
+        return data;
+      } else {
+        isSignUpLoading(false);
 
-
-
-Future <dynamic> signupApi(
-  String email,
-  String password,
-  
-) async {
-  isSignUpLoading(true);
-  print('inside login Function');
-  var res = await http.post(Uri.parse(SEND_EMAIL),
-      body: {"email": email,});
-  print('inside login Function');
-  if (res.statusCode == 200) {
-    isLoading(true);
-    var data = jsonDecode(res.body);
-    if (data['status'] == true) {
-
-
-     
-
-      print("all is good");
-
-
-
-
-      Get.to(() => OtpScreen(email: email,));
-       Get.snackbar(data['message'], "");
-
-
-  
-
-
-
-
-   
-
-         isSignUpLoading(false);
-
-      return data;
+        Get.snackbar(data['message'], "");
+        return Future.error(data['message']);
+      }
     } else {
       isSignUpLoading(false);
-   
-      Get.snackbar(data['message'], "");
-      return Future.error(data['message']);
+      return Future.error('Server Error!');
     }
-  } else {
-    isSignUpLoading(false);
-    return Future.error('Server Error!');
   }
-}
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
   // Future<U.UserInfo?> sendEmail(String email, String password) async {
   //   sendingEmail(true);
   //   Map<String, String> map = HashMap();
   //   map["email"] = email.toString();
 
-
-
   //   print("email: "+email.toString());
   //   print("password: "+password.toString());
   //   res.FormData formData = res.FormData.fromMap(map);
-    
 
   //   var response = await dio.post(
   //     SEND_EMAIL,
@@ -443,7 +358,6 @@ Future <dynamic> signupApi(
   //   // await setPassword(email);
 
   //   if (response.statusCode == 200) {
-
 
   //     Get.to(() => const OtpScreen());
   //     // activateResend(false);
@@ -478,18 +392,6 @@ Future <dynamic> signupApi(
   //   return null;
   // }
 
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   registerUser(U.Data user) async {
     var response = await dio.post(signUp, data: user.toJson());
   }
@@ -506,157 +408,122 @@ Future <dynamic> signupApi(
 
       show("Success", "Login Succeful");
 
-      var user =getUserInfo();
+      var user = getUserInfo();
       // user?.data?.role?.userRole=="fuel_master" ? Get.offAll(FuelMasterLandingScreen()) : Get.offAll(MainDashboard());
-      user?.data?.role?.userRole=="fuel_master" ? Get.offAll(TyreHomeScreen()) : Get.offAll(MainDashboard());
-
+      user?.data?.role?.userRole == "fuel_master"
+          ? Get.offAll(TyreHomeScreen())
+          : Get.offAll(MainDashboard());
     } else {
-
-       
       show("Error login", "Username or Password is wrong");
       printError();
-      
     }
-    print("is it out? "+response.requestOptions.headers.toString());
+    print("is it out? " + response.requestOptions.headers.toString());
   }
 
-Future verifyOTP(
-  
-  String email,
-  String otp
-) async {
-
-  isVerifyLoading(true);
-
-  var res = await http.post(Uri.parse(veryfy_otp),
-      // headers: {"Authorization": token},
-      body: {"email": email, "otp": otp});
-
-  if (res.statusCode == 200) {
+  Future verifyOTP(String email, String otp) async {
     isVerifyLoading(true);
-    var data = jsonDecode(res.body);
-    if (data['status'] == true) {
-       Get.to(() => FinalizeSignup());
-      isLoading(false);
 
-      return data;
+    var res = await http.post(Uri.parse(veryfy_otp),
+        // headers: {"Authorization": token},
+        body: {"email": email, "otp": otp});
+
+    print("status code: ${res.statusCode}");
+
+    if (res.statusCode == 200) {
+      isVerifyLoading(true);
+      var data = jsonDecode(res.body);
+      if (data['status'] == true) {
+        Get.to(() => FinalizeSignup());
+        isLoading(false);
+
+        return data;
+      } else {
+        isVerifyLoading(false);
+        return Future.error(data['message']);
+      }
     } else {
       isVerifyLoading(false);
-      return Future.error(data['message']);
+      return Future.error('Server Error!');
     }
-  } else {
-    isVerifyLoading(false);
-    return Future.error('Server Error!');
   }
-}
-
-
 
 // final registration api for finaliz_signup.dart
 
-Future finalRegister(
+  Future finalRegister(Map map) async {
+    print("....$map");
 
-  Map map
-  
- 
-) async {
-  print("....$map");
-
-  isFinalSignUpLoading(true);
-
-  var res = await http.post(Uri.parse(signUp),
-      // headers: {"Authorization": token},
-      body: map);
-
-  if (res.statusCode == 200) {
     isFinalSignUpLoading(true);
-    var data = jsonDecode(res.body);
-    if (data['status'] == true) {
 
-      
-      //  Get.to(() => const FinalizeSignup());
-      // isLoading(false);
-      print("this is good");
+    var res = await http.post(Uri.parse(signUp),
+        // headers: {"Authorization": token},
+        body: map);
 
-      Get.offAll(()=>  const LoginScreen());
+    if (res.statusCode == 200) {
+      isFinalSignUpLoading(true);
+      var data = jsonDecode(res.body);
+      if (data['status'] == true) {
+        //  Get.to(() => const FinalizeSignup());
+        // isLoading(false);
+        print("this is good");
 
-       isFinalSignUpLoading(false);
+        Get.offAll(() => const LoginScreen());
 
-      return data;
+        isFinalSignUpLoading(false);
+
+        return data;
+      } else {
+        isFinalSignUpLoading(false);
+        Get.snackbar(data['message'], "");
+
+        return Future.error(data['message']);
+      }
     } else {
       isFinalSignUpLoading(false);
-      Get.snackbar(data['message'],"");
-      
-      return Future.error(data['message']);
+      return Future.error('Server Error!');
     }
-  } else {
-    isFinalSignUpLoading(false);
-    return Future.error('Server Error!');
   }
-}
 
+  Future checkUser(String email, bool? isSocial) async {
+    print("....$email");
+    signUpMap["email"] = email.toString();
 
-
-Future checkUser(
-
-  String email,
-  bool? isSocial
-  
- 
-) async {
-  print("....$email");
-  signUpMap["email"] = email.toString();
-
-  isLoading(true);
-  var exist;
-
-  var res = await http.post(Uri.parse(check_user),
-      // headers: {"Authorization": token},
-      body: {"email": email});
-
-  if (res.statusCode == 200) {
     isLoading(true);
-    var data = jsonDecode(res.body);
-    if (data['status'] == true) {
-      exist = data['Isexits'];
+    var exist;
 
-      print(".fghf......$exist");
+    var res = await http.post(Uri.parse(check_user),
+        // headers: {"Authorization": token},
+        body: {"email": email});
 
-      // exist == true ? const TyreHomeScreen() : const FinalizeSignup();
-      // Get.offAll(() =>const ClassicDashboard());
-      var pass = isSocial == true ? "12345678" : "";
-       loginApi(email, pass
+    if (res.statusCode == 200) {
+      isLoading(true);
+      var data = jsonDecode(res.body);
+      if (data['status'] == true) {
+        exist = data['Isexits'];
 
+        print(".fghf......$exist");
 
-       
-       
-       
-      );
+        // exist == true ? const TyreHomeScreen() : const FinalizeSignup();
+        // Get.offAll(() =>const ClassicDashboard());
+        var pass = isSocial == true ? "12345678" : "";
+        loginApi(email, pass);
 
+        print("this is good");
 
-      
-    
-      print("this is good");
+        // Get.snackbar(data['message'],"");
 
-      
+        return data;
+      } else {
+        isLoading(false);
+        // Get.snackbar(data['message'],"");
+        Get.to(() => FinalizeSignup());
 
-      // Get.snackbar(data['message'],"");
-
-      return data;
+        return Future.error(data['message']);
+      }
     } else {
       isLoading(false);
-      // Get.snackbar(data['message'],"");
-       Get.to(() => FinalizeSignup());
-      
-      return Future.error(data['message']);
+      return Future.error('Server Error!');
     }
-  } else {
-    isLoading(false);
-    return Future.error('Server Error!');
   }
-}
-
-
 
   // verifyOtp(String otp) async {
   //   print("verying otp ${otp}");
@@ -778,7 +645,7 @@ Future checkUser(
     if (social != null) {
       print("registering social");
       jsonEncode(userInfo.data?.getUserRegInfoFormartSocial());
-      print(        userInfo.data?.getUserRegInfoFormartSocial());
+      print(userInfo.data?.getUserRegInfoFormartSocial());
       var response = await dio.post(
         signUp,
         data: userInfo.data?.getUserRegInfoFormartSocial(),
@@ -813,178 +680,106 @@ Future checkUser(
     return false;
   }
 
+  Future forgotPasswordApi(String email) async {
+    print("....$email");
 
-
-
-
-
-
-
-  Future forgotPasswordApi(
-
-  String email
-  
- 
-) async {
-  print("....$email");
-
-  isForgotLoading(true);
-
-
-  var res = await http.post(Uri.parse(forgot_password_url),
-      // headers: {"Authorization": token},
-      body: {"email": email});
-
-  if (res.statusCode == 200) {
     isForgotLoading(true);
-    var data = jsonDecode(res.body);
-    if (data['status'] == true) {
-      
-      Get.offAll(() =>  OtpVerification(email: email));
 
+    var res = await http.post(Uri.parse(forgot_password_url),
+        // headers: {"Authorization": token},
+        body: {"email": email});
 
-      
-    
-      print("this is good");
+    if (res.statusCode == 200) {
+      isForgotLoading(true);
+      var data = jsonDecode(res.body);
+      if (data['status'] == true) {
+        Get.offAll(() => OtpVerification(email: email));
 
-      isForgotLoading(false);
+        print("this is good");
 
-      // Get.snackbar(data['message'],"");
+        isForgotLoading(false);
 
-      return data;
+        // Get.snackbar(data['message'],"");
+
+        return data;
+      } else {
+        isForgotLoading(false);
+        Get.snackbar(data['message'], "");
+
+        return Future.error(data['message']);
+      }
     } else {
       isForgotLoading(false);
-      Get.snackbar(data['message'],"");
-      
-      
-      return Future.error(data['message']);
+      return Future.error('Server Error!');
     }
-  } else {
-    isForgotLoading(false);
-    return Future.error('Server Error!');
   }
-}
 
+  Future otpVerifyApi(String email, String otp) async {
+    print("....$email");
 
-
-
-
-  Future otpVerifyApi(
-
-  String email,
-  String otp
-  
- 
-) async {
-  print("....$email");
-
-  isOtpLoading(true);
-
-
-  var res = await http.post(Uri.parse(otp_verification_url),
-      // headers: {"Authorization": token},
-      body: {"email": email, "otp" : otp});
-
-  if (res.statusCode == 200) {
     isOtpLoading(true);
-    var data = jsonDecode(res.body);
-    if (data['status'] == true) {
 
-      Get.to(() => ResetPassword(email: email,));
+    var res = await http.post(Uri.parse(otp_verification_url),
+        // headers: {"Authorization": token},
+        body: {"email": email, "otp": otp});
 
+    if (res.statusCode == 200) {
+      isOtpLoading(true);
+      var data = jsonDecode(res.body);
+      if (data['status'] == true) {
+        Get.to(() => ResetPassword(
+              email: email,
+            ));
 
-      
-    
-      print("this is good");
+        print("this is good");
 
-      
-  isOtpLoading(false);
-      // Get.snackbar(data['message'],"");
+        isOtpLoading(false);
+        // Get.snackbar(data['message'],"");
 
-      return data;
+        return data;
+      } else {
+        isOtpLoading(false);
+        Get.snackbar(data['message'], "");
+
+        return Future.error(data['message']);
+      }
     } else {
       isOtpLoading(false);
-      Get.snackbar(data['message'],"");
-      
-      
-      return Future.error(data['message']);
+      return Future.error('Server Error!');
     }
-  } else {
-    isOtpLoading(false);
-    return Future.error('Server Error!');
   }
-}
 
+  Future resetPasswordApi(String email, String password) async {
+    print("....$password");
 
-
-
-
-  Future resetPasswordApi(
-
-    String email,
-
-  String password
-  
-  
- 
-) async {
-  print("....$password");
-
-  isResetLoading(true);
-
-
-  var res = await http.post(Uri.parse(reset_password_url),
-      // headers: {"Authorization": token},
-      body: {"email" : email,  "newpassword": password});
-
-  if (res.statusCode == 200) {
     isResetLoading(true);
-    var data = jsonDecode(res.body);
-    if (data['status'] == true) {
 
-      Get.offAll(() => const LoginScreen());
+    var res = await http.post(Uri.parse(reset_password_url),
+        // headers: {"Authorization": token},
+        body: {"email": email, "newpassword": password});
 
+    if (res.statusCode == 200) {
+      isResetLoading(true);
+      var data = jsonDecode(res.body);
+      if (data['status'] == true) {
+        Get.offAll(() => const LoginScreen());
 
-      
-    
-      print("this is good");
+        print("this is good");
 
-      isResetLoading(false);
+        isResetLoading(false);
 
-      
+        // Get.snackbar(data['message'],"");
 
-      // Get.snackbar(data['message'],"");
+        return data;
+      } else {
+        isResetLoading(false);
+        Get.snackbar(data['message'], "");
 
-      return data;
+        return Future.error(data['message']);
+      }
     } else {
       isResetLoading(false);
-      Get.snackbar(data['message'],"");
-      
-      
-      return Future.error(data['message']);
+      return Future.error('Server Error!');
     }
-  } else {
-   isResetLoading(false);
-    return Future.error('Server Error!');
   }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
